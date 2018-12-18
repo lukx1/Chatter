@@ -1,6 +1,8 @@
-
 # Created by https://www.gitignore.io/api/c++,java,linux,csharp,angular,android,windows,intellij,notepadpp,visualstudio,androidstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,java,linux,csharp,angular,android,windows,intellij,notepadpp,visualstudio,androidstudio,visualstudiocode
+
+# Server connection configuration
+*.sccfg
 
 ### Android ###
 # Built application files
