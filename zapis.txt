@@ -1,0 +1,56 @@
+Chatter
+2 - 4 lidi
+za každýho èlovìka nezávislá aplikace (nelze použít jednu technologie pro vícero)
+4 úplnì jiné technologie
+každej klient použitelnej bez použití socketu
+
+Andorid Android Studio(Java) - Rambo
+Windows WPF C# - Rùža
+Web Angular/JS - Petr 
+Linux Java - Lukas
+Server C# - Lukas
+
+napø:
+wpf
+nativní android
+angular
+ios/swift
+
+
+accounty z db
+
+info o sobe
+- email
+- jmeno
+- heslo
+- obrazek
+- dalsi
+
+frendy
+- blokovat
+- odstranit
+- potvrdit
+
+registrace
+
+dopisovani(Instant Messaging)
+1v1
+group chat
+
+zpravy
+- posilat
+- kdo poslal
+- upravit
+- smazat
+- read
+- real time
+- writing indikátor
+- soubory
+- obrazky, gify, emoji
+- historie
+
+server
+- api
+-- dokumentovani
+
+max 25.1.
