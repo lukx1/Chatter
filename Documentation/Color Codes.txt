@@ -1,0 +1,5 @@
+#222631, RGB(34,38,49) - Dark Grey
+#363d43, RGB(54,61,67) - Light Dark Grey
+#00abb2, RGB(0,171,178) - Blue
+#eeeeee, RGB(238,238,238) - Light
+
