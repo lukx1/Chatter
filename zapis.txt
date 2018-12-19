@@ -5,9 +5,9 @@ za každýho èlovìka nezávislá aplikace (nelze použít jednu technologie pro vícero
 každej klient použitelnej bez použití socketu
 
 Andorid Android Studio(Java) - Rambo
-Windows WPF C# - Rùža
-Web Angular/JS - Petr 
-Linux Java - Lukas
+Windows WPF C# - Petr
+Universal Java Swing/JavaFX - Lukas
+Linux C++ - Rùža
 Server C# - Lukas
 
 napø:
