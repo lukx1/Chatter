@@ -4,9 +4,6 @@
 # Server connection configuration
 *.sccfg
 
-#Linux stuff lul
-build-aux/
-
 ### Android ###
 # Built application files
 *.apk
