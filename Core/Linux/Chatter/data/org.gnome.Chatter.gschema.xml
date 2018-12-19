@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="chatter">
+	<schema id="org.gnome.Chatter" path="/org/gnome/Chatter/">
+	</schema>
+</schemalist>
