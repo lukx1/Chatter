@@ -171,18 +171,36 @@ namespace Server.Models
             {
                 entity.ToTable("rooms");
 
+                entity.HasIndex(e => e.Idcreator)
+                    .HasName("FK_rooms_users");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
+                    .HasColumnType("int(11)");
+
+                entity.Property(e => e.Idcreator)
+                    .HasColumnName("IDCreator")
                     .HasColumnType("int(11)");
 
                 entity.Property(e => e.Name).HasColumnType("varchar(64)");
 
                 entity.Property(e => e.OneOnOne).HasColumnType("bit(1)");
+
+                entity.HasOne(d => d.IdcreatorNavigation)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.Idcreator)
+                    .HasConstraintName("FK_rooms_users");
             });
 
             modelBuilder.Entity<Roomusers>(entity =>
             {
                 entity.ToTable("roomusers");
+
+                entity.HasIndex(e => e.Idroom)
+                    .HasName("FK_roomusers_rooms");
+
+                entity.HasIndex(e => e.Iduser)
+                    .HasName("FK_roomusers_users");
 
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
@@ -195,6 +213,16 @@ namespace Server.Models
                 entity.Property(e => e.Iduser)
                     .HasColumnName("IDUser")
                     .HasColumnType("int(11)");
+
+                entity.HasOne(d => d.IdroomNavigation)
+                    .WithMany(p => p.Roomusers)
+                    .HasForeignKey(d => d.Idroom)
+                    .HasConstraintName("FK_roomusers_rooms");
+
+                entity.HasOne(d => d.IduserNavigation)
+                    .WithMany(p => p.Roomusers)
+                    .HasForeignKey(d => d.Iduser)
+                    .HasConstraintName("FK_roomusers_users");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -228,7 +256,7 @@ namespace Server.Models
                     .IsRequired()
                     .HasColumnType("varchar(64)");
 
-                entity.Property(e => e.Password).HasColumnType("char(68)");
+                entity.Property(e => e.Password).HasMaxLength(48);
 
                 entity.Property(e => e.PictureUrl)
                     .HasColumnName("PictureURL")

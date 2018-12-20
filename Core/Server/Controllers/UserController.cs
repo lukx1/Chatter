@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.MessageClasses;
 using Server.Models;
 using Server.Repos;
+using PrgDbWeb.Helpers;
 
 namespace Server.Controllers
 {
@@ -14,9 +15,23 @@ namespace Server.Controllers
     [ApiController]
     public class UserController : ValidatingController
     {
-        public IUserRepository UserRepository;
+        public IUserRepository UserRepository = new UserRepo();
 
-        
+#if DEBUG
+        private const string RRPassword = "1R2w4E+WsQpOcopZjQda+2DyLi3X5+FRBkoEBg4PoeLXRdEhWTiStw3IL1/el/J0";
+
+        [HttpPost]
+        public IActionResult ResetRequestCounter(string password)
+        {
+            if (PasswordHelper.VerifyPasswordPbkdf2(password, RRPassword))
+            {
+                SessionControl.RequestsPastHour = 0;
+                SessionControl.RequestCounterExpires = DateTime.Now.AddHours(1);
+                return Ok();
+            }
+            return Forbid();
+        }
+#endif
         [HttpPost]
         public IActionResult GetUsers(LoginHeader header)
         {
@@ -56,12 +71,10 @@ namespace Server.Controllers
         [HttpPut]
         public IActionResult RegisterUser(UserMessage message)
         {
-            if (IsLoginValid(message))
-            {
-                UserRepository.RegisterUser(message.User);
-                return Ok();
-            }
-            return BadRequest();
+            if (SessionControl.AreTooManyRequests())
+                return Forbid("Too many requests");
+            UserRepository.RegisterUser(message.User);
+            return Ok();
         }
 
         // DELETE: api/ApiWithActions/5

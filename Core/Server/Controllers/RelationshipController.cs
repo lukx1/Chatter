@@ -15,7 +15,7 @@ namespace Server.Controllers
     [ApiController]
     public class RelationshipController : ValidatingController
     {
-        private readonly IRelationshipRepository relationshipRepository;
+        private readonly IRelationshipRepository relationshipRepository = new RelationshipRepo();
 
         [HttpPost]
         public IActionResult GetRelForUser(IDMessage message)

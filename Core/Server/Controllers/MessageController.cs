@@ -13,7 +13,7 @@ namespace Server.Controllers
     [ApiController]
     public class MessageController : ValidatingController
     {
-        private readonly IMessageRepository repo;
+        private readonly IMessageRepository repo = new MessageRepo();
 
         [HttpPost]
         public async Task<IActionResult> GetMessagesInRoom(IDMessage message)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Server.Models;
+using System.Text;
+using PrgDbWeb.Helpers;
 
 namespace Server.Repos
 {
@@ -42,6 +44,7 @@ namespace Server.Repos
 
         public void RegisterUser(Users user)
         {
+            user.Password = PasswordHelper.HashPasswordPbkdf2(Encoding.ASCII.GetString(user.Password)).AsBytes();
             context.Users.Add(user);
             context.SaveChanges();
         }

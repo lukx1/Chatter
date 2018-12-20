@@ -15,7 +15,7 @@ namespace Server
         {
             string currentDir = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             var best = Path.Combine(currentDir, sccfg);
-            var second = Path.Combine("..", "..", "..", currentDir, sccfg);
+            var second = Path.Combine(Directory.GetParent(currentDir).Parent.Parent.FullName, sccfg);
             if (File.Exists(best))
             {
                 return File.ReadAllText(best);

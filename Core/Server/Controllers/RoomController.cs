@@ -13,7 +13,7 @@ namespace Server.Controllers
     [ApiController]
     public class RoomController : ValidatingController
     {
-        private readonly IRoomRepository roomRepository;
+        private readonly IRoomRepository roomRepository = new RoomRepo();
 
         [HttpPost]
         public IActionResult GetRoomsWithUser(IDMessage message)
