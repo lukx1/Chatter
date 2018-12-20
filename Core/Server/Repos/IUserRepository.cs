@@ -8,13 +8,13 @@ namespace Server.Repos
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetUsers();
-        User GetUser(int id);
-        User GetUserWithLogin(string login);
+        IEnumerable<Users> GetUsers();
+        Users GetUser(int id);
+        Users GetUserWithLogin(string login);
         bool RemoveUser(int id);
-        void RegisterUser(User user);
+        void RegisterUser(Users user);
         bool IsLoginValid(string login, string password);
-        void SetUser(User users);
+        void SetUser(Users users);
     }
 
 }

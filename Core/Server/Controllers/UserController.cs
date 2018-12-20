@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Server.Messages;
+using Server.MessageClasses;
 using Server.Models;
 using Server.Repos;
 
@@ -16,64 +16,75 @@ namespace Server.Controllers
     {
         public IUserRepository UserRepository;
 
-        // GET: api/User
+        
         [HttpPost]
-        public IEnumerable<User> GetUsers(LoginHeader header)
+        public IActionResult GetUsers(LoginHeader header)
         {
             if (IsLoginValid(header))
             {
-                return UserRepository.GetUsers();
+                return Ok(UserRepository.GetUsers());
             }
-            return null;
+            return BadRequest();
         }
 
         // GET: api/User/5
         [HttpPost]
-        public User GetUserWithLogin(LoginMessage message)
+        public IActionResult GetUserWithLogin(LoginMessage message)
         {
             if (IsLoginValid(message))
             {
-                return UserRepository.GetUserWithLogin(message.Login);
+                return Ok(UserRepository.GetUserWithLogin(message.Login));
             }
-            return null;
+            return BadRequest();
         }
 
         // POST: api/User
-        [HttpPost]
-        public bool RemoveUser(IDMessage message)
+        [HttpDelete]
+        [ActionName("User")]
+        public IActionResult RemoveUser(IDMessage message)
         {
             if (IsLoginValid(message))
             {
-                return UserRepository.RemoveUser(message.ID);
+                if (UserRepository.RemoveUser(message.ID))
+                    return Ok();
+                else
+                    return BadRequest();
             }
-            return false;
+            return BadRequest();
         }
 
-        [HttpPost]
-        public void RegisterUser(UserMessage message)
+        [HttpPut]
+        public IActionResult RegisterUser(UserMessage message)
         {
             if (IsLoginValid(message))
             {
                 UserRepository.RegisterUser(message.User);
+                return Ok();
             }
-            return;
+            return BadRequest();
         }
 
         // DELETE: api/ApiWithActions/5
         [HttpPost]
-        public bool IsLoginValid(LoginHeader message)
-        { 
-            return UserRepository.IsLoginValid(message.Login,message.Password);
+        public IActionResult ValidateLogin(LoginHeader message)
+        {
+            if(UserRepository.IsLoginValid(message.Login, message.Password))
+            {
+                return Ok();
+            }
+            return Forbid();
         }
 
         [HttpPost]
-        public void SetUser(UserMessage message)
+        [ActionName("User")]
+        public IActionResult SetUser(UserMessage message)
         {
             if (IsLoginValid(message))
             {
                 UserRepository.SetUser(message.User);
+                return Ok();
             }
-            return;
+            return BadRequest();
         }
 
     }

@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Messages
+namespace Server.MessageClasses
 {
-    public class RoomMessage : LoginHeader
+    public class CfilesMessage : LoginHeader
     {
-        public Room Room { get; set; }
+        public Cfiles CFile { get; set; }
     }
 }

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Messages
+namespace Server.MessageClasses
 {
     public class IDRoomMessage : LoginHeader
     {
         public int ID { get; set; }
-        public Room Room { get; set; }
+        public Rooms Room { get; set; }
     }
 }

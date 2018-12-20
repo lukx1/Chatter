@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Messages
+namespace Server.MessageClasses
 {
-    public class MessageMessage : LoginHeader
+    public class UserMessage : LoginHeader
     {
-        public Message Message { get; set; }
+        public Users User { get; set; }
     }
 }

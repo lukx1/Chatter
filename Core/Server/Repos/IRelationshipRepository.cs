@@ -8,10 +8,10 @@ namespace Server.Repos
 {
     public interface IRelationshipRepository
     {
-        IEnumerable<Relationship> GetRelForUser(int id);
-        void SetRel(Relationship rel);
+        IEnumerable<Relationships> GetRelForUser(int id);
+        void SetRel(Relationships rel);
         bool RemoveRel(int id);
-        void AddRel(Relationship rel);
+        void AddRel(Relationships rel);
     }
 
 }

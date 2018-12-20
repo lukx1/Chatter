@@ -8,12 +8,12 @@ namespace Server.Repos
 {
     public interface IMessageRepository
     {
-        IEnumerable<Message> GetMessagesInRoom(int idRoom);
-        IEnumerable<Message> GetMessagesInRoomSince(int idRoom, DateTime since);    
-        IEnumerable<Message> GetNewMessagesForUser(int idUser);     
-        bool RemoveMessage(int idMessage);
-        void SetMesssage(Message message);
-        void AddMessage(Message message);
+        Task<IEnumerable<Messages>> GetMessagesInRoom(int idRoom);
+        Task<IEnumerable<Messages>> GetMessagesInRoomSince(int idRoom, DateTime since);
+        Task<IEnumerable<Messages>> GetNewMessagesForUser(int idUser);     
+        Task<bool> RemoveMessage(int idMessage);
+        Task SetMesssage(Messages message);
+        Task AddMessage(Messages message);
     }
 
 }

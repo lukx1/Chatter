@@ -8,11 +8,11 @@ namespace Server.Repos
 {
     public interface IRoomRepository 
     {
-        IEnumerable<Room> GetRoomsWithUser(int idUser);
-        IEnumerable<User> GetUsersInRoom(int id);
+        IEnumerable<Rooms> GetRoomsWithUser(int idUser);
+        IEnumerable<Users> GetUsersInRoom(int id);
         bool RemoveRoom(int id);
-        void AddRoom(Room room);
-        void SetRoom(Room room);
+        void AddRoom(Rooms room);
+        void SetRoom(Rooms room);
         void AddUserToRoom(int userId, int idRoom);
         bool RemoveUserFromRoom(int userId, int idRoom);
     }
