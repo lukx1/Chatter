@@ -7,6 +7,6 @@ namespace Server.MessageClasses
 {
     public class LoginMessage : LoginHeader
     {
-        public string Login { get; set; }
+        public string UserLogin { get; set; }
     }
 }

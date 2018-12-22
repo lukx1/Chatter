@@ -16,6 +16,7 @@ namespace Server
         public ValidatingController()
         {
             SessionControl = new SesCon(this);
+            
         }
 
         private const string RRPassword = "1R2w4E+WsQpOcopZjQda+2DyLi3X5+FRBkoEBg4PoeLXRdEhWTiStw3IL1/el/J0";
