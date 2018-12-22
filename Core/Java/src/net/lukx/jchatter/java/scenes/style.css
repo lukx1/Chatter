@@ -1,0 +1,17 @@
+@font-face {
+    src: url("DejaVuSans-ExtraLight.ttf");
+}
+
+#GridPane {
+    -fx-background-color: #eee;
+}
+
+#TestBtn:hover {
+    -fx-cursor: hand;
+    -fx-text-fill: #fff;
+    -fx-background-color: #00abb2;
+}
+
+* {
+    -fx-font-family: "DejaVu Sans Light";
+}

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.lukx.jchatter.lib</groupId>
-    <artifactId>jchatterlib</artifactId>
+    <artifactId>libJChatter</artifactId>
     <version>1</version>
 
     <dependencies>
