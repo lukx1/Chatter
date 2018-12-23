@@ -2,16 +2,13 @@
     src: url("DejaVuSans-ExtraLight.ttf");
 }
 
-#GridPane {
-    -fx-background-color: #eee;
+#TopPane {
+    -fx-background-color: #222631;
 }
 
-#TestBtn:hover {
-    -fx-cursor: hand;
-    -fx-text-fill: #fff;
-    -fx-background-color: #00abb2;
+#ChatPane {
+    -fx-background-color: orange;
 }
-
-* {
-    -fx-font-family: "DejaVu Sans Light";
+#SendMessagePane {
+    -fx-background-color: pink;
 }

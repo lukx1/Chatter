@@ -26,10 +26,6 @@ public class TestConnectionController {
 
     }
 
-    public void sayHelloWorld(ActionEvent actionEvent) {
-
-    }
-
     private String UsersToString(User[] users){
         StringBuilder b = new StringBuilder();
         for (User user : users) {
