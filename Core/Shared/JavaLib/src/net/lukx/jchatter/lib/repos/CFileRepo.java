@@ -46,22 +46,22 @@ public class CFileRepo extends AbstractRepo{
         communicator.Obtain(getController(),"File", Communicator.HttpMethod.PATCH,file,void.class);
     }
 
-    public Iterable<CFile> getFilesByUser(int id) throws IOException, URISyntaxException {
+    public CFile[] getFilesByUser(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetFilesByUser",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<CFile>>(){}.getType());
+                CFile[].class);
     }
 
-    public Iterable<CFile> getFilesInRoom(int id) throws IOException, URISyntaxException {
+    public CFile[] getFilesInRoom(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetFilesInRoom",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<CFile>>(){}.getType());
+                CFile[].class);
     }
 
     public byte[] getFileContents(byte[] uuid) throws IOException, URISyntaxException {

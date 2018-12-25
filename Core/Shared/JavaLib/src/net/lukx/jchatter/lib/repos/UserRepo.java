@@ -21,7 +21,6 @@ public class UserRepo extends AbstractRepo{
     }
 
     public User[] getUsers() throws IOException, URISyntaxException {
-        Type type = new TypeToken<Iterable<User>>() {}.getType();
         return communicator.Obtain(getController(),"GetUsers", Communicator.HttpMethod.POST, getLoginHeader(),User[].class);
     }
 

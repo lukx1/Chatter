@@ -20,13 +20,13 @@ public class RelationshipRepo extends AbstractRepo{
         return "Relationship";
     }
 
-    public Iterable<Relationship> getRelForUser(int id) throws IOException, URISyntaxException {
+    public Relationship[] getRelForUser(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetRelForUser",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<User>>() {}.getType());
+               Relationship[].class);
     }
 
     public void setRel(Relationship relationship) throws IOException, URISyntaxException {

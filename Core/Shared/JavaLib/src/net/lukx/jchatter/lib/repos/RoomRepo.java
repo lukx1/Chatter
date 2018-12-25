@@ -19,22 +19,22 @@ public class RoomRepo extends AbstractRepo {
         return "Room";
     }
 
-    public Iterable<Room> getRoomsWithUser(int id) throws IOException, URISyntaxException {
+    public Room[] getRoomsWithUser(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "getRoomsWithUser",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<Room>>() {}.getType());
+                Room[].class);
     }
 
-    public Iterable<User> getUsersInRoom(int id) throws IOException, URISyntaxException {
+    public User[] getUsersInRoom(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetUsersInRoom",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<User>>() {}.getType());
+                User[].class);
     }
 
     public boolean removeRoom(int id) throws IOException, URISyntaxException {

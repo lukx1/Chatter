@@ -2,8 +2,10 @@ package net.lukx.jchatter.lib.repos;
 
 import com.google.gson.reflect.TypeToken;
 import com.sun.istack.internal.NotNull;
+import com.sun.xml.internal.bind.marshaller.MinimumEscapeHandler;
 import com.sun.xml.internal.ws.api.model.MEP;
 import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.CFile;
 import net.lukx.jchatter.lib.models.Message;
 import net.lukx.jchatter.lib.models.Room;
 
@@ -22,16 +24,16 @@ public class MessageRepo extends AbstractRepo {
         return "Message";
     }
 
-    public Iterable<Message> getMessagesInRoom(int id) throws IOException, URISyntaxException {
+    public Message[] getMessagesInRoom(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetMessagesInRoom",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<Message>>() {}.getType());
+                Message[].class);
     }
 
-    public Iterable<Message> getMessagesInRoomSince(int id, Date since) throws IOException, URISyntaxException {
+    public Message[] getMessagesInRoomSince(int id, Date since) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetMessagesInRoom",
@@ -40,16 +42,16 @@ public class MessageRepo extends AbstractRepo {
                         new KeyValuePair("ID",id),
                         new KeyValuePair("Since",since)
                 ),
-                new TypeToken<Iterable<Message>>() {}.getType());
+                Message[].class);
     }
 
-    public Iterable<Message> getNewMessagesForUser(int id) throws IOException, URISyntaxException {
+    public Message[] getNewMessagesForUser(int id) throws IOException, URISyntaxException {
         return communicator.Obtain(
                 getController(),
                 "GetNewMessagesForUser",
                 Communicator.HttpMethod.POST,
                 createIdObject(id),
-                new TypeToken<Iterable<Message>>() {}.getType());
+                Message[].class);
     }
 
     public void setMessage(Message message) throws IOException, URISyntaxException {
