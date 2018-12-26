@@ -5,6 +5,12 @@ namespace Server.Models
 {
     public partial class Cfiles
     {
+        public Cfiles()
+        {
+            Rooms = new HashSet<Rooms>();
+            Users = new HashSet<Users>();
+        }
+
         public byte[] Uuid { get; set; }
         public int Iduploader { get; set; }
         public int Idroom { get; set; }
@@ -12,5 +18,7 @@ namespace Server.Models
 
         public virtual Rooms IdroomNavigation { get; set; }
         public virtual Users IduploaderNavigation { get; set; }
+        public virtual ICollection<Rooms> Rooms { get; set; }
+        public virtual ICollection<Users> Users { get; set; }
     }
 }

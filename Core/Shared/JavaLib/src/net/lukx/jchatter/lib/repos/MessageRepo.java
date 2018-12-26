@@ -1,13 +1,8 @@
 package net.lukx.jchatter.lib.repos;
 
-import com.google.gson.reflect.TypeToken;
 import com.sun.istack.internal.NotNull;
-import com.sun.xml.internal.bind.marshaller.MinimumEscapeHandler;
-import com.sun.xml.internal.ws.api.model.MEP;
 import net.lukx.jchatter.lib.comms.Communicator;
-import net.lukx.jchatter.lib.models.CFile;
 import net.lukx.jchatter.lib.models.Message;
-import net.lukx.jchatter.lib.models.Room;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -69,6 +64,8 @@ public class MessageRepo extends AbstractRepo {
     private Object createMessageObject(@NotNull Message message){
         return new MessageObject(message);
     }
+
+
 
     private class MessageObject {
         private String Login = getLoginHeader().getLogin();

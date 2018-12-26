@@ -22,14 +22,6 @@ namespace Server.Models
         public virtual DbSet<Roomusers> Roomusers { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseMySql(SCCFG.GetConnectionString());
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cfiles>(entity =>
@@ -174,6 +166,9 @@ namespace Server.Models
                 entity.HasIndex(e => e.Idcreator)
                     .HasName("FK_rooms_users");
 
+                entity.HasIndex(e => e.Picture)
+                    .HasName("FK_rooms_cfiles");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasColumnType("int(11)");
@@ -186,10 +181,18 @@ namespace Server.Models
 
                 entity.Property(e => e.OneOnOne).HasColumnType("bit(1)");
 
+                entity.Property(e => e.Picture).HasMaxLength(16);
+
                 entity.HasOne(d => d.IdcreatorNavigation)
                     .WithMany(p => p.Rooms)
                     .HasForeignKey(d => d.Idcreator)
                     .HasConstraintName("FK_rooms_users");
+
+                entity.HasOne(d => d.PictureNavigation)
+                    .WithMany(p => p.Rooms)
+                    .HasForeignKey(d => d.Picture)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_rooms_cfiles");
             });
 
             modelBuilder.Entity<Roomusers>(entity =>
@@ -233,6 +236,9 @@ namespace Server.Models
                     .HasName("Login")
                     .IsUnique();
 
+                entity.HasIndex(e => e.Picture)
+                    .HasName("FK_users_cfiles");
+
                 entity.Property(e => e.Id)
                     .HasColumnName("ID")
                     .HasColumnType("int(11)");
@@ -258,9 +264,7 @@ namespace Server.Models
 
                 entity.Property(e => e.Password).HasMaxLength(48);
 
-                entity.Property(e => e.PictureUrl)
-                    .HasColumnName("PictureURL")
-                    .HasColumnType("varchar(256)");
+                entity.Property(e => e.Picture).HasMaxLength(16);
 
                 entity.Property(e => e.SecondName)
                     .IsRequired()
@@ -270,6 +274,12 @@ namespace Server.Models
                 entity.Property(e => e.Status)
                     .HasColumnType("int(11)")
                     .HasDefaultValueSql("'0'");
+
+                entity.HasOne(d => d.PictureNavigation)
+                    .WithMany(p => p.Users)
+                    .HasForeignKey(d => d.Picture)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_users_cfiles");
             });
         }
     }

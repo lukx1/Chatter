@@ -9,7 +9,7 @@ public class User {
     public String secondName ;
     public String login ;
     public String password ;
-    public String pictureUrl ;
+    public byte[] picture;
     public String email ;
     public Date dateRegistered ;
     public Date dateLastLogin ;

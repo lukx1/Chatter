@@ -6,6 +6,7 @@ public class Room {
     public int idcreator;
     public String name;
     public boolean oneOnOne;
+    public byte[] picture;
 
     public Room(){
 

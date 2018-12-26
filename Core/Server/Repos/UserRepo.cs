@@ -69,7 +69,7 @@ namespace Server.Repos
                 //TODO:Password factory here
                 user.Password = user.Password;
             }
-            user.PictureUrl = u.PictureUrl;
+            user.Picture = u.Picture;
             user.Email = u.Email;
             user.DateLastLogin = u.DateLastLogin;
             user.Status = u.Status;

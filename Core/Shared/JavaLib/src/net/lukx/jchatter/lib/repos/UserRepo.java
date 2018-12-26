@@ -1,12 +1,10 @@
 package net.lukx.jchatter.lib.repos;
 
-import com.google.gson.reflect.TypeToken;
 import com.sun.istack.internal.NotNull;
 import net.lukx.jchatter.lib.comms.Communicator;
 import net.lukx.jchatter.lib.models.User;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 
 public class UserRepo extends AbstractRepo{

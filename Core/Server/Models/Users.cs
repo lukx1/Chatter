@@ -20,12 +20,13 @@ namespace Server.Models
         public string SecondName { get; set; }
         public string Login { get; set; }
         public byte[] Password { get; set; }
-        public string PictureUrl { get; set; }
+        public byte[] Picture { get; set; }
         public string Email { get; set; }
         public DateTime DateRegistered { get; set; }
         public DateTime DateLastLogin { get; set; }
         public int Status { get; set; }
 
+        public virtual Cfiles PictureNavigation { get; set; }
         public virtual ICollection<Cfiles> Cfiles { get; set; }
         public virtual ICollection<Messages> Messages { get; set; }
         public virtual ICollection<Relationships> RelationshipsIdsourceUserNavigation { get; set; }

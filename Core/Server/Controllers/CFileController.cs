@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.Repos;
 using Server.MessageClasses;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Server.Controllers
 {
@@ -14,7 +15,14 @@ namespace Server.Controllers
     [ApiController]
     public class CFileController : ValidatingController
     {
-        private readonly ICFileRepository repository = new CFileRepo();
+        private readonly ICFileRepository repository;
+        private IHostingEnvironment environment;
+
+        public CFileController(IHostingEnvironment environment)
+        {
+            this.environment = environment;
+            repository = new CFileRepo(environment);
+        }
 
         [HttpPost]
         [ActionName("File")]
@@ -45,8 +53,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                await repository.AddFile(message.Content, message.CFile);
-                return Ok();
+                return Ok(await repository.AddFile(message.Content, message.CFile));
             }
             return BadRequest();
         }

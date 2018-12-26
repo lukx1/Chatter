@@ -10,7 +10,7 @@ namespace Server.Repos
     {
         Task<Cfiles> GetFile(byte[] uuid);
         Task<bool> RemoveFile(byte[] uuid);
-        Task AddFile(byte[] Content, Cfiles file);
+        Task<byte[]> AddFile(byte[] Content, Cfiles file);
         Task SetFile(Cfiles file);
         Task<IEnumerable<Cfiles>> GetFilesByUser(int ID);
         Task<IEnumerable<Cfiles>> GetFilesInRoom(int ID);
