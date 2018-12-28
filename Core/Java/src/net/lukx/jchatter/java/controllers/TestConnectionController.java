@@ -36,7 +36,7 @@ public class TestConnectionController {
             b.append(user.secondName).append("\n");
             b.append(user.login).append("\n");
             b.append(user.password).append("\n");
-            b.append(user.pictureUrl).append("\n");
+            b.append(user.picture).append("\n");
             b.append(user.dateRegistered).append("\n");
             b.append(user.dateLastLogin).append("\n");
             b.append("---");

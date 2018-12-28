@@ -74,11 +74,6 @@ public class MainSceneController {
 
     @FXML
     public void initialize(){
-        for (int i = 0; i < 20; i++) {
-            RoomsPane.addRoom(new Room());
-        }
-
-        RoomsPane.addRoom(new Room());
         backgroundInit();
         //openLoginScene();
     }

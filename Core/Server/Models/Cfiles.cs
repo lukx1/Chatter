@@ -15,6 +15,8 @@ namespace Server.Models
         public int Iduploader { get; set; }
         public int Idroom { get; set; }
         public string FileName { get; set; }
+        public DateTime DateUploaded { get; set; }
+        public bool Expired { get; set; }
 
         public virtual Rooms IdroomNavigation { get; set; }
         public virtual Users IduploaderNavigation { get; set; }

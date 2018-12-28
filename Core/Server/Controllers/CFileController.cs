@@ -53,6 +53,12 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
+                if (message.Content == null || message.Content == new byte[0])
+                    return BadRequest("No content received");
+                if (message.Content.Length > (1000000 * 3))
+                    return BadRequest("File too large (max 3MB)");
+                if (Regex.IsMatch(message.CFile.FileName, "^.*\\.((jpg)|(jpeg)|(png))$", RegexOptions.IgnoreCase) && message.Content.Length > 500000)
+                    return BadRequest("Image too large (max 500KB)");
                 return Ok(await repository.AddFile(message.Content, message.CFile));
             }
             return BadRequest();

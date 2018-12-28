@@ -1,6 +1,0 @@
-﻿Všechny .sccfg soubory musí být v .gitignore ignorovány (defaultně už jsou). Ne všechny pole musí být využity.
-
-Požadovaný vzhled:
-ip:
-name:
-password:

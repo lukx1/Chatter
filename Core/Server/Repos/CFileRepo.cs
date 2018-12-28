@@ -21,6 +21,31 @@ namespace Server.Repos
  
         }
 
+        private void OldFileCheck()
+        {
+            foreach (var file in context.Cfiles)
+            {
+                var fileAgeDays = (DateTime.Now - file.DateUploaded).Days;
+                if (fileAgeDays > 3)
+                {
+                    if (file.Expired)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        file.Expired = true;
+                        deleteFile(file.Uuid);
+                    }
+                }
+                if(fileAgeDays > 30)
+                {
+                    context.Cfiles.Remove(file);
+                }
+            }
+            context.SaveChanges();
+        }
+
         private async Task AddFileToDisk(byte[] Content, Cfiles file)
         {
             string name = Convert.ToBase64String(file.Uuid);
@@ -48,16 +73,22 @@ namespace Server.Repos
             return await context.Cfiles.FindAsync(uuid);
         }
 
-        public async Task<bool> RemoveFile(byte[] uuid)
+        private bool deleteFile(byte[] uuid)
         {
             try
             {
                 File.Delete(Path.Combine(userContentDir, Convert.ToBase64String(uuid)));
+                return true;
             }
             catch (FileNotFoundException e)
             {
                 return false;
             }
+        }
+
+        public async Task<bool> RemoveFile(byte[] uuid)
+        {
+            deleteFile(uuid);
             context.Cfiles.Remove(await context.Cfiles.FindAsync(uuid));
             await context.SaveChangesAsync();
             return true;

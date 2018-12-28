@@ -55,6 +55,7 @@ namespace Server.Controllers
             if (IsLoginValid(message))
             {
                 roomRepository.RemoveRoom(message.ID);
+                
                 return Ok();
             }
             return BadRequest();

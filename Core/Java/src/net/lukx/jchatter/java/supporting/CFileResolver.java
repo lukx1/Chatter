@@ -5,6 +5,8 @@ import com.sun.org.apache.xml.internal.security.utils.Base64;
 import net.lukx.jchatter.lib.models.CFile;
 import net.lukx.jchatter.lib.repos.CFileRepo;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -29,6 +31,12 @@ public class CFileResolver {
         return matches;
     }
 
-
+    public Iterable<CFile> fetchCFiles(Iterable<byte[]> uuids) throws IOException, URISyntaxException {
+        List<CFile> files = new ArrayList<>();
+        for (byte[] uuid : uuids) {
+                files.add((repo.getFile(uuid)));
+        }
+        return files;
+    }
 
 }

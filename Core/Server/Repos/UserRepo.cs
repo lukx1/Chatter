@@ -54,6 +54,13 @@ namespace Server.Repos
             var user = context.Users.Find(id);
             if (user == null)
                 return false;
+            foreach (var item in context.Cfiles)
+            {
+                if (item.Iduploader == id)
+                {
+                    context.Cfiles.Remove(item);
+                }
+            }
             context.Users.Remove(user);
             context.SaveChanges();
             return true;

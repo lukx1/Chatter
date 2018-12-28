@@ -59,6 +59,13 @@ namespace Server.Repos
             {
                 return false;
             }
+            foreach (var item in Context.Cfiles)
+            {
+                if(item.Idroom == id)
+                {
+                    Context.Cfiles.Remove(item);
+                }
+            }
             Context.Rooms.Remove(r);
             Context.SaveChanges();
             return true;

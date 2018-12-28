@@ -1,12 +1,14 @@
 package net.lukx.jchatter.java.controls;
 
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
+import net.lukx.jchatter.java.supporting.RemovingList;
 import net.lukx.jchatter.lib.models.Room;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RoomPane extends Pane {
@@ -15,7 +17,11 @@ public class RoomPane extends Pane {
     private double innerElementPadding = 6;
     private double innerElementTopMargin = 6;
 
-    private List<InnerRoomPane> roomPanes = new ArrayList<>();
+    private List<InnerRoomPane> roomPanes = new RemovingList<>(this);
+
+    public List<InnerRoomPane> getRoomPanes(){
+        return roomPanes;
+    }
 
     private void recalculateHeight(){
         this.setPrefHeight(
@@ -26,16 +32,64 @@ public class RoomPane extends Pane {
         );
     }
 
-    private class InnerRoomPane extends Pane{
+    public  class InnerRoomPane extends Pane{
 
         private Circle pictureCircle;
         private Circle statusCircle;
         private Label nameLabel;
-        private Room room;
         private double height;
         private double width;
+        private Room room;
         private int heightIndex;
-        private final double sqrtTwo = 1.4142135623746;
+        private static final double sqrtTwo = 1.4142135623746;
+
+        public InnerRoomPane(Room room) {
+            this.room = room;
+        }
+
+        public Room getRoom() {
+            return room;
+        }
+
+        public boolean isStatusCircleHidden(){
+            return !statusCircle.isVisible();
+        }
+
+        public void showStatusCircle(){
+            statusCircle.setVisible(true);
+        }
+
+        public void hideStatusCircle(){
+            statusCircle.setVisible(false);
+        }
+
+        public int getHeightIndex() {
+            return heightIndex;
+        }
+
+        public void setHeightIndex(int heightIndex) {
+            if(this.heightIndex == heightIndex) {
+                return;
+            }
+            this.heightIndex = heightIndex;
+            this.setLayoutY(getYOffset());
+        }
+
+        public void setStatusColor(Color color){
+            this.statusCircle.setFill(color);
+        }
+
+        public void setImage(Image image){
+            this.pictureCircle.setFill(new ImagePattern(image));
+        }
+
+        public String getName(){
+            return this.nameLabel.getText();
+        }
+
+        public void setName(String name){
+            this.nameLabel.setText(name);
+        }
 
         private double getYOffset(){
             return heightIndex*(innerElementHeight+innerElementTopMargin);
@@ -45,7 +99,7 @@ public class RoomPane extends Pane {
             pictureCircle = new Circle();
             pictureCircle.setRadius((innerElementHeight-2*innerElementPadding)/2.0);
             pictureCircle.setLayoutX(innerElementPadding+pictureCircle.getRadius());
-            pictureCircle.setLayoutY(getYOffset()+innerElementPadding+pictureCircle.getRadius());
+            pictureCircle.setLayoutY(innerElementPadding+pictureCircle.getRadius());
             pictureCircle.setFill(null);
             pictureCircle.setStroke(Color.BLACK);
             pictureCircle.setStrokeWidth(1);
@@ -60,27 +114,61 @@ public class RoomPane extends Pane {
             statusCircle.setStroke(null);
         }
 
+        private void initNameLabel(){
+            nameLabel = new Label();
+            nameLabel.getStyleClass().add("roomName");
+            nameLabel.setLayoutY(innerElementPadding);
+            nameLabel.setLayoutX(2*(innerElementPadding*pictureCircle.getRadius()));
+        }
+
         public void initializeInside(int heightIndex){
             this.heightIndex = heightIndex;
+            this.setLayoutY(getYOffset());
             recalculateHeight();
             initPictureCircle();
             initStatusCircle();
-            this.getChildren().add(pictureCircle);
-            this.getChildren().add(statusCircle);
+            initNameLabel();
+            this.getChildren().addAll(pictureCircle,statusCircle,nameLabel);
         }
 
+
     }
 
-    public void addRoom(Room room){
-        InnerRoomPane irp = new InnerRoomPane();
-        roomPanes.add(irp);
-        this.getChildren().add(irp);
-        irp.initializeInside(roomPanes.size()-1);
+    public double getInnerElementHeight() {
+        return innerElementHeight;
     }
 
-    public boolean removeRoom(Room room){
-        return roomPanes.remove(room);
+    public void setInnerElementHeight(double innerElementHeight) {
+        this.innerElementHeight = innerElementHeight;
     }
+
+    public double getInnerElementPadding() {
+        return innerElementPadding;
+    }
+
+    public void setInnerElementPadding(double innerElementPadding) {
+        this.innerElementPadding = innerElementPadding;
+    }
+
+    public double getInnerElementTopMargin() {
+        return innerElementTopMargin;
+    }
+
+    public void setInnerElementTopMargin(double innerElementTopMargin) {
+        this.innerElementTopMargin = innerElementTopMargin;
+    }
+
+    private InnerRoomPane getPaneWithWindow(Room room){
+        InnerRoomPane pane = null;
+        for (InnerRoomPane roomPane : roomPanes) {
+            if(roomPane.room == room){
+                pane = roomPane;
+                break;
+            }
+        }
+        return pane;
+    }
+
 
     public RoomPane() {
 
