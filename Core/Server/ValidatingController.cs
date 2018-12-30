@@ -19,6 +19,11 @@ namespace Server
             
         }
 
+        public IActionResult Index()
+        {
+            return RedirectToActionPermanent("Index", "ApiDoc");
+        }
+
         private const string RRPassword = "1R2w4E+WsQpOcopZjQda+2DyLi3X5+FRBkoEBg4PoeLXRdEhWTiStw3IL1/el/J0";
         protected bool IsLoginValid<T>(T o) where T : LoginHeader
         {

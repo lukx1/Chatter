@@ -45,6 +45,7 @@ public class TestConnectionController {
     }
 
     public void btnClicked(ActionEvent actionEvent) {
+        net.lukx.jchatter.lib.comms.Communicator cc;
         Communicator c = new Communicator();
         try {
             c.setServerURI(new URI(Uri.getText()));

@@ -1,0 +1,184 @@
+﻿@{
+    IEnumerable<Server.Endpoint> endpoints = ViewBag.Endpoints;
+    var first = true;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Chatter</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <script type="text/javascript" src="~/Content/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Content/popper.min.js"></script>
+    <link rel="stylesheet" href="~/Content/style.css" />
+</head>
+<body>
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand align-middle text-center text-light">Chatter <span class="badge badge-secondary">API</span></a>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="@Url.Action("Index","Home")">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="CFile" href="@Url.Action("CFileEndpoint","ApiDoc")">CFile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="Message" href="@Url.Action("MessageEndpoint","ApiDoc")">Message</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="Relationship" href="@Url.Action("RelationshipEndpoint","ApiDoc")">Relationship</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="Room" href="@Url.Action("RoomEndpoint","ApiDoc")">Room</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="User" href="@Url.Action("UserEndpoint","ApiDoc")">User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://github.com/lukx1/Chatter">Github</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar navbar-expand-md mt-5 navbar-dark fixed-top bg-dark">
+                <span class="font-weight-bold align-middle text-center text-light mr-2">@ViewData["Title"] endpoints</span>
+                <ul class="navbar-nav mr-auto">
+                    @foreach (var endpoint in endpoints)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link scroll-linker" href="#@endpoint.Name">@endpoint.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- Begin page content -->
+    <main role="main">
+        <div style="margin-top:100px" class="container">
+            @foreach (var endpoint in endpoints)
+            {
+                @if (first)
+                {
+                    first = false;
+                }
+                else
+                {
+                    <hr />
+                }
+                <div id="@endpoint.Name" class="row">
+                    <div class="col-md-12">
+                        <div class="mt-1 p-2">
+                            <div class="align-middle mt-2">
+                                <span style="color:@endpoint.getMethodColor()" class="border font-weight-bold rounded p-1">@endpoint.Method</span><h3 style="display:inline" class="inline-headers p-1">@endpoint.Name</h3>
+                                @{
+                                    var url = ViewBag.BaseUrl + endpoint.URL;
+                                }
+                                <ul style="display:inline" class="list-inline mb-0 float-md-right">
+                                    @foreach (var response in endpoint.HttpResponses.Split(',').OrderBy(r => r))
+                                    {
+                                        <li class="list-inline-item badge badge-secondary mr-0" style="color:@endpoint.getHttpResponseColor(response)">@response</li>
+                                    }
+                                </ul>
+                                <code style="display:block" class="border bg-light rounded text-muted mt-2 p-1">@url</code>
+                                <p>
+                                    @endpoint.Description
+                                </p>
+                                <h4>Input parameters</h4>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Key</th>
+                                            <th>Optional</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var inputRow in endpoint.Input)
+                                        {
+                                            <tr>
+                                                <th>@inputRow.Key</th>
+                                                <td>@inputRow.Optional</td>
+                                                <td>@inputRow.Value</td>
+                                            </tr>
+                                        }
+                                        @if (endpoint.Input.Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-muted text-center" colspan="3">No input data</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                                <h4>Outputs</h4>
+                                <table class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Key</th>
+                                            <th>Nullable</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var output in endpoint.Output)
+                                        {
+                                            <tr>
+                                                <th>@output.Key</th>
+                                                <td>@output.Optional</td>
+                                                <td>@output.Value</td>
+                                            </tr>
+                                        }
+                                        @if (endpoint.Output.Count() == 0)
+                                        {
+                                            <tr>
+                                                <td class="text-muted text-center" colspan="3">No output data</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                    }
+        </div>
+        @RenderBody()
+
+    </main>
+    <!-- Footer -->
+    <footer class="page-footer font-small bg-dark pt-4">
+
+        <!-- Footer Links -->
+        <!-- Copyright -->
+        <div class="footer-copyright text-muted text-center py-3">
+            © @DateTime.Now.Year Copyright Chatter project
+        </div>
+        <!-- Copyright -->
+
+    </footer>
+    <!-- Footer -->
+    <script type="text/javascript">
+        $("#@ViewData["Title"]").addClass("text-light bg-primary rounded");
+        $("a.scroll-linker").bind("click", function (e) {
+            $('html, body').animate({
+                scrollTop: $($(this).attr("href")).offset().top-100
+            }, 500);
+            return false;
+        });
+
+        var word = 'FK';
+        var rgx = new RegExp('\\b(' + word + ')\\b', 'ig');
+
+        $('*').contents().filter(function () {
+            return this.nodeType === 3;
+        }).each(function () {
+            $(this).replaceWith($(this).text().replace(rgx, '<span class="badge bg-dark text-warning rounded">$1</span>'));
+        });
+    </script>
+</body>
+</html>

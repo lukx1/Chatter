@@ -41,11 +41,11 @@ namespace Server.Controllers
 
         [HttpDelete]
         [ActionName("Rel")]
-        public IActionResult RemoveRel(RelMessage message)
+        public IActionResult RemoveRel(IDMessage message)
         {
             if (IsLoginValid(message))
             {
-                relationshipRepository.SetRel(message.Relationship);
+                relationshipRepository.RemoveRel(message.ID);
                 return Ok();
             }
             return BadRequest();

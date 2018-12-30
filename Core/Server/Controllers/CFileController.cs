@@ -81,7 +81,7 @@ namespace Server.Controllers
             return BadRequest();
         }
 
-        [HttpPatch]
+        [HttpPost]
         public async Task<IActionResult> GetFilesByUser(IDMessage message)
         {
             if (IsLoginValid(message))

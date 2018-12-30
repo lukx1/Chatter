@@ -18,7 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Content\" />
+      <Folder Include="Content\NewFolder\" />
+      <Folder Include="EndpointData\" />
       <Folder Include="UserFiles\" />
     </ItemGroup>
 

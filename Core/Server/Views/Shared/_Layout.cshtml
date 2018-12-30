@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Chatter</title>
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
+    <script type="text/javascript" src="~/Content/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Content/popper.min.js"></script>
+    <link rel="stylesheet" href="~/Content/style.css" />
+</head>
+<body>
+
+    <header>
+        <!-- Fixed navbar -->
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand text-light">Chatter Project</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="@Url.Action("Index","Home")">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@Url.Action("Index","ApiDoc")">API</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://github.com/lukx1/Chatter">Github</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!-- Begin page content -->
+    <main role="main">
+        @RenderBody()
+    </main>
+    <!-- Footer -->
+    <footer class="page-footer font-small bg-dark pt-4">
+
+        <!-- Footer Links -->
+        <!-- Copyright -->
+        <div class="footer-copyright text-muted text-center py-3">
+            © @DateTime.Now.Year Copyright Chatter project
+        </div>
+        <!-- Copyright -->
+
+    </footer>
+    <!-- Footer -->
+</body>
+</html>
