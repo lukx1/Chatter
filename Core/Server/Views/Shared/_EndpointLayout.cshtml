@@ -14,12 +14,13 @@
     <script type="text/javascript" src="~/Content/bootstrap.min.js"></script>
     <script type="text/javascript" src="~/Content/popper.min.js"></script>
     <link rel="stylesheet" href="~/Content/style.css" />
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css" />
 </head>
 <body>
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand align-middle text-center text-light">Chatter <span class="badge badge-secondary">API</span></a>
+            <a class="navbar-brand align-middle text-center text-light" href="@Url.Action("Index","Home")">Chatter <span class="badge badge-secondary">API</span></a>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
@@ -41,7 +42,7 @@
                         <a class="nav-link" id="User" href="@Url.Action("UserEndpoint","ApiDoc")">User</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="http://github.com/lukx1/Chatter">Github</a>
+                        <a class="nav-link text-muted" href="http://github.com/lukx1/Chatter">Github</a>
                     </li>
                 </ul>
             </div>
@@ -51,7 +52,7 @@
                     @foreach (var endpoint in endpoints)
                     {
                         <li class="nav-item">
-                            <a class="nav-link scroll-linker" href="#@endpoint.Name">@endpoint.Name</a>
+                            <a class="nav-link" href="#@endpoint.Name">@endpoint.Name</a>
                         </li>
                     }
                 </ul>
@@ -63,7 +64,7 @@
         <div style="margin-top:100px" class="container">
             @foreach (var endpoint in endpoints)
             {
-                @if (first)
+                if (first)
                 {
                     first = false;
                 }
@@ -151,12 +152,12 @@
 
     </main>
     <!-- Footer -->
-    <footer class="page-footer font-small bg-dark pt-4">
+    <footer class="bg-dark">
 
         <!-- Footer Links -->
         <!-- Copyright -->
-        <div class="footer-copyright text-muted text-center py-3">
-            © @DateTime.Now.Year Copyright Chatter project
+        <div class="text-muted text-center py-3">
+            © @DateTime.Now.Year Copyright Chatter Project
         </div>
         <!-- Copyright -->
 
@@ -164,20 +165,20 @@
     <!-- Footer -->
     <script type="text/javascript">
         $("#@ViewData["Title"]").addClass("text-light bg-primary rounded");
-        $("a.scroll-linker").bind("click", function (e) {
-            $('html, body').animate({
-                scrollTop: $($(this).attr("href")).offset().top-100
+        $("a.scroll-linker").bind("click", function () {
+            window.$("html, body").animate({
+                scrollTop: window.$(window.$(this).attr("href")).offset().top-100
             }, 500);
             return false;
         });
 
         var word = 'FK';
-        var rgx = new RegExp('\\b(' + word + ')\\b', 'ig');
+        var rgx = new RegExp("\\b(" + word + ")\\b", 'ig');
 
-        $('*').contents().filter(function () {
+        $("*").contents().filter(function () {
             return this.nodeType === 3;
         }).each(function () {
-            $(this).replaceWith($(this).text().replace(rgx, '<span class="badge bg-dark text-warning rounded">$1</span>'));
+            window.$(this).replaceWith(window.$(this).text().replace(rgx, '<span class="badge bg-dark text-warning rounded">$1</span>'));
         });
     </script>
 </body>

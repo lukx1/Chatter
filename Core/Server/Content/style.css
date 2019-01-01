@@ -1,9 +1,76 @@
 ﻿
 .album a:hover {
-    text-decoration:none;
+    text-decoration: none;
 }
 
 .inline-headers h1, .inline-headers h2, .inline-headers.h3, .inline-headers h4, .inline-headers h5, .inline-headers h6 {
     display: inline-block;
     vertical-align: baseline;
+}
+
+.v-divider {
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 1px;
+    height: 100%;
+    border-left: 1px solid gray;
+}
+
+.force-bottom-right {
+    position: absolute;
+    bottom: 0;
+    right: 0
+}
+
+.force-bottom-left {
+    position: absolute;
+    bottom: 0;
+    left: 0
+}
+
+
+#javaLibDownloadTypes {
+    background: #f8f9fa;
+    background: -moz-linear-gradient(left, #f8f9fa 0%, #f8f9fa 50%, #212529 51%, #212529 100%);
+    background: -webkit-linear-gradient(left, #f8f9fa 0%,#f8f9fa 50%,#212529 51%,#212529 100%);
+    background: linear-gradient(to right, #f8f9fa 0%,#f8f9fa 50%,#212529 51%,#212529 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f8f9fa', endColorstr='#212529',GradientType=1 );
+}
+
+.code-showcase pre code {
+    color:white
+}
+
+.code-showcase {
+    
+    overflow-x: auto;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+}
+
+    .code-showcase b {
+        font-weight: normal;
+        color: #00ffff;
+    }
+
+    .code-showcase u, pre u b {
+        text-decoration: none;
+        color: #9932cc;
+    }
+
+    .code-showcase i, .code-showcase i *, .code-showcase i * * {
+        letter-spacing: -0.1em;
+        text-decoration: none;
+        font-style: normal;
+        color: #c55;
+    }
+
+
+
+@media print {
+    .code-showcase {
+        overflow-x: visible;
+        white-space: pre-wrap;
+    }
 }

@@ -210,8 +210,8 @@
       "Method":{
          "Method":"POST"
       },
-      "URL":"api/Room/GetRoomsWithUser",
-      "Description":"Gets all rooms a user is in",
+      "URL":"api/Room/Room",
+      "Description":"Updates information about a room",
       "HttpResponses":"200,400,403",
       "Input":[
          {

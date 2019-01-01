@@ -6,41 +6,48 @@ import net.lukx.jchatter.lib.comms.LoginHeader;
 import java.util.HashMap;
 
 public abstract class AbstractRepo {
+
+    /***
+     * @return the controller this class send data to
+     */
     protected abstract String getController();
 
-    protected Communicator communicator;
+
+    Communicator communicator;
 
     private LoginHeader loginHeader = new LoginHeader();
 
-    public AbstractRepo(Communicator communicator){
+    AbstractRepo(Communicator communicator){
         this.communicator = communicator;
     }
 
+    @SuppressWarnings("unused")
     private class IDObject {
         private String Login = getLoginHeader().getLogin();
         private String Password = getLoginHeader().getPassword();
         private int ID;
 
-        public IDObject(int id){
+        IDObject(int id){
             this.ID = id;
         }
     }
 
+    @SuppressWarnings("unused")
     public class KeyValuePair {
-        public String key;
-        public Object value;
+        String key;
+        Object value;
 
         public KeyValuePair(){
 
         }
 
-        public KeyValuePair(String key, Object value){
+        KeyValuePair(String key, Object value){
             this.key = key;
             this.value = value;
         }
     }
 
-    protected Object createCustomObjectWithHeader(KeyValuePair... keyValuePair){
+    Object createCustomObjectWithHeader(KeyValuePair... keyValuePair){
         @SuppressWarnings("unchecked")
         HashMap<String,Object> hm = (HashMap<String,Object>)createCustomObject(keyValuePair);
         hm.put("Login",getLoginHeader().getLogin());
@@ -48,7 +55,7 @@ public abstract class AbstractRepo {
         return hm;
     }
 
-    protected Object createCustomObject(KeyValuePair... keyValuePair){
+    private Object createCustomObject(KeyValuePair... keyValuePair){
         HashMap<String,Object> map = new HashMap<>();
         for (KeyValuePair kv : keyValuePair)
         {
@@ -57,11 +64,11 @@ public abstract class AbstractRepo {
         return map;
     }
 
-    protected Object createIdObject(int id){
+    Object createIdObject(int id){
         return new IDObject(id);
     }
 
-    public LoginHeader getLoginHeader() {
+    LoginHeader getLoginHeader() {
         return loginHeader;
     }
 }

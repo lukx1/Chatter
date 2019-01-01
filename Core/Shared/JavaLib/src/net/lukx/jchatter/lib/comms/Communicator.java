@@ -3,8 +3,8 @@ package net.lukx.jchatter.lib.comms;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.istack.internal.NotNull;
+import net.lukx.jchatter.lib.PublicApi;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -15,16 +15,16 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DateFormat;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
+/**
+ * Core class for sending http requests and
+ * reading responses from the server
+ */
+@PublicApi
 public class Communicator {
 
     private Gson gson = new GsonBuilder()
@@ -41,7 +41,7 @@ public class Communicator {
         );
     }
 
-    private HttpUriRequest CreateRequest(String controller, String action, final HttpMethod method, Object inData) throws IOException, URISyntaxException {
+    private HttpUriRequest CreateRequest(String controller, String action, final HttpMethod method, Object inData) throws URISyntaxException {
 
         URI uri = CombineWithServerInfo(controller,action);
 
@@ -96,15 +96,39 @@ public class Communicator {
 
     private CloseableHttpResponse ExecuteMessage(@NotNull String controller,@NotNull String action, final HttpMethod method, Object inData) throws IOException, URISyntaxException {
         HttpUriRequest req = CreateRequest(controller,action,method,inData);
-        CloseableHttpResponse response = client.execute(req);
-        return response;
+        return client.execute(req);
     }
 
+    /**
+     * Gets object from server
+     * @param controller at the server
+     * @param action at the controller
+     * @param method http method
+     * @param inData data sent to the server
+     * @param type of data received from server to deserialize
+     * @param <T> must be same as type
+     * @return object obtained from server or null if no object is received
+     * @throws IOException if an {@link IOException} occurs
+     * @throws URISyntaxException if URI is incorrectly set in {@link #setServerURI(URI)}
+     */
+    @PublicApi
     public <T> T Obtain(@NotNull String controller, @NotNull String action, final HttpMethod method, final Object inData, Type type) throws IOException, URISyntaxException {
         return ParseToJson(ObtainJson(controller,action,method,inData),type);
     }
 
-
+    /**
+     * Gets object from server
+     * @param controller at the server
+     * @param action at the controller
+     * @param method http method
+     * @param inData data sent to the server
+     * @param clazz class type of data recived from server. Can be void if no data is expected
+     * @param <T> must be same as clazz
+     * @return object obtained from server or null if no object is received
+     * @throws IOException if an {@link IOException} occurs
+     * @throws URISyntaxException if URI is incorrectly set in {@link #setServerURI(URI)}
+     */
+    @PublicApi
     public <T> T Obtain(@NotNull String controller, @NotNull String action, final HttpMethod method, final Object inData, Class<T> clazz) throws IOException, URISyntaxException {
         if(clazz == Void.class){
             ExecuteMessage(controller,action,method,inData);
@@ -113,14 +137,27 @@ public class Communicator {
         return ParseToJson(ObtainJson(controller,action,method,inData),clazz);
     }
 
+    /**
+     * Closes httpclient
+     * @throws IOException if an exception occours
+     */
+    @PublicApi
     public void Close() throws IOException {
         client.close();
     }
 
+    /**
+     * Creates a thread safe instance of communicator
+     */
+    @PublicApi
     public Communicator() {
 
     }
 
+    /**
+     * @return currently set URI
+     */
+    @PublicApi
     public URI getServerURI() {
         return serverURI;
     }
@@ -130,10 +167,15 @@ public class Communicator {
      * Do not add a trailing slash
      * @param serverURI to set
      */
+    @PublicApi
     public void setServerURI(URI serverURI) {
         this.serverURI = serverURI;
     }
 
+    /**
+     * Enumeration of Http methods
+     */
+    @PublicApi
     public enum HttpMethod {
         GET, POST, PATCH, PUT, DELETE
     }

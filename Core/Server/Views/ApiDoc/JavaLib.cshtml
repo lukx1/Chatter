@@ -1,0 +1,395 @@
+﻿
+@{
+    ViewData["Title"] = "Official Java Library";
+    Layout = $"~/Views/Shared/_ApiLayout.cshtml";
+}
+<div style="margin-top: 60px" class="container">
+<h2 class="font-weight-bold text-warning text-center">Official Java Library</h2>
+<p class="align-self-center offset-md-3 col-md-6 lead text-center">
+    Using our Java library is the simplest way to integrate Chatter into your software.
+    It is under the same license our our whole project the <a href="https://github.com/lukx1/Chatter/blob/master/LICENSE"><i class="fas fa-balan"></i>GPL-3.0.</a>
+</p>
+<div id="javaLibDownloadTypes" class="row border rounded">
+    <div class="col-md-6">
+        <h2>Precompiled</h2>
+        <p class="mb-0 pb-4">
+            Precompiled versions of our library are release with every major release of the Java desktop client
+            or the Android mobile version.
+        </p>
+        <div class="btn-group float-md-right force-bottom-right text-light p-2">
+            <a class="btn btn-primary">Download</a>
+        </div>
+    </div>
+    <div class="col-md-6 text-light">
+        <h2>Hand compiled</h2>
+        <p class="d-inline">
+            If you need the latest features of our library you will need to compile it yourself from
+            out github source code.
+            <div class="btn-group float-md-right force-bottom-right text-light p-2">
+                <a class="btn btn-primary">Download</a>
+                <a class="btn btn-secondary" href="#CompilingLibrary">How to</a>
+            </div>
+        </p>
+    </div>
+</div>
+<div style="background: #ff8800 url(/Content/img/trianglify.svg) center center no-repeat!important;" class="jumbotron mt-4 text-dark text-center">
+    <style>
+        #openJavaDoc {
+            -webkit-transition: all 0.2s ease-in-out;
+            -moz-transition: all 0.2s ease-in-out;
+            -ms-transition: all 0.2s ease-in-out;
+            -o-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+
+        #openJavaDoc:hover {
+            color: #ff8800 !important;
+            background-color: #1d2124 !important;
+            -webkit-transition: all 0.2s ease-in-out;
+            -moz-transition: all 0.2s ease-in-out;
+            -ms-transition: all 0.2s ease-in-out;
+            -o-transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+    <h1><a id="openJavaDoc" class="text-dark border border-dark rounded p-3" href="~/Content/javadoc/index.html"><i class="fas fa-file mr-1"></i>Open JavaDoc</a></h1>
+</div>
+<div style="border-bottom-left-radius: 0 !important;border-bottom-right-radius: 0 !important" class="jumbotron col-12 bg-dark text-light mb-0 pb-0 ml-0 mr-0 mt-2 pt-1 pr-0 pl-0">
+<div class="border-bottom p-2 bg-dark border-light">
+    <h2 class="pl-2 mb-2 pr-2 d-inline w-auto">Examples</h2>
+    <div class="d-inline-flex align-content-center">
+        <button class="btn btn-primary p-2 pl-4 pr-4 mr-2" id="ExampleBtn1"><h2>1</h2></button>
+        <button class="btn btn-secondary p-2 pl-4 pr-4 mr-2" id="ExampleBtn2"><h2>2</h2></button>
+        <button class="btn btn-secondary p-2 pl-4 pr-4 mr-2" id="ExampleBtn3"><h2>3</h2></button>
+    </div>
+</div>
+<div id="exampleWrapper" style="color:white">
+<div id="ExamplePage1">
+    <figure class="w-100 d-block code-showcase p-2 pt-0">
+        <pre>
+                    <code>
+package net.lukx.jchatter.lib.demos;
+
+import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.Relationship;
+import net.lukx.jchatter.lib.models.RelationshipStatus;
+import net.lukx.jchatter.lib.models.User;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DemoOne {
+
+    /*
+    This demonstrates how you can get all your friends from the server
+    and write out their first names into the console
+     */
+    public static void main(String[] args) throws URISyntaxException {
+        Communicator c = new Communicator(); //Creates communication client
+
+        c.setServerURI(new URI("http://78.102.218.164:5000/"));//Sets URI
+
+        UserRepo userRepo = new UserRepo(c); // Creates a new user repo
+        userRepo.getLoginHeader().setLogin("MyLogin"); // We need to set our username
+        userRepo.getLoginHeader().setPassword("MyPassword"); // And password
+
+        RelationshipRepo relRepo = new RelationshipRepo(c); // Creates a new relationship repo
+        relRepo.getLoginHeader().setLogin("MyLogin");
+        relRepo.getLoginHeader().setPassword("MyPassword");
+
+        try {
+            User me = userRepo.getUserWithLogin("bobby"); //Gets us from the database, remember logins are unique
+            System.out.println("My name is "+me.firstName+" "+me.secondName); // Writes our full name to console
+
+            Relationship[] relationships = relRepo.getRelForUser(me.id); // Gets what kind of relationships we have with people
+
+            List&lt;User&gt; myFriends = new ArrayList&lt;&gt;(); // Prepare a list for our friends
+
+            for (Relationship relationship : relationships) { // Loop through our relationships
+                if(relationship.relationType == RelationshipStatus.FRIEND.getKey()){ // Get only our friends
+                    User aFriend = userRepo.getUser(relationship.idtargetUser);
+                    myFriends.add(aFriend);
+                }
+            }
+
+            if(myFriends.size() > 0){ //Check if I have any friends
+                System.out.print("My friends are");
+                for (User myFriend : myFriends) {
+                    System.out.print(" "+myFriend.firstName); // Write my friends name in the console
+                }
+                System.out.print("\n"); // Make a new line in case we want to write something else
+            }
+            else{ // No friends
+                System.out.println("I don't have any friends :{");
+            }
+        } catch (IOException e) { // Oops something bad happened
+            e.printStackTrace();
+        }
+    }
+}
+
+                    </code>
+                </pre>
+    </figure>
+</div>
+<div id="ExamplePage2">
+    <figure class="w-100 d-block code-showcase">
+        <pre>
+                    <code>
+package net.lukx.jchatter.lib.demos;
+
+import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.CFile;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class DemoTwo {
+
+    /*
+    Upload a file to the server then download it and check if it's the same
+     */
+    public static void main(String[] args) throws URISyntaxException, UnsupportedEncodingException, InterruptedException {
+        Communicator c = new Communicator(); //Creates communication client
+
+        c.setServerURI(new URI("http://78.102.218.164:5000/"));//Sets URI
+
+        byte[] contentsOfMyFile =
+                ("To those whom I've fought with\n" +       //Create the contents
+                "and to those I don't know your name,\n" +  // Of our file
+                "we fought by one another.\n" +
+                "You did not die in vain.\n\n" +
+                "By Justin Montana Williams Published: October 2011").getBytes(StandardCharsets.US_ASCII); //ASCII is
+        // not preferred but we will be opening this file later with notepad so we use it
+
+        CFile fileInfo = new CFile();
+        // fileInfo.dateUploaded = Calendar.getInstance().getTime(); // Not necessary the server will just ignore
+        // it and set it on its own
+        // fileInfo.expired = false; // Also a server only variable
+        fileInfo.fileName = "poem.txt"; // Give out file some name, otherwise the server will not accept it!
+        fileInfo.idroom = -1; // If we don't want to send a file to any specific room we can just upload it like this
+        // fileInfo.iduploader does not need to be set, the server knows who we are from our login info
+        // fileInfo.uuid server will set it for us
+
+        CFileRepo repo = new CFileRepo(c);
+        repo.getLoginHeader().setLogin("MyLogin");
+        repo.getLoginHeader().setPassword("MyPassword");
+
+        try {
+            byte[] uuid = repo.addFile(contentsOfMyFile,fileInfo); // Upload the file to the server
+
+            System.out.println("Upload successful!");
+
+            byte[] contentsFromServer = repo.getFileContents(uuid); // Get the files contents from the server again
+
+            Path outFile = Files.createTempFile("poemFromTheServer-",".txt");// Prepare our temp file
+            Files.write(outFile,contentsFromServer); // Write data from server to it
+
+            ProcessBuilder pb = new ProcessBuilder("notepad.exe",outFile.toString());
+            Process p = pb.start();
+            p.waitFor(); // Wait until we close the file
+
+            Files.delete(outFile); // Delete it later
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+                    </code>
+                </pre>
+    </figure>
+</div>
+<div id="ExamplePage3">
+    <figure class="w-100 d-block code-showcase">
+        <pre>
+                    <code>
+package net.lukx.jchatter.lib.demos;
+
+import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+public class DemoThree {
+
+    /*
+    Create a group chat and invite all my friends
+     */
+    public static void main(String[] args) throws URISyntaxException, UnsupportedEncodingException, InterruptedException {
+        Communicator c = new Communicator(); //Creates communication client
+
+        c.setServerURI(new URI("http://78.102.218.164:5000/"));//Sets URI
+
+        //Prepare our repos
+        RoomRepo roomRepo = new RoomRepo(c);
+        roomRepo.getLoginHeader().setLogin("MyLogin");
+        roomRepo.getLoginHeader().setPassword("MyPassword");
+
+        UserRepo userRepo = new UserRepo(c);
+        userRepo.getLoginHeader().setLogin("MyLogin");
+        userRepo.getLoginHeader().setPassword("MyPassword");
+
+        RelationshipRepo relRepo = new RelationshipRepo(c);
+        relRepo.getLoginHeader().setLogin("MyLogin");
+        relRepo.getLoginHeader().setPassword("MyPassword");
+        try {
+
+            Room myNewRoom = new Room(); // Prepare the room to upload
+            myNewRoom.oneOnOne = false; // We want this to be a group chat
+            myNewRoom.name = "Everyone!!!"; // We set the name
+            myNewRoom.picture = null; // Picture is not mandatory
+
+            myNewRoom = roomRepo.addRoom(myNewRoom); // Create it!
+
+            User me = userRepo.getUserWithLogin("bobby"); // Get ourselves
+
+            Relationship[] relationships = relRepo.getRelForUser(me.id); // Get relationships we have
+
+            for (Relationship relationship : relationships) {
+                if(relationship.relationType == RelationshipStatus.FRIEND.getKey()/*relationType is an int*/){
+                    roomRepo.addUserToRoom(relationship.idtargetUser,myNewRoom.id); // Add our friend to the room
+                    System.out.println("Added friend with id "+relationship.idtargetUser+" to the room");
+                }
+            }
+
+            System.out.println("All friends have been addded");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+                </code>
+            </pre>
+    </figure>
+</div>
+</div>
+<div id="CompilingLibrary" class="p-2">
+    <h3>Hand compiling the library</h3>
+    <p>
+        The easiest way to compile the library is using IntelliJ IDE.
+        Simply open the .iml file and build the artifacts. If you do not wish
+        to use the IntelliJ IDE the follow this guide
+    </p>
+    <h4>Downloads</h4>
+    <ol type="1">
+        <li>Make sure that you have <a href="https://www.oracle.com/technetwork/java/javase/downloads/index.html">Java SE SDK</a> 8.0+ installed</li>
+        <li><a href="https://maven.apache.org/">Download Apache Maven 3.0+</a></li>
+        <li><a href="https://github.com/lukx1/Chatter">Download the library from our github</a></li>
+    </ol>
+    <h4>Execution</h4>
+    <ol type="1">
+        <li>Install maven and add it to your system path</li>
+        <li>Open command line window</li>
+        <li>Navigate to the library project at Core/Shared/JavaLib</li>
+        <li>Run the command <code class="border rounded bg-light border-light">mvn compile</code></li>
+        <li>Now run <code class="border rounded bg-light border-light">mvn install</code></li>
+        <li>Thats it!</li>
+    </ol>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    $("#ExamplePage1").show("fast",
+        function() {
+        });
+    $("#ExamplePage2").hide("fast",
+        function() {
+        });
+    $("#ExamplePage3").hide("fast",
+        function() {
+        });
+
+    $("#ExampleBtn1").click(function () {
+        $("#ExamplePage1").show("fast",
+            function() {
+            });
+        $("#ExampleBtn1").removeClass("btn-secondary");
+        $("#ExampleBtn1").addClass("btn-primary");
+
+        $("#ExamplePage2").hide("fast",
+            function() {
+            });
+        $("#ExampleBtn2").removeClass("btn-primary");
+        $("#ExampleBtn2").addClass("btn-secondary");
+
+        $("#ExamplePage3").hide("fast",
+            function() {
+            });
+        $("#ExampleBtn3").removeClass("btn-primary");
+        $("#ExampleBtn3").addClass("btn-secondary");
+    });
+
+    $("#ExampleBtn2").click(function() {
+        $("#ExamplePage2").show("fast",
+            function () {
+            });
+        $("#ExampleBtn2").removeClass("btn-secondary");
+        $("#ExampleBtn2").addClass("btn-primary");
+
+        $("#ExamplePage1").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn1").removeClass("btn-primary");
+        $("#ExampleBtn1").addClass("btn-secondary");
+
+        $("#ExamplePage3").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn3").removeClass("btn-primary");
+        $("#ExampleBtn3").addClass("btn-secondary");
+    });
+
+    $("#ExampleBtn3").click(function() {
+        $("#ExamplePage3").show("fast",
+            function () {
+            });
+        $("#ExampleBtn3").removeClass("btn-secondary");
+        $("#ExampleBtn3").addClass("btn-primary");
+
+        $("#ExamplePage2").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn2").removeClass("btn-primary");
+        $("#ExampleBtn2").addClass("btn-secondary");
+
+        $("#ExamplePage1").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn1").removeClass("btn-primary");
+        $("#ExampleBtn1").addClass("btn-secondary");
+    });
+
+    {
+        var word =
+            'abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|float|native|super|while';
+        var rgx = new RegExp("\\b(" + word + ")\\b", 'ig');
+
+        $("code").contents().filter(function() {
+            return this.nodeType === 3;
+        }).each(function() {
+            window.$(this).replaceWith(window.$(this).text().replace(rgx, '<span style="color:#CC7832">$1</span>'));
+        });
+    }
+</script>
+
+

@@ -18,9 +18,12 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Content\downloads\" />
+      <Folder Include="Content\javadoc\" />
       <Folder Include="Content\NewFolder\" />
       <Folder Include="EndpointData\" />
       <Folder Include="UserFiles\" />
+      <Folder Include="Views\ApiDoc\libJChatter\javaDoc\" />
     </ItemGroup>
 
 </Project>

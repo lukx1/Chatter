@@ -240,7 +240,7 @@
          "Method":"POST"
       },
       "URL":"api/ValidateLogin",
-      "Description":"Gets all users in the whole database",
+      "Description":"Checks against the database if login is correct",
       "HttpResponses":"200,404,403",
       "Input":[
          {

@@ -1,15 +1,15 @@
 ﻿
 @{
     ViewData["Title"] = "API";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_ApiLayout.cshtml";
 }
 
 <div class="jumbotron text-center container mt-3">
     <div class="container">
-        <h1 class="jumbotron-heading">API Access</h1>
+        <h1>API Access</h1>
         <p class="lead text-muted">
             We want to allow developers to build great products powered by Chatter and we recognize our developer community is integral to the success of the Chatter platform. We also want protect our users’ privacy and security regardless of how they choose to consume Chatter content.
-            <div class="text-align-left">
+            <div >
                 <ul class="list-group text-muted">
                     <li class="list-group-item">You may not use the Chatter logos and trademark without approval from us</li>
                     <li class="list-group-item">You may use "for Chatter" or "a client for Chatter" in the title of your app. You may not use "Chatter" without "for" preceding it. You may not use the word "official" in the title, keywords or description in any way that implies the app was developed by Chatter Project team.</li>
@@ -26,10 +26,9 @@
         <h3>Example code</h3>
         These examples serve as a starting point to help familiarize you with the basics of the Chatter API.
         <ul class="list-group-flush">
-            <li><a href="#">Official Java library</a></li>
-            <li><a href="#">Android examples</a></li>
-            <li><a href="#">C++ examples</a></li>
-            <li><a href="#">C# examples</a></li>
+            <li><a href="@Url.Action("JavaLib","ApiDoc")">Official Java library</a></li>
+            <li><a href="@Url.Action("CppExamples","ApiDoc")">C++ examples</a></li>
+            <li><a href="@Url.Action("CsharpExamples","ApiDoc")">C# examples</a></li>
         </ul>
     </p>
     <h3>Endpoints</h3>
@@ -38,7 +37,7 @@
         <div class="row">
             <div class="ml-2 col-md-2">
                 <a href="@Url.Action("UserEndpoint","ApiDoc")">
-                    <div class="card  mb-4 box-shadow bg-primary text-white">
+                    <div class="card  mb-4 shadow bg-primary text-white">
                         <div class="d-flex pt-2 flex-column card-body">
                             <h5 class="card-title">User</h5>
                             <p class="card-text">Managing logged in user, authenticating password or deleting accounts.</p>
@@ -48,7 +47,7 @@
             </div>
             <div class="col-md-2">
                 <a href="@Url.Action("RoomEndpoint","ApiDoc")">
-                    <div class="card  mb-4 box-shadow bg-primary text-white">
+                    <div class="card  mb-4 shadow bg-primary text-white">
                         <div class="d-flex pt-2 flex-column card-body">
                             <h5 class="card-title">Room</h5>
                             <p class="card-text">Join or leave conversations, get users in a room. Create or delete your own rooms</p>
@@ -58,7 +57,7 @@
             </div>
             <div class="col-md-2">
                 <a href="@Url.Action("RelationshipEndpoint","ApiDoc")">
-                    <div class="card  mb-4 box-shadow bg-primary text-white">
+                    <div class="card  mb-4 shadow bg-primary text-white">
                         <div class="d-flex pt-2 flex-column card-body">
                             <h5 class="card-title">Relationship</h5>
                             <p class="card-text">Allows adding or removing friends, blocking users and sending friends requests</p>
@@ -68,7 +67,7 @@
             </div>
             <div class="col-md-2">
                 <a href="@Url.Action("MessageEndpoint","ApiDoc")">
-                    <div class="card mb-4 bg-primary text-white box-shadow">
+                    <div class="card mb-4 bg-primary text-white shadow">
                         <div class="d-flex pt-2 flex-column card-body">
                             <h5 class="card-title">Message</h5>
                             <p class="card-text">Send and receive messages from other users, edit a message or change status.</p>
@@ -78,7 +77,7 @@
             </div>
             <div class="col-md-2 mr-2">
                 <a href="@Url.Action("CFileEndpoint","ApiDoc")">
-                    <div class="card  mb-4 box-shadow bg-primary text-white">
+                    <div class="card  mb-4 shadow bg-primary text-white">
                         <div class="d-flex pt-2 flex-column card-body">
                             <h5 class="card-title">CFile</h5>
                             <p class="card-text">Send files or pictures to server, get all files in a conversation. Bulk send</p>

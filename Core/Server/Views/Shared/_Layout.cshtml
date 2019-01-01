@@ -9,13 +9,14 @@
     <script type="text/javascript" src="~/Content/bootstrap.min.js"></script>
     <script type="text/javascript" src="~/Content/popper.min.js"></script>
     <link rel="stylesheet" href="~/Content/style.css" />
+    <link rel="stylesheet" href="~/Content/font-awesome.min.css" />
 </head>
 <body>
 
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand text-light">Chatter Project</a>
+            <a class="navbar-brand text-light" href="@Url.Action("Index","Home")">Chatter Project</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -39,12 +40,12 @@
         @RenderBody()
     </main>
     <!-- Footer -->
-    <footer class="page-footer font-small bg-dark pt-4">
+    <footer class="page-footer font-small bg-dark">
 
         <!-- Footer Links -->
         <!-- Copyright -->
         <div class="footer-copyright text-muted text-center py-3">
-            © @DateTime.Now.Year Copyright Chatter project
+            © @DateTime.Now.Year Copyright Chatter Project
         </div>
         <!-- Copyright -->
 

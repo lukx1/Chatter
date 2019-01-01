@@ -12,7 +12,8 @@ using Newtonsoft.Json;
 using System.Text;
 using Server.Models;
 using System.Diagnostics;
-
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Net;
 
 namespace Server
 {
@@ -38,7 +39,7 @@ namespace Server
             {
                 // To run the app without the CustomWebHostService change the
                 // next line to host.RunAsService();
-                //host.RunAsCustomService();
+                host.Run();
             }
             else
             {
@@ -47,11 +48,19 @@ namespace Server
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-                WebHost.CreateDefaultBuilder(args)
-                    .ConfigureAppConfiguration((context, config) =>
-                    {
-                // Configure the app here.
-            })
-                    .UseStartup<Startup>();
+    WebHost.CreateDefaultBuilder(args)
+        .UseStartup<Startup>()
+        .UseKestrel((context, options) =>
+        {
+            options.Limits.MaxConcurrentConnections = 100;
+            options.Limits.MaxConcurrentUpgradedConnections = 100;
+            options.Limits.MaxRequestBodySize = 10 * 1024;
+            options.Limits.MinRequestBodyDataRate =
+                new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+            options.Limits.MinResponseDataRate =
+                new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
+            options.Listen(IPAddress.Any, 5000);
+        });
+
     }
 }

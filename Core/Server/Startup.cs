@@ -53,6 +53,10 @@ namespace Server
             Path.Combine(Directory.GetCurrentDirectory(), "Content")),
                 RequestPath = "/Content"
             });
+            app.UseCors(b =>
+                b.WithOrigins("http://78.102.218.164:5000")
+                .AllowAnyHeader()
+            );
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();

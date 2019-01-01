@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
@@ -11,7 +6,7 @@ namespace Server.Controllers
 {
     public class ApiDocController : Controller
     {
-        private IHostingEnvironment environment;
+        private readonly IHostingEnvironment environment;
 
         public ApiDocController(IHostingEnvironment environment)
         {
@@ -23,7 +18,12 @@ namespace Server.Controllers
             return View();
         }
 
-        private void setViewBag(string fileName)
+        public IActionResult JavaLib()
+        {
+            return View();
+        }
+
+        private void SetViewBag(string fileName)
         {
             var s = System.IO.File.ReadAllText
                 (
@@ -38,31 +38,41 @@ namespace Server.Controllers
 
         public IActionResult UserEndpoint()
         {
-            setViewBag("users.txt");
+            SetViewBag("users.txt");
             return View();
         }
 
         public IActionResult MessageEndpoint()
         {
-            setViewBag("messages.txt");
+            SetViewBag("messages.txt");
             return View();
         }
 
         public IActionResult RoomEndpoint()
         {
-            setViewBag("rooms.txt");
+            SetViewBag("rooms.txt");
             return View();
         }
 
         public IActionResult RelationshipEndpoint()
         {
-            setViewBag("relationships.txt");
+            SetViewBag("relationships.txt");
             return View();
         }
 
         public IActionResult CFileEndpoint()
         {
-            setViewBag("cfiles.txt");
+            SetViewBag("cfiles.txt");
+            return View();
+        }
+
+        public IActionResult CsharpExamples()
+        {
+            return View();
+        }
+
+        public IActionResult CppExamples()
+        {
             return View();
         }
     }
