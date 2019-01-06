@@ -1,6 +1,6 @@
 package net.lukx.jchatter.lib.repos;
 
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.LoginHeader;
 
 import java.util.HashMap;
@@ -13,12 +13,12 @@ public abstract class AbstractRepo {
     protected abstract String getController();
 
 
-    Communicator communicator;
+    Communicable communicable;
 
     private LoginHeader loginHeader = new LoginHeader();
 
-    AbstractRepo(Communicator communicator){
-        this.communicator = communicator;
+    AbstractRepo(Communicable communicable){
+        this.communicable = communicable;
     }
 
     @SuppressWarnings("unused")

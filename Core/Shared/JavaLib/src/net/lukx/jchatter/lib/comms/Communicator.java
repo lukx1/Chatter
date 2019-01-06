@@ -25,7 +25,7 @@ import java.net.URISyntaxException;
  * reading responses from the server
  */
 @PublicApi
-public class Communicator {
+public class Communicator implements Communicable {
 
     private Gson gson = new GsonBuilder()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -111,6 +111,7 @@ public class Communicator {
      * @throws IOException if an {@link IOException} occurs
      * @throws URISyntaxException if URI is incorrectly set in {@link #setServerURI(URI)}
      */
+    @Override
     @PublicApi
     public <T> T Obtain(@NotNull String controller, @NotNull String action, final HttpMethod method, final Object inData, Type type) throws IOException, URISyntaxException {
         return ParseToJson(ObtainJson(controller,action,method,inData),type);
@@ -128,6 +129,7 @@ public class Communicator {
      * @throws IOException if an {@link IOException} occurs
      * @throws URISyntaxException if URI is incorrectly set in {@link #setServerURI(URI)}
      */
+    @Override
     @PublicApi
     public <T> T Obtain(@NotNull String controller, @NotNull String action, final HttpMethod method, final Object inData, Class<T> clazz) throws IOException, URISyntaxException {
         if(clazz == Void.class){
@@ -141,6 +143,7 @@ public class Communicator {
      * Closes httpclient
      * @throws IOException if an exception occours
      */
+    @Override
     @PublicApi
     public void Close() throws IOException {
         client.close();
@@ -157,6 +160,7 @@ public class Communicator {
     /**
      * @return currently set URI
      */
+    @Override
     @PublicApi
     public URI getServerURI() {
         return serverURI;
@@ -167,6 +171,7 @@ public class Communicator {
      * Do not add a trailing slash
      * @param serverURI to set
      */
+    @Override
     @PublicApi
     public void setServerURI(URI serverURI) {
         this.serverURI = serverURI;
