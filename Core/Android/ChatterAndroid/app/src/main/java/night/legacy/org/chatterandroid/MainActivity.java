@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
+import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.Communicator;
 import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.repos.UserRepo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -64,30 +66,24 @@ public class MainActivity extends AppCompatActivity {
         String login = text_Login.getText().toString();
         String password = text_Password.getText().toString();
 
+
         App app = App.getInstance();
         app.LoggedUser = new User();
         app.LoggedUser.login = login;
+        app.LoggedUser.password = password;
 
-        /*
-        Communicator c = new Communicator();
+        Communicable c = new AndroidConnection();
 
         c.setServerURI(new URI(getString(R.string.server_uri)));
 
         UserRepo rep = new UserRepo(c);
 
-        rep.getLoginHeader().setLogin(login);
-        rep.getLoginHeader().setPassword(password);
-
-        if(rep.validateLogin())
-        {
-            System.console().printf("Validated");
-        }
-        else
-        {
-            System.console().printf("Invalidated");
-        }*/
 
 
+        rep.getLoginHeader().setPassword(app.LoggedUser.password);
+        rep.getLoginHeader().setLogin(app.LoggedUser.login);
+
+        app.LoggedUser = rep.getUserWithLogin(login);
         startActivity(new Intent(MainActivity.this, ProgramActivity.class));
     }
 
