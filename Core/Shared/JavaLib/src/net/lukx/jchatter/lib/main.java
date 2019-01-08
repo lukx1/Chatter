@@ -1,7 +1,10 @@
-/*package net.lukx.jchatter.lib.repos;
+/*package net.lukx.jchatter.lib;
 
 import net.lukx.jchatter.lib.comms.Communicator;
 import net.lukx.jchatter.lib.models.*;
+import net.lukx.jchatter.lib.repos.RelationshipRepo;
+import net.lukx.jchatter.lib.repos.RoomRepo;
+import net.lukx.jchatter.lib.repos.UserRepo;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +20,6 @@ import java.util.List;
 
 public class main {
 
-    /*
-    Create a group chat and invite all my friends
 
     public static void main(String[] args) throws URISyntaxException, UnsupportedEncodingException, InterruptedException {
         Communicator c = new Communicator(); //Creates communication client

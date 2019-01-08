@@ -2,7 +2,7 @@ package net.lukx.jchatter.lib.repos;
 
 import net.lukx.jchatter.lib.PublicApi;
 import net.lukx.jchatter.lib.comms.Communicable;
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.HttpMethod;
 import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
 
@@ -44,7 +44,7 @@ public class RoomRepo extends AbstractRepo {
         return communicable.Obtain(
                 getController(),
                 "getRoomsWithUser",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 Room[].class);
     }
@@ -61,7 +61,7 @@ public class RoomRepo extends AbstractRepo {
         return communicable.Obtain(
                 getController(),
                 "GetUsersInRoom",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 User[].class);
     }
@@ -75,7 +75,7 @@ public class RoomRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean removeRoom(int id) throws IOException, URISyntaxException {
-        return communicable.Obtain(getController(), "Room", Communicator.HttpMethod.DELETE, createIdObject(id), boolean.class);
+        return communicable.Obtain(getController(), "Room", HttpMethod.DELETE, createIdObject(id), boolean.class);
     }
 
     /***
@@ -86,7 +86,7 @@ public class RoomRepo extends AbstractRepo {
      */
     @PublicApi
     public void addRoom(Room room) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "Room", Communicator.HttpMethod.PUT, createRoomObject(room), void.class);
+        communicable.Obtain(getController(), "Room", HttpMethod.PUT, createRoomObject(room), void.class);
     }
 
     /***
@@ -97,7 +97,7 @@ public class RoomRepo extends AbstractRepo {
      */
     @PublicApi
     public void setRoom(Room room) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "Room", Communicator.HttpMethod.POST, createRoomObject(room), void.class);
+        communicable.Obtain(getController(), "Room", HttpMethod.POST, createRoomObject(room), void.class);
     }
 
     /***
@@ -109,7 +109,7 @@ public class RoomRepo extends AbstractRepo {
      */
     @PublicApi
     public void addUserToRoom(int idUser, int idRoom) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "AddUserToRoom", Communicator.HttpMethod.PUT, createIDUserIDRoomObject(idUser, idRoom), void.class);
+        communicable.Obtain(getController(), "AddUserToRoom", HttpMethod.PUT, createIDUserIDRoomObject(idUser, idRoom), void.class);
     }
 
     /***
@@ -122,7 +122,7 @@ public class RoomRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean removeUserFromRoom(int idUser, int idRoom) throws IOException, URISyntaxException {
-        return communicable.Obtain(getController(), "RemoveUserFromRoom", Communicator.HttpMethod.DELETE, createIDUserIDRoomObject(idUser, idRoom), boolean.class);
+        return communicable.Obtain(getController(), "RemoveUserFromRoom", HttpMethod.DELETE, createIDUserIDRoomObject(idUser, idRoom), boolean.class);
     }
 
     private Object createRoomObject(Room room) {

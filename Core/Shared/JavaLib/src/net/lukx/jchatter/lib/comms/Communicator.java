@@ -177,12 +177,5 @@ public class Communicator implements Communicable {
         this.serverURI = serverURI;
     }
 
-    /**
-     * Enumeration of Http methods
-     */
-    @PublicApi
-    public enum HttpMethod {
-        GET, POST, PATCH, PUT, DELETE
-    }
 
 }
