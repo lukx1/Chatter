@@ -10,10 +10,10 @@ import java.net.URISyntaxException;
 
 public interface Communicable {
     @PublicApi
-    <T> T Obtain(@NotNull String controller, @NotNull String action, Communicator.HttpMethod method, Object inData, Type type) throws IOException, URISyntaxException;
+    <T> T Obtain(@NotNull String controller, @NotNull String action, HttpMethod method, Object inData, Type type) throws IOException, URISyntaxException;
 
     @PublicApi
-    <T> T Obtain(@NotNull String controller, @NotNull String action, Communicator.HttpMethod method, Object inData, Class<T> clazz) throws IOException, URISyntaxException;
+    <T> T Obtain(@NotNull String controller, @NotNull String action, HttpMethod method, Object inData, Class<T> clazz) throws IOException, URISyntaxException;
 
     @PublicApi
     void Close() throws IOException;

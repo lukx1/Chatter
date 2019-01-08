@@ -3,7 +3,7 @@ package net.lukx.jchatter.lib.repos;
 import com.google.gson.reflect.TypeToken;
 import net.lukx.jchatter.lib.PublicApi;
 import net.lukx.jchatter.lib.comms.Communicable;
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.HttpMethod;
 import net.lukx.jchatter.lib.models.CFile;
 
 import java.io.IOException;
@@ -42,7 +42,7 @@ public class CFileRepo extends AbstractRepo{
      */
     @PublicApi
     public CFile getFile(byte[] uuid) throws IOException, URISyntaxException {
-        return communicable.Obtain(getController(),"File", Communicator.HttpMethod.POST,createUUIDObject(uuid),CFile.class);
+        return communicable.Obtain(getController(),"File", HttpMethod.POST,createUUIDObject(uuid),CFile.class);
     }
 
     /***
@@ -54,7 +54,7 @@ public class CFileRepo extends AbstractRepo{
      */
     @PublicApi
     public boolean removeFile(byte[] uuid) throws IOException, URISyntaxException {
-        return communicable.Obtain(getController(),"File", Communicator.HttpMethod.DELETE,createUUIDObject(uuid),boolean.class);
+        return communicable.Obtain(getController(),"File", HttpMethod.DELETE,createUUIDObject(uuid),boolean.class);
     }
 
     /***
@@ -69,7 +69,7 @@ public class CFileRepo extends AbstractRepo{
         return communicable.Obtain(
                 getController(),
                 "File",
-                Communicator.HttpMethod.PUT,
+                HttpMethod.PUT,
                 createCustomObjectWithHeader(
                         new KeyValuePair("Content",Content),
                         new KeyValuePair("CFile",file)
@@ -86,7 +86,7 @@ public class CFileRepo extends AbstractRepo{
      */
     @PublicApi
     public void setFile(CFile file) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(),"File", Communicator.HttpMethod.PATCH,file,void.class);
+        communicable.Obtain(getController(),"File", HttpMethod.PATCH,file,void.class);
     }
 
     /***
@@ -101,7 +101,7 @@ public class CFileRepo extends AbstractRepo{
         return communicable.Obtain(
                 getController(),
                 "GetFilesByUser",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 CFile[].class);
     }
@@ -118,7 +118,7 @@ public class CFileRepo extends AbstractRepo{
         return communicable.Obtain(
                 getController(),
                 "GetFilesInRoom",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 CFile[].class);
     }
@@ -135,7 +135,7 @@ public class CFileRepo extends AbstractRepo{
         return communicable.Obtain(
                 getController(),
                 "getFileContents",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createUUIDObject(uuid),
                 byte[].class);
     }
@@ -152,7 +152,7 @@ public class CFileRepo extends AbstractRepo{
         return communicable.Obtain(
                 getController(),
                 "getFilesContents",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createUUIDObject(uuid),
                 new TypeToken<Map<byte[],byte[]>>(){}.getType());
     }

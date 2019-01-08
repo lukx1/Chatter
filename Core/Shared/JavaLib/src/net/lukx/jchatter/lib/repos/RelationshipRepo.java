@@ -2,7 +2,7 @@ package net.lukx.jchatter.lib.repos;
 
 import net.lukx.jchatter.lib.PublicApi;
 import net.lukx.jchatter.lib.comms.Communicable;
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.HttpMethod;
 import net.lukx.jchatter.lib.models.Relationship;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class RelationshipRepo extends AbstractRepo {
         return communicable.Obtain(
                 getController(),
                 "GetRelForUser",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 Relationship[].class);
     }
@@ -56,7 +56,7 @@ public class RelationshipRepo extends AbstractRepo {
      */
     @PublicApi
     public void setRel(Relationship relationship) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "Rel", Communicator.HttpMethod.POST, createRelObject(relationship), Void.class);
+        communicable.Obtain(getController(), "Rel", HttpMethod.POST, createRelObject(relationship), Void.class);
     }
 
     /***
@@ -68,7 +68,7 @@ public class RelationshipRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean deleteRel(int id) throws IOException, URISyntaxException {
-        return communicable.Obtain(getController(), "Rel", Communicator.HttpMethod.DELETE, createIdObject(id), boolean.class);
+        return communicable.Obtain(getController(), "Rel", HttpMethod.DELETE, createIdObject(id), boolean.class);
     }
 
     /***
@@ -79,7 +79,7 @@ public class RelationshipRepo extends AbstractRepo {
      */
     @PublicApi
     public void addRel(Relationship relationship) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "Rel", Communicator.HttpMethod.PUT, createRelObject(relationship), Void.class);
+        communicable.Obtain(getController(), "Rel", HttpMethod.PUT, createRelObject(relationship), Void.class);
     }
 
     private Object createRelObject(Relationship relationship) {
