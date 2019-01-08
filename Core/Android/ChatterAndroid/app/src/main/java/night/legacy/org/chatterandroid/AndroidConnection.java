@@ -80,7 +80,7 @@ public class AndroidConnection implements Communicable {
         return  b;
     }
 
-    private String ObtainJson(String controller,String action, final HttpMethod method, Object inData) throws Exception {
+    private String ObtainJson(String controller,String action, final HttpMethod method, String inData) throws Exception {
         Response response = ExecuteMessage(controller,action,method,inData);
 
         if(response.isSuccessful()) {
@@ -91,11 +91,12 @@ public class AndroidConnection implements Communicable {
         }
     }
 
-    private Response ExecuteMessage(String controller,String action, final HttpMethod method, Object inData) throws IOException, URISyntaxException {
-        String json = gson.toJson(inData);
-        Request req = getRequest(CombineWithServerInfo(controller,action),gson.toJson(inData),method);
+    private Response ExecuteMessage(String controller,String action, final HttpMethod method, String inData) throws IOException, URISyntaxException {
+
+        Request req = getRequest(CombineWithServerInfo(controller,action),inData,method);
         return client.newCall(req).execute();
     }
+
 
     private <T> T ParseToJson(String data, Type type){
         return gson.fromJson(data,type);
@@ -108,7 +109,8 @@ public class AndroidConnection implements Communicable {
     @Override
     public <T> T Obtain(String controller, String action, HttpMethod httpMethod, Object o, Type type) throws IOException, URISyntaxException {
         try {
-            return ParseToJson(ObtainJson(controller,action,httpMethod,o),type);
+            String json = gson.toJson(o);
+            return ParseToJson(ObtainJson(controller,action,httpMethod,json),type);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,11 +121,13 @@ public class AndroidConnection implements Communicable {
     @Override
     public <T> T Obtain(String controller, String action, HttpMethod method, Object inData, Class<T> clazz) throws IOException, URISyntaxException {
         if(clazz == Void.class){
-            ExecuteMessage(controller,action,method,inData);
+            String json = gson.toJson(inData);
+            ExecuteMessage(controller,action,method,json);
             return null;
         }
         try {
-            return ParseToJson(ObtainJson(controller,action,method,inData),clazz);
+            String json = gson.toJson(inData);
+            return ParseToJson(ObtainJson(controller,action,method,json),clazz);
         } catch (Exception e) {
             e.printStackTrace();
         }
