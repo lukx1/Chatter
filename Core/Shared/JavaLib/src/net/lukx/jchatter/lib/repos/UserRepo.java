@@ -75,7 +75,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public void registerUser(@NotNull User user) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "RegisterUser", HttpMethod.PUT, user, Void.class);
+        communicable.Obtain(getController(), "RegisterUser", HttpMethod.PUT, createCustomObjectWithHeader(new KeyValuePair("User",user)), Void.class);
     }
 
     /***

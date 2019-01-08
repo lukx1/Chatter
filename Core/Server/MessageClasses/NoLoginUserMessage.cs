@@ -8,6 +8,6 @@ namespace Server.MessageClasses
 {
     public class NoLoginUserMessage
     {
-        public Users User { get; set; }
+        public LikeUser User { get; set; }
     }
 }

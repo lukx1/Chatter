@@ -8,6 +8,6 @@ namespace Server.MessageClasses
 {
     public class UserMessage : LoginHeader
     {
-        public Users User { get; set; }
+        public LikeUser User { get; set; }
     }
 }

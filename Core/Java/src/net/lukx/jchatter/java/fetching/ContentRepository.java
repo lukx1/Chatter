@@ -72,6 +72,10 @@ public class ContentRepository {
         }
     }
 
+    public Image getFallbackImage(){
+        return new Image("/pictures/nopicture.png");
+    }
+
     public Image fetchImageWithFallback(byte[] uuid){
         Image image;
         try {

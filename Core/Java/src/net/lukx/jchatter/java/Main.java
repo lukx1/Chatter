@@ -7,13 +7,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.repos.UserRepo;
+
+import java.net.URI;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        byte[] b = new byte[]{1,57,32,110,25,36,88,55,1,57,32,110,25,36,88,55};
-        String s = Base64.encode(b);
         Parent root = FXMLLoader.load(getClass().getResource("scenes/mainScene.fxml"));
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
