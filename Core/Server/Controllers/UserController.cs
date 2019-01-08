@@ -81,11 +81,21 @@ namespace Server.Controllers
         [HttpPost]
         public IActionResult ValidateLogin(LoginHeader message)
         {
-            if(UserRepository.IsLoginValid(message.Login, message.Password))
+            try
             {
-                return Ok();
+                if (UserRepository.IsLoginValid(message.Login, message.Password))
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
             }
-            return Forbid();
+            catch
+            {
+                return Forbid();
+            }
         }
 
         [HttpPost]

@@ -34,12 +34,7 @@ namespace Server.Repos
 
         public bool IsLoginValid(string login, string password)
         {
-            //TODO:Add password factory
-#if DEBUG
-            return true;
-#else
-            throw new NotImplementedException();
-#endif            
+            return (password == "123456");
         }
 
         public void RegisterUser(Users user)

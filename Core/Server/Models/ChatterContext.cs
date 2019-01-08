@@ -6,13 +6,17 @@ namespace Server.Models
 {
     public partial class ChatterContext : DbContext
     {
-        public ChatterContext()
+
+
+        private static DbContextOptions GetOptions()
         {
+            return MySqlDbContextOptionsExtensions.UseMySql(new DbContextOptionsBuilder(),  "Server=78.102.218.164;Port=7688;Database=chatter;User=conApp;Password=igR7DqL3HcvnHJ2q;CharSet=utf8;").Options;
         }
 
-        public ChatterContext(DbContextOptions<ChatterContext> options)
-            : base(options)
+        public ChatterContext()
+            : base(GetOptions())
         {
+            
         }
 
         public virtual DbSet<Cfiles> Cfiles { get; set; }
