@@ -1,5 +1,7 @@
 package night.legacy.org.chatterandroid;
 
+import android.os.AsyncTask;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -91,11 +94,14 @@ public class AndroidConnection implements Communicable {
         }
     }
 
-    private Response ExecuteMessage(String controller,String action, final HttpMethod method, String inData) throws IOException, URISyntaxException {
+    private Response ExecuteMessage(String controller,String action, final HttpMethod method, String inData) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
 
         Request req = getRequest(CombineWithServerInfo(controller,action),inData,method);
-        return client.newCall(req).execute();
+        Response result = new ExecuteConnection().execute(req).get();
+        return result;
     }
+
+
 
 
     private <T> T ParseToJson(String data, Type type){
@@ -122,7 +128,13 @@ public class AndroidConnection implements Communicable {
     public <T> T Obtain(String controller, String action, HttpMethod method, Object inData, Class<T> clazz) throws IOException, URISyntaxException {
         if(clazz == Void.class){
             String json = gson.toJson(inData);
-            ExecuteMessage(controller,action,method,json);
+            try {
+                ExecuteMessage(controller,action,method,json);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return null;
         }
         try {
@@ -147,5 +159,18 @@ public class AndroidConnection implements Communicable {
     @Override
     public void setServerURI(URI uri) {
         ServerURI = uri;
+    }
+
+    class ExecuteConnection extends AsyncTask<Request,Void,Response>
+    {
+        @Override
+        protected Response doInBackground(Request... requests) {
+            try {
+                return client.newCall(requests[0]).execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

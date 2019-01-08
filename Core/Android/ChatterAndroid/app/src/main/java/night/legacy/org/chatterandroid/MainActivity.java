@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         c.setServerURI(new URI(getString(R.string.server_uri)));
 
-        UserRepo rep = new UserRepo(c);
+        UserRepo rep = app.Connector.userRepo;
 
 
 
