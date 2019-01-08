@@ -16,6 +16,9 @@ public class ContentRepository {
     private File storeDir;
 
     public ContentRepository(CFileRepo fileRepo, File imageStoreDir) {
+        if(!imageStoreDir.exists()){
+            imageStoreDir.mkdirs();
+        }
         this.fileRepo = fileRepo;
         this.storeDir = imageStoreDir;
     }

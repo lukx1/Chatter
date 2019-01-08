@@ -33,6 +33,18 @@ Button {
     -fx-font-size: 125%;
 }
 
+.OnTop {
+    -fx-background-color: white;
+    -fx-border-color: #00abb2;
+    -fx-border-width: 1;
+}
+
+#PopupPane {
+    -fx-background-color: white;
+    -fx-border-color: #00abb2;
+    -fx-border-width:0 1 1 1;
+}
+
 #CenterAnchorPane {
     -fx-background-color: transparent;
 }

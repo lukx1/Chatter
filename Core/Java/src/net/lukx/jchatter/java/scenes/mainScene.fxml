@@ -12,12 +12,24 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 <?import net.lukx.jchatter.java.controls.RoomPane?>
 
 <!--suppress JavaFxDefaultTag -->
 
 <AnchorPane fx:id="TopContainer" minHeight="600.0" minWidth="800.0" stylesheets="/net/lukx/jchatter/java/scenes/style.css" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="net.lukx.jchatter.java.controllers.MainSceneController">
    <children>
+      <AnchorPane fx:id="PopupPane" layoutY="-100.0" onMouseClicked="#PopupClicked" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0">
+         <children>
+            <Label fx:id="PopupHeaderLabel" layoutX="66.0" layoutY="14.0" prefHeight="38.0" prefWidth="574.0" text="Error" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="12.0">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+            <Label fx:id="PopupBodyLabel" alignment="TOP_LEFT" layoutX="66.0" layoutY="50.0" prefHeight="44.0" prefWidth="609.0" text="Label" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="72.0" AnchorPane.rightAnchor="6.0" />
+            <Circle fx:id="PopupCircle" fill="#ffffff00" layoutX="39.0" layoutY="50.0" radius="25.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="624.0" AnchorPane.topAnchor="25.0" />
+         </children>
+      </AnchorPane>
       <BorderPane fx:id="WholePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
             <AnchorPane fx:id="LeftPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -68,8 +80,8 @@
                 <AnchorPane fx:id="InfoPane" minHeight="0.0" minWidth="0.0" prefHeight="300.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Circle fx:id="PictueCircle" fill="#ffffff00" radius="75.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="25.0" />
-                        <Label fx:id="SelectedUserOrGroupLabel" layoutX="86.0" layoutY="188.0" text="Name" />
-                        <Label fx:id="SelectedUserOrGroupInfo" layoutX="86.0" layoutY="214.0" text="Email" />
+                        <Label fx:id="SelectedUserOrGroupLabel" alignment="CENTER" layoutX="86.0" layoutY="188.0" text="Name" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
+                        <Label fx:id="SelectedUserOrGroupInfo" alignment="CENTER" layoutX="86.0" layoutY="214.0" text="Email" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
                         <Button fx:id="UnfriendOrManageUsersButton" layoutX="9.0" layoutY="239.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="UNFRIEND" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                         <Button fx:id="BlockOrLeaveButton" layoutX="73.0" layoutY="267.0" mnemonicParsing="false" text="BLOCK" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
                      </children>
@@ -99,9 +111,9 @@
       </HBox>
       <HBox fx:id="RegisterHolder" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane fx:id="RegisterInnerPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="224.0" prefWidth="239.0">
+            <AnchorPane fx:id="RegisterInnerPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="224.0" prefWidth="239.0" styleClass="OnTop">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="6.0" text="Register" textAlignment="CENTER" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="66.0" />
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="6.0" styleClass="LargeText" text="Register" textAlignment="CENTER" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="66.0" />
                   <Label layoutX="7.0" layoutY="31.0" text="Name" AnchorPane.leftAnchor="6.0" />
                   <Label layoutX="10.0" layoutY="62.0" text="Surname" AnchorPane.leftAnchor="6.0" />
                   <Label layoutX="7.0" layoutY="93.0" text="Nickname" AnchorPane.leftAnchor="6.0" />
@@ -113,8 +125,26 @@
                   <TextField fx:id="RegisterEmailField" layoutX="51.0" layoutY="127.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="151.0" />
                   <Label layoutX="8.0" layoutY="155.0" text="Email" AnchorPane.leftAnchor="6.0" />
                   <Button fx:id="FinishRegisterButton" layoutX="48.0" layoutY="170.0" mnemonicParsing="false" onAction="#FinishRegisterButtonClicked" prefHeight="25.0" prefWidth="88.0" text="REGISTER" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="180.0" />
-                  <Button fx:id="BackRegisterButton" layoutX="66.0" layoutY="180.0" mnemonicParsing="false" onAction="#BackRegisterButtonClicked" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="180.0" />
+                  <Button fx:id="BackRegisterButton" layoutX="66.0" layoutY="180.0" mnemonicParsing="false" onAction="#BackRegisterButtonClicked" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="180.0" />
                </children></AnchorPane>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="418.0" prefWidth="300.0">
+               <children>
+                  <TextField layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="216.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="26.0" />
+                  <Button layoutX="234.0" layoutY="14.0" mnemonicParsing="false" text="SEARCH" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="26.0" />
+                  <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="46.0" prefHeight="324.0" prefWidth="271.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="56.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="286.0" />
+                    </content>
+                  </ScrollPane>
+                  <Button layoutX="234.0" layoutY="370.0" mnemonicParsing="false" text="ADD" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Button layoutX="6.0" layoutY="358.0" mnemonicParsing="false" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Label alignment="CENTER" layoutX="136.0" layoutY="6.0" text="ADD FRIENDS" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
+               </children>
+            </AnchorPane>
          </children>
       </HBox>
    </children>
