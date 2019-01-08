@@ -149,7 +149,7 @@ public class MainSceneController {
     private void loggedIn(){
         TopContainer.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED,this::globalClickHandler);
 
-        popupMarshall = new PopupMarshall(PopupPane,PopupHeaderLabel,PopupBodyLabel,PopupCircle);
+
         roomMarshall = new RoomMarshall(RoomsPane,repos.getRoomRepo(),repos.getRelationshipRepo(),contentRepository,currentValues);
         informationMarshall = new SelectedInformationMarshall(
                 new SelectedInfoPane(
@@ -170,7 +170,7 @@ public class MainSceneController {
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
-        popupMarshall.init();
+
         popupMarshall.makeInfo("asdasdasd");
 
     }
@@ -181,6 +181,8 @@ public class MainSceneController {
 
     @FXML
     public void initialize(){
+        popupMarshall = new PopupMarshall(PopupPane,PopupHeaderLabel,PopupBodyLabel,PopupCircle);
+        popupMarshall.init();
         backgroundInit();
         openLoginScene();
     }
@@ -212,17 +214,16 @@ public class MainSceneController {
             popupMarshall.makeWarning("Invalid nickname");
             return false;
         }
-        if(!Pattern.matches("[a-zA-Z0-9_*!@#$%^&]{8,32}",RegisterPasswordField.getText())){
-            if(RegisterPasswordField.getText().length() < 8){
-                return true;
-               // popupMarshall.makeWarning("Password is not long enough");
+        if(!Pattern.matches("[a-zA-Z0-9_*!@#$%^&]{4,32}",RegisterPasswordField.getText())){
+            if(RegisterPasswordField.getText().length() < 4){
+                popupMarshall.makeWarning("Password is not long enough");
             }
             else {
                 popupMarshall.makeWarning("Invalid password");
             }
             return false;
         }
-        if(!Pattern.matches("@",RegisterEmailField.getText())){
+        if(!Pattern.matches(".+@.+\\..+",RegisterEmailField.getText())){
             popupMarshall.makeWarning("Invalid email");
             return false;
         }
@@ -284,8 +285,9 @@ public class MainSceneController {
         try {
             repos.getUserRepo().registerUser(user);
             changeCurrentUser(repos.getUserRepo().getUserWithLogin(user.login));
+            popupMarshall.makeSuccess("Registered","You have been successfully registered");
         } catch (IOException | URISyntaxException e) {
-            popupMarshall.makeWarning(e.toString());
+            popupMarshall.makeError(e.toString());
         }
     }
 

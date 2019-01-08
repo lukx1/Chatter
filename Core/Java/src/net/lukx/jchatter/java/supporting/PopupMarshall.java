@@ -130,6 +130,10 @@ public class PopupMarshall {
     }
 
     public void makePopup(String header,String body, Paint paint){
+        if(isPopupVisible()){
+            stopCurrentAnimation();
+        }
+        popupVisible = true;
         this.header.setText(header);
         this.body.setText(body);
         this.circle.setFill(paint);
