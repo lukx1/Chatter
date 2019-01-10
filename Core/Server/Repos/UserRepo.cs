@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Server.Models;
 using System.Text;
-using PrgDbWeb.Helpers;
+using Server.Helpers;
 
 namespace Server.Repos
 {
@@ -34,7 +34,7 @@ namespace Server.Repos
 
         public bool IsLoginValid(string login, string password)
         {
-            return (password == "123456");
+            return PasswordHelper.VerifyPasswordPbkdf2(password, context.Users.FirstOrDefault(x => x.Login == login).Password);
         }
 
         public void RegisterUser(Users user)
