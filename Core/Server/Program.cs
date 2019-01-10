@@ -7,7 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PrgDbWeb.Helpers;
+using Server.Helpers;
 using Newtonsoft.Json;
 using System.Text;
 using Server.Models;

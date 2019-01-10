@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 
-namespace PrgDbWeb.Helpers
+namespace Server.Helpers
 {
     public class HashAndSalt
     {
@@ -20,26 +20,27 @@ namespace PrgDbWeb.Helpers
             return Convert.ToBase64String(AsBytes());
         }
 
-        public static HashAndSalt FromString(string s, int saltLength, int hashLength)
+        public static HashAndSalt FromString(string s)
         {
             var bytes = Convert.FromBase64String(s);
-            return FromBytes(bytes, saltLength, hashLength);
+            return FromBytes(bytes);
         }
 
-        public static HashAndSalt FromBytes(byte[] bytes, int saltLength, int hashLength)
+        public static HashAndSalt FromBytes(byte[] bytes)
         {
             var res = new HashAndSalt()
             {
-                Salt = new byte[saltLength],
-                PasswordHash = new byte[hashLength]
+                Salt = new byte[PasswordHelper.SaltLength],
+                PasswordHash = new byte[PasswordHelper.HashLenght]
             };
-            Array.Copy(bytes, res.Salt, saltLength);
-            Array.Copy(bytes, saltLength, res.PasswordHash, 0, hashLength);
+            
+            Array.Copy(bytes, res.PasswordHash, PasswordHelper.HashLenght);
+            Array.Copy(bytes, PasswordHelper.HashLenght, res.Salt, 0, PasswordHelper.SaltLength);
             return res;
         }
 
         public byte[] AsBytes()
-        {
+        {            
             return PasswordHash.Concat(Salt).ToArray();
         }
     }
@@ -52,12 +53,12 @@ namespace PrgDbWeb.Helpers
 
         public static bool VerifyPasswordPbkdf2(string plain, string hashed)
         {
-            return VerifyPasswordPbkdf2(plain, HashAndSalt.FromString(hashed, SaltLength, HashLenght));
+            return VerifyPasswordPbkdf2(plain, HashAndSalt.FromString(hashed));
         }
 
         public static bool VerifyPasswordPbkdf2(string plain, byte[] hashed)
         {
-            return VerifyPasswordPbkdf2(plain, HashAndSalt.FromBytes(hashed, SaltLength, HashLenght));
+            return VerifyPasswordPbkdf2(plain, HashAndSalt.FromBytes(hashed));
         }
 
         public static bool VerifyPasswordPbkdf2(string plain, HashAndSalt hashed)
@@ -92,7 +93,7 @@ namespace PrgDbWeb.Helpers
             return res;
         }
 
-        private static bool SlowEquals(byte[] a, byte[] b)
+        public static bool SlowEquals(byte[] a, byte[] b)
         {
             var diff = (uint)a.Length ^ (uint)b.Length;
             for (int i = 0; i < a.Length && i < b.Length; i++)
