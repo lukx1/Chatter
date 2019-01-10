@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import net.lukx.jchatter.lib.models.User;
+
 public class ProgramActivity extends AppCompatActivity {
 
     @Override
@@ -11,6 +13,7 @@ public class ProgramActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
         TextView name =  (TextView)findViewById(R.id.textView_LoggedLogin);
-        name.setText(App.getInstance().LoggedUser.firstName);
+        User loggedUser = App.getInstance().LoggedUser;
+        name.setText(loggedUser.firstName + " " + loggedUser.secondName);
     }
 }

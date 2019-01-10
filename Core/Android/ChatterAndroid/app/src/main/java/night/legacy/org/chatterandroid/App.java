@@ -7,6 +7,10 @@ import java.net.URISyntaxException;
 public class App {
     private static App ourInstance = null;
 
+    public AndroidUser LoggedUser;
+    public ApiConnector Connector = new ApiConnector();
+    public PopupHandler PopupHandler = new PopupHandler();
+
     static {
         try {
             ourInstance = new App();
@@ -22,6 +26,8 @@ public class App {
     private App() throws URISyntaxException {
     }
 
-    public User LoggedUser;
-    public ApiConnector Connector = new ApiConnector();
+
+
+
+
 }

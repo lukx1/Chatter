@@ -1,7 +1,9 @@
 package night.legacy.org.chatterandroid;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,7 +13,10 @@ import android.widget.EditText;
 
 import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.models.Relationship;
+import net.lukx.jchatter.lib.models.RelationshipStatus;
 import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.repos.RelationshipRepo;
 import net.lukx.jchatter.lib.repos.UserRepo;
 
 import java.io.IOException;
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         App app = App.getInstance();
-        app.LoggedUser = new User();
+        app.LoggedUser = new AndroidUser();
         app.LoggedUser.login = login;
         app.LoggedUser.password = password;
 
@@ -79,11 +84,17 @@ public class MainActivity extends AppCompatActivity {
         UserRepo rep = app.Connector.userRepo;
 
 
-
         rep.getLoginHeader().setPassword(app.LoggedUser.password);
         rep.getLoginHeader().setLogin(app.LoggedUser.login);
-
-        app.LoggedUser = rep.getUserWithLogin(login);
+        try {
+            app.LoggedUser = new AndroidUser(rep.getUserWithLogin(login));
+        }
+        catch (Exception ex)
+        {
+            Dialog diag = app.PopupHandler.GetAlertOK(this,ex.getMessage());
+            diag.show();
+            return;
+        }
         startActivity(new Intent(MainActivity.this, ProgramActivity.class));
     }
 
