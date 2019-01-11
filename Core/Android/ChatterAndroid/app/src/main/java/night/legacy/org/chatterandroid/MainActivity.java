@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         rep.getLoginHeader().setLogin(app.LoggedUser.login);
         try {
             app.LoggedUser = new AndroidUser(rep.getUserWithLogin(login));
+            app.Connector.loadAllUsers();
         }
         catch (Exception ex)
         {
