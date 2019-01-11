@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Chatter Android</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="server_uri">http://78.102.218.164:8080/api</string>
 </resources>

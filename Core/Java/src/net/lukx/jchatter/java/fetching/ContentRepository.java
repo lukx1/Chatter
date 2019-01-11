@@ -16,6 +16,9 @@ public class ContentRepository {
     private File storeDir;
 
     public ContentRepository(CFileRepo fileRepo, File imageStoreDir) {
+        if(!imageStoreDir.exists()){
+            imageStoreDir.mkdirs();
+        }
         this.fileRepo = fileRepo;
         this.storeDir = imageStoreDir;
     }
@@ -70,6 +73,10 @@ public class ContentRepository {
         else {
             throw new FileNotFoundException("Image not found locally or on server");
         }
+    }
+
+    public Image getFallbackImage(){
+        return new Image("/pictures/nopicture.png");
     }
 
     public Image fetchImageWithFallback(byte[] uuid){

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PrgDbWeb.Helpers;
+using Server.Helpers;
 using Newtonsoft.Json;
 using System.Text;
 using Server.Models;
@@ -59,7 +59,7 @@ namespace Server
                 new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
             options.Limits.MinResponseDataRate =
                 new MinDataRate(bytesPerSecond: 100, gracePeriod: TimeSpan.FromSeconds(10));
-            options.Listen(IPAddress.Any, 5000);
+            options.Listen(IPAddress.Any, 8080);
         });
 
     }

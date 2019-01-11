@@ -1,18 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
 		<RuntimeIdentifier>win7-x64</RuntimeIdentifier>
 		<UseAppHost>true</UseAppHost>
 		<SelfContained>false</SelfContained>
 		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+		<LangVersion>7</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.1.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.1" PrivateAssets="All" />
-        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
         <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.4" />
     </ItemGroup>
@@ -24,6 +25,22 @@
       <Folder Include="EndpointData\" />
       <Folder Include="UserFiles\" />
       <Folder Include="Views\ApiDoc\libJChatter\javaDoc\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Server.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Server.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Server.Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Server.Tests\**" />
     </ItemGroup>
 
 </Project>

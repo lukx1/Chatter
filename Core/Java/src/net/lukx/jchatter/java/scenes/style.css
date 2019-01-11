@@ -16,21 +16,33 @@ Button {
     -fx-background-color: #222631;
 }
 #SendMessagePane {
-    -fx-background-color: pink;
+    -fx-background-color: #222631;
 }
 
-#NotificationPane {
-    -fx-background-color: violet;
-}
-
-#LoginPanel {
+#LoginPanel,#RegisterInnerPane {
     -fx-border-color: #00abb2;
     -fx-border-width:1px;
     -fx-border-radius: 12px;
 }
 
+#UsernameLabel {
+    -fx-text-fill: white;
+}
+
 .LargeText {
     -fx-font-size: 125%;
+}
+
+.OnTop {
+    -fx-background-color: white;
+    -fx-border-color: #00abb2;
+    -fx-border-width: 1;
+}
+
+#PopupPane {
+    -fx-background-color: white;
+    -fx-border-color: #00abb2;
+    -fx-border-width:0 1 1 1;
 }
 
 #CenterAnchorPane {

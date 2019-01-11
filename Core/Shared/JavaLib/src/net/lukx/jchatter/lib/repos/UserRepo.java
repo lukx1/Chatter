@@ -2,7 +2,8 @@ package net.lukx.jchatter.lib.repos;
 
 import com.sun.istack.internal.NotNull;
 import net.lukx.jchatter.lib.PublicApi;
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.Communicable;
+import net.lukx.jchatter.lib.comms.HttpMethod;
 import net.lukx.jchatter.lib.models.User;
 
 import java.io.IOException;
@@ -25,10 +26,10 @@ public class UserRepo extends AbstractRepo {
 
     /***
      * Creates an instance of this class
-     * @param communicator to send requests with
+     * @param communicable to send requests with
      */
-    public UserRepo(net.lukx.jchatter.lib.comms.Communicator communicator) {
-        super(communicator);
+    public UserRepo(Communicable communicable) {
+        super(communicable);
     }
 
     /***
@@ -39,7 +40,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public User[] getUsers() throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(), "GetUsers", Communicator.HttpMethod.POST, getLoginHeader(), User[].class);
+        return communicable.Obtain(getController(), "GetUsers", HttpMethod.POST, getLoginHeader(), User[].class);
     }
 
     /***
@@ -51,7 +52,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public User getUser(int id) throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(), "GetUser", Communicator.HttpMethod.POST, createIdObject(id), User.class);
+        return communicable.Obtain(getController(), "GetUser", HttpMethod.POST, createIdObject(id), User.class);
     }
 
     /***
@@ -63,7 +64,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public User getUserWithLogin(@NotNull String login) throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(), "GetUserWithLogin", Communicator.HttpMethod.POST, new LoginObject(login), User.class);
+        return communicable.Obtain(getController(), "GetUserWithLogin", HttpMethod.POST, new LoginObject(login), User.class);
     }
 
     /***
@@ -74,7 +75,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public void registerUser(@NotNull User user) throws IOException, URISyntaxException {
-        communicator.Obtain(getController(), "RegisterUser", Communicator.HttpMethod.PUT, user, Void.class);
+        communicable.Obtain(getController(), "RegisterUser", HttpMethod.PUT, createCustomObjectWithHeader(new KeyValuePair("User",user)), Void.class);
     }
 
     /***
@@ -85,7 +86,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean validateLogin() throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(), "ValidateLogin", Communicator.HttpMethod.POST, getLoginHeader(), boolean.class);
+        return communicable.Obtain(getController(), "ValidateLogin", HttpMethod.POST, getLoginHeader(), boolean.class);
     }
 
     /***
@@ -97,7 +98,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean deleteUser(int id) throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(), "User", Communicator.HttpMethod.DELETE, createIdObject(id), boolean.class);
+        return communicable.Obtain(getController(), "User", HttpMethod.DELETE, createIdObject(id), boolean.class);
     }
 
     /***
@@ -108,7 +109,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public void setUser(User user) throws IOException, URISyntaxException {
-        communicator.Obtain(getController(), "User", Communicator.HttpMethod.POST, getLoginHeader(), Void.class);
+        communicable.Obtain(getController(), "User", HttpMethod.POST, getLoginHeader(), Void.class);
     }
 
     @SuppressWarnings("unused")

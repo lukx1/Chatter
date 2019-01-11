@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Server.MessageClasses;
 using Server.Models;
 using Server.Repos;
-using PrgDbWeb.Helpers;
+using Server.Helpers;
 
 namespace Server.Controllers
 {
@@ -48,7 +48,10 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                return Ok(UserRepository.GetUserWithLogin(message.Login));
+                var usr = UserRepository.GetUserWithLogin(message.UserLogin);
+                if(usr != null)
+                    return Ok(usr);
+                return NotFound("User not found");
             }
             return BadRequest();
         }
@@ -69,11 +72,9 @@ namespace Server.Controllers
         }
 
         [HttpPut]
-        public IActionResult RegisterUser(UserMessage message)
+        public IActionResult RegisterUser(NoLoginUserMessage message)
         {
-            if (SessionControl.AreTooManyRequests())
-                return Forbid("Too many requests");
-            UserRepository.RegisterUser(message.User);
+            UserRepository.RegisterUser(message.User.ToUsers());
             return Ok();
         }
 
@@ -81,11 +82,21 @@ namespace Server.Controllers
         [HttpPost]
         public IActionResult ValidateLogin(LoginHeader message)
         {
-            if(UserRepository.IsLoginValid(message.Login, message.Password))
+            try
             {
-                return Ok();
+                if (UserRepository.IsLoginValid(message.Login, message.Password))
+                {
+                    return Ok(true);
+                }
+                else
+                {
+                    return Ok(false);
+                }
             }
-            return Forbid();
+            catch
+            {
+                return Forbid();
+            }
         }
 
         [HttpPost]
@@ -94,7 +105,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                UserRepository.SetUser(message.User);
+                UserRepository.SetUser(message.User.ToUsers());
                 return Ok();
             }
             return BadRequest();

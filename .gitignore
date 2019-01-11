@@ -4,6 +4,12 @@
 # Qt build
 Core/Linux/build*
 
+# Lib files
+!lib/*.jar
+
+# Maven pom files
+!pom.xml
+
 # Server and client connection configuration
 *.sccfg
 *.cccfg
@@ -45,7 +51,6 @@ proguard/
 captures/
 
 # IntelliJ
-*.iml
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/gradle.xml

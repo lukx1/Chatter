@@ -1,6 +1,7 @@
 package net.lukx.jchatter.lib.repos;
 
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.PublicApi;
+import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.LoginHeader;
 
 import java.util.HashMap;
@@ -12,19 +13,23 @@ public abstract class AbstractRepo {
      */
     protected abstract String getController();
 
+    @PublicApi
+    protected Communicable communicable;
 
-    Communicator communicator;
+    @PublicApi
+    protected LoginHeader loginHeader = new LoginHeader();
 
-    private LoginHeader loginHeader = new LoginHeader();
-
-    AbstractRepo(Communicator communicator){
-        this.communicator = communicator;
+    AbstractRepo(Communicable communicable){
+        this.communicable = communicable;
     }
 
-    @SuppressWarnings("unused")
-    private class IDObject {
+    @PublicApi
+    protected class IDObject {
+        @PublicApi
         private String Login = getLoginHeader().getLogin();
+        @PublicApi
         private String Password = getLoginHeader().getPassword();
+        @PublicApi
         private int ID;
 
         IDObject(int id){
@@ -32,11 +37,12 @@ public abstract class AbstractRepo {
         }
     }
 
-    @SuppressWarnings("unused")
+    @PublicApi
     public class KeyValuePair {
         String key;
         Object value;
 
+        @PublicApi
         public KeyValuePair(){
 
         }
@@ -47,7 +53,8 @@ public abstract class AbstractRepo {
         }
     }
 
-    Object createCustomObjectWithHeader(KeyValuePair... keyValuePair){
+    @PublicApi
+    protected Object createCustomObjectWithHeader(KeyValuePair... keyValuePair){
         @SuppressWarnings("unchecked")
         HashMap<String,Object> hm = (HashMap<String,Object>)createCustomObject(keyValuePair);
         hm.put("Login",getLoginHeader().getLogin());
@@ -55,7 +62,8 @@ public abstract class AbstractRepo {
         return hm;
     }
 
-    private Object createCustomObject(KeyValuePair... keyValuePair){
+    @PublicApi
+    protected Object createCustomObject(KeyValuePair... keyValuePair){
         HashMap<String,Object> map = new HashMap<>();
         for (KeyValuePair kv : keyValuePair)
         {
@@ -64,11 +72,13 @@ public abstract class AbstractRepo {
         return map;
     }
 
-    Object createIdObject(int id){
+    @PublicApi
+    protected Object createIdObject(int id){
         return new IDObject(id);
     }
 
-    LoginHeader getLoginHeader() {
+    @PublicApi
+    public LoginHeader getLoginHeader() {
         return loginHeader;
     }
 }

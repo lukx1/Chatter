@@ -2,7 +2,8 @@ package net.lukx.jchatter.lib.repos;
 
 import com.sun.istack.internal.NotNull;
 import net.lukx.jchatter.lib.PublicApi;
-import net.lukx.jchatter.lib.comms.Communicator;
+import net.lukx.jchatter.lib.comms.Communicable;
+import net.lukx.jchatter.lib.comms.HttpMethod;
 import net.lukx.jchatter.lib.models.Message;
 
 import java.io.IOException;
@@ -18,10 +19,10 @@ public class MessageRepo extends AbstractRepo {
 
     /***
      * Creates an instance of this class
-     * @param communicator to send requests with
+     * @param communicable to send requests with
      */
-    public MessageRepo(Communicator communicator) {
-        super(communicator);
+    public MessageRepo(Communicable communicable) {
+        super(communicable);
     }
 
     /***
@@ -41,10 +42,10 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public Message[] getMessagesInRoom(int id) throws IOException, URISyntaxException {
-        return communicator.Obtain(
+        return communicable.Obtain(
                 getController(),
                 "GetMessagesInRoom",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 Message[].class);
     }
@@ -59,10 +60,10 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public Message[] getMessagesInRoomSince(int id, Date since) throws IOException, URISyntaxException {
-        return communicator.Obtain(
+        return communicable.Obtain(
                 getController(),
                 "GetMessagesInRoom",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createCustomObjectWithHeader(
                         new KeyValuePair("ID",id),
                         new KeyValuePair("Since",since)
@@ -79,10 +80,10 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public Message[] getNewMessagesForUser(int id) throws IOException, URISyntaxException {
-        return communicator.Obtain(
+        return communicable.Obtain(
                 getController(),
                 "GetNewMessagesForUser",
-                Communicator.HttpMethod.POST,
+                HttpMethod.POST,
                 createIdObject(id),
                 Message[].class);
     }
@@ -95,7 +96,7 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public void setMessage(Message message) throws IOException, URISyntaxException {
-        communicator.Obtain(getController(),"Message", Communicator.HttpMethod.POST,createMessageObject(message),void.class);
+        communicable.Obtain(getController(),"Message", HttpMethod.POST,createMessageObject(message),void.class);
     }
 
     /***
@@ -107,7 +108,7 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public boolean deleteMessage(int id) throws IOException, URISyntaxException {
-        return communicator.Obtain(getController(),"Message", Communicator.HttpMethod.DELETE,createIdObject(id),boolean.class);
+        return communicable.Obtain(getController(),"Message", HttpMethod.DELETE,createIdObject(id),boolean.class);
     }
 
     /***
@@ -118,7 +119,7 @@ public class MessageRepo extends AbstractRepo {
      */
     @PublicApi
     public void addMessage(Message message) throws IOException, URISyntaxException {
-        communicator.Obtain(getController(),"Message", Communicator.HttpMethod.PUT,createMessageObject(message),void.class);
+        communicable.Obtain(getController(),"Message", HttpMethod.PUT,createMessageObject(message),void.class);
     }
 
     private Object createMessageObject(@NotNull Message message){

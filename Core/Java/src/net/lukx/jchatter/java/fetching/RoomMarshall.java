@@ -3,6 +3,7 @@ package net.lukx.jchatter.java.fetching;
 import com.sun.istack.internal.NotNull;
 import javafx.scene.paint.Color;
 import net.lukx.jchatter.java.controls.RoomPane;
+import net.lukx.jchatter.java.supporting.CurrentValues;
 import net.lukx.jchatter.java.supporting.DefaultStatusColorPolicy;
 import net.lukx.jchatter.java.supporting.StatusColorPolicy;
 import net.lukx.jchatter.lib.models.*;
@@ -18,21 +19,21 @@ public class RoomMarshall {
     private RoomRepo roomRepo;
     private RelationshipRepo relRepo;
     private ContentRepository contentRepository;
-    private User currentUser;
+    private CurrentValues currentValues;
     private StatusColorPolicy statusColorPolicy = new DefaultStatusColorPolicy();
 
-    public RoomMarshall(RoomPane roomPane, RoomRepo roomRepo, RelationshipRepo relRepo, ContentRepository contentRepository, User currentUser){
+    public RoomMarshall(RoomPane roomPane, RoomRepo roomRepo, RelationshipRepo relRepo, ContentRepository contentRepository, CurrentValues currentValues){
         this.roomPane = roomPane;
         this.roomRepo = roomRepo;
         this.relRepo = relRepo;
         this.contentRepository = contentRepository;
-        this.currentUser = currentUser;
+        this.currentValues = currentValues;
     }
 
     private User getOtherUserInRoom(Room room) throws IOException, URISyntaxException {
         User[] users = roomRepo.getUsersInRoom(room.id);
         User other;
-        if(users[0] == currentUser){
+        if(users[0] == currentValues.getCurrentUser()){
             other = users[1];
         }
         else {
@@ -83,7 +84,7 @@ public class RoomMarshall {
 
     public void loadForUser() throws IOException, URISyntaxException {
         roomPane.getRoomPanes().clear();
-        Room[] rooms = roomRepo.getRoomsWithUser(currentUser.id);
+        Room[] rooms = roomRepo.getRoomsWithUser(currentValues.getCurrentUser().id);
         for (int heightIndex = 0; heightIndex < rooms.length; heightIndex++) {
             Room room = rooms[heightIndex];
             RoomPane.InnerRoomPane inner = roomPane.new InnerRoomPane(room);
