@@ -1,5 +1,6 @@
 package net.lukx.jchatter.java.controls;
 
+import com.sun.org.apache.xml.internal.security.Init;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -32,7 +33,7 @@ public class RoomPane extends Pane {
         );
     }
 
-    public  class InnerRoomPane extends Pane{
+    public class InnerRoomPane extends Pane implements Initable {
 
         private Circle pictureCircle;
         private Circle statusCircle;
@@ -91,7 +92,8 @@ public class RoomPane extends Pane {
             this.nameLabel.setText(name);
         }
 
-        private double getYOffset(){
+        @Override
+        public double getYOffset(){
             return heightIndex*(innerElementHeight+innerElementTopMargin);
         }
 
@@ -121,6 +123,7 @@ public class RoomPane extends Pane {
             nameLabel.setLayoutX(2*(innerElementPadding*pictureCircle.getRadius()));
         }
 
+        @Override
         public void initializeInside(int heightIndex){
             this.heightIndex = heightIndex;
             this.setLayoutY(getYOffset());

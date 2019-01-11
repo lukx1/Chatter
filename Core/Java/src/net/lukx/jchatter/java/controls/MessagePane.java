@@ -18,12 +18,9 @@ public class MessagePane extends Pane{
     private double innerElementHeight;
 
     private List<InnerMessagePane> messagePanes = new RemovingList<>(this);
+    
 
-    public List<InnerMessagePane> getMessagePanes(){
-        return messagePanes;
-    }
-
-    public class InnerMessagePane extends Pane{
+    public class InnerMessagePane extends Pane implements Initable{
 
         private Message message;
 
@@ -34,7 +31,7 @@ public class MessagePane extends Pane{
         private Label text;
         private Pane filePane;
 
-        private double getYOffset(){
+        public double getYOffset(){
             return heightIndex*(innerElementHeight+innerElementTopMargin);
         }
 
