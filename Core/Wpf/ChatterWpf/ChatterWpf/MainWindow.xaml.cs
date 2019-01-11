@@ -24,5 +24,8 @@ namespace ChatterWpf
         {
             InitializeComponent();
         }
+        StackPanel LoginStackPanel;
+        TextBox UsernameTextbox;
+        TextBox PasswordTextbox;
     }
 }

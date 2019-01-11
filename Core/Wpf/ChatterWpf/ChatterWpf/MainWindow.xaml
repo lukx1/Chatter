@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatterWpf"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="450" Width="525">
     <Grid>
-        
+      <StackPanel Name="LoginStackPanel">
+        <TextBlock Margin="40" FontSize="20">Trash login, protože nejde WPF BabyRage</TextBlock>
+      <Label Content="Username" Margin="5"/>
+      <TextBox Name="UsernameTextbox" Margin="5"/>
+      <Label Content="Password" Margin="5"/>
+      <TextBox Name="PasswordTextbox" Margin="5"/>
+      <Button  Content="LOGIN" Margin="5"/>
+       <TextBlock Margin="10" FontSize="12">Nemáš account ? Tu máš register.</TextBlock>
+      <Button  Content="REGISTER" Margin="5"/>
+      </StackPanel>
     </Grid>
 </Window>
