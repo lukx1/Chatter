@@ -1,32 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatterWpf", "ChatterWpf\ChatterWpf.csproj", "{6A48AA3D-F94D-4991-951D-1730C5C95D33}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Models", "Models", "{F187C17B-0450-4F2B-9F24-FE3C0C5D3D98}"
-	ProjectSection(SolutionItems) = preProject
-		CFile.cs = CFile.cs
-		Message.cs = Message.cs
-		Relationship.cs = Relationship.cs
-		RelationshipStatus.cs = RelationshipStatus.cs
-		Room.cs = Room.cs
-		User.cs = User.cs
-		UserStatus.cs = UserStatus.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2E9AC3C7-24C6-482D-B3FB-D97D78DC83B6}"
-	ProjectSection(SolutionItems) = preProject
-		Communicator.cs = Communicator.cs
-		LoginHeader.cs = LoginHeader.cs
-		PublicApi.cs = PublicApi.cs
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositaries", "Repositaries", "{E3B4E597-6FB4-4D3B-91CA-A987CEE04E1E}"
-	ProjectSection(SolutionItems) = preProject
-		AbstractRepo.cs = AbstractRepo.cs
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatterWpf", "ChatterWpf\ChatterWpf.csproj", "{4A07D20F-166C-48B4-9CDF-30ECC5AC1CF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6A48AA3D-F94D-4991-951D-1730C5C95D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6A48AA3D-F94D-4991-951D-1730C5C95D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6A48AA3D-F94D-4991-951D-1730C5C95D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6A48AA3D-F94D-4991-951D-1730C5C95D33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A07D20F-166C-48B4-9CDF-30ECC5AC1CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A07D20F-166C-48B4-9CDF-30ECC5AC1CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A07D20F-166C-48B4-9CDF-30ECC5AC1CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A07D20F-166C-48B4-9CDF-30ECC5AC1CF8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E76A6EBD-2E2E-4004-9AFB-E9EB931310BB}
+		SolutionGuid = {8D339A15-A951-49D9-A391-8B5E8F6F9FEF}
 	EndGlobalSection
 EndGlobal
