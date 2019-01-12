@@ -2,11 +2,16 @@ package night.legacy.org.chatterandroid;
 
 import net.lukx.jchatter.lib.models.User;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AndroidUser extends User {
 
-    public List<AndroidUser> Friends;
+    public ArrayList<AndroidUser> Friends;
+    public ArrayList<AndroidUser> FriendshipPending;
+    public ArrayList<AndroidUser> Blocked;
 
     public AndroidUser(User user)
     {
@@ -25,6 +30,10 @@ public class AndroidUser extends User {
     public AndroidUser()
     {
 
+    }
+
+    public void loadRelationships() throws Exception {
+        App.getInstance().Connector.loadRelForUser(this);
     }
 
 

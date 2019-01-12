@@ -1,7 +1,10 @@
 package night.legacy.org.chatterandroid;
 
 import net.lukx.jchatter.lib.comms.Communicable;
+import net.lukx.jchatter.lib.models.Relationship;
+import net.lukx.jchatter.lib.models.RelationshipStatus;
 import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.repos.RelationshipRepo;
 import net.lukx.jchatter.lib.repos.UserRepo;
 
 import java.io.IOException;
@@ -13,6 +16,7 @@ import java.util.List;
 public class ApiConnector {
     private AndroidConnection connection;
     public UserRepo userRepo;
+    public RelationshipRepo relRepo;
     private User[]  Users;
 
 
@@ -20,6 +24,7 @@ public class ApiConnector {
         connection = new AndroidConnection();
         connection.setServerURI(new URI("http://78.102.218.164:8080/api"));
         userRepo = new UserRepo(connection);
+        relRepo = new RelationshipRepo(connection);
     }
 
     public void loadAllUsers() throws Exception {
@@ -36,5 +41,26 @@ public class ApiConnector {
         return Users[id - 1];
     }
 
-
+    public void loadRelForUser(AndroidUser user) throws IOException, URISyntaxException {
+         Relationship[] rels = relRepo.getRelForUser(user.id);
+        for (Relationship item : rels) {
+            if(item.relationType == RelationshipStatus.FRIEND.getKey())
+            {
+                if(item.idsourceUser == user.id)
+                    user.Friends.add(new AndroidUser(getUser(item.idtargetUser)));
+                else
+                    user.Friends.add(new AndroidUser(getUser(item.idsourceUser)));
+            }
+            if(item.relationType == RelationshipStatus.FRIENDSHIP_PENDING.getKey())
+            {
+                if(item.idtargetUser == user.id)
+                    user.Friends.add(new AndroidUser(getUser(item.idsourceUser)));
+            }
+            if(item.relationType == RelationshipStatus.BLOCKED.getKey())
+            {
+                if(item.idsourceUser == user.id)
+                    user.Blocked.add(new AndroidUser(getUser(item.idtargetUser)));
+            }
+        }
+    }
 }
