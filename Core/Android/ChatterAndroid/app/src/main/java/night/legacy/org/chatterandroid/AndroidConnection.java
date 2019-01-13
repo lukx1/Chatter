@@ -87,7 +87,9 @@ public class AndroidConnection implements Communicable {
         Response response = ExecuteMessage(controller,action,method,inData);
 
         if(response.isSuccessful()) {
-            return response.body().string();
+            String resp = response.body().string();
+            response.body().close();
+            return resp;
         }
         else {
             throw new Exception("Error status received :"+response.code());
@@ -148,7 +150,7 @@ public class AndroidConnection implements Communicable {
 
     @Override
     public void Close() throws IOException {
-
+        client.connectionPool().evictAll();
     }
 
     @Override
