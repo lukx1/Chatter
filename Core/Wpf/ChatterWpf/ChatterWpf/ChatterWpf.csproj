@@ -65,6 +65,7 @@
     <Compile Include="Repos\CFileRepo.cs" />
     <Compile Include="Repos\MessageRepo.cs" />
     <Compile Include="Repos\RelationshipRepo.cs" />
+    <Compile Include="Repos\RepoRepo.cs" />
     <Compile Include="Repos\RoomRepo.cs" />
     <Compile Include="Repos\UserRepo.cs" />
     <Page Include="MainWindow.xaml">
