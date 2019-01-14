@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             app.LoggedUser = new AndroidUser(rep.getUserWithLogin(login));
             app.Connector.loadAllUsers();
+            app.LoggedUser.loadRelationships();
         }
         catch (Exception ex)
         {
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             diag.show();
             return;
         }
+
         startActivity(new Intent(MainActivity.this, ProgramActivity.class));
     }
 

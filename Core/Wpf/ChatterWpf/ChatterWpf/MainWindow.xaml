@@ -6,20 +6,67 @@
         xmlns:local="clr-namespace:ChatterWpf"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <StackPanel HorizontalAlignment="Left" Height="100" Margin="178,83,0,0" VerticalAlignment="Top" Width="100" RenderTransformOrigin="0.5,0.5" Background="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}">
-            <StackPanel.Effect>
-                <BlurEffect/>
-            </StackPanel.Effect>
-            <StackPanel.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-43.994"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </StackPanel.RenderTransform>
-        </StackPanel>
+    <Grid Height="420" VerticalAlignment="Top">
+        <Border x:Name="loginBorder" BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="325" Margin="246,70,0,0" VerticalAlignment="Top" Width="300" CornerRadius="10" Background="#FFF1F1F1">
+            <StackPanel x:Name="loginStackPanel" Margin="-1"  >
+
+
+                <Label x:Name="loginLabelUserLogin" Content="User Login" FontSize="30" Padding="0" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Width="300" Height="47"/>
+                <Label Content="Name" HorizontalAlignment="Left" Height="38" Margin="34,5,0,0" Width="102" FontSize="20"/>
+                <TextBox x:Name="loginTextBoxInputName" HorizontalAlignment="Left" Height="38" Margin="34,10,0,0" TextWrapping="Wrap" Width="216" BorderThickness="2"/>
+                <Label Content="Password" HorizontalAlignment="Left" Height="38" Margin="34,5,0,0" Width="102" FontSize="20"/>
+                <PasswordBox x:Name="loginTextBoxInputPassword" Margin="34,10,0,0" FontSize="20" Height="38" HorizontalAlignment="Left" VerticalAlignment="Top" BorderThickness="2" Width="216"/>
+
+
+                <StackPanel x:Name="loginStackPanelButtons" Height="58" VerticalAlignment="Top" Orientation="Horizontal" Margin="0,0,10,0">
+                    <Button x:Name="loginButtonLogin" Content="Login" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,10,0,0" Width="90" Height="38" Background="White" Click="LoginButtonLogin_Click"/>
+                    <Button x:Name="loginButtonRegister" Content="Register" HorizontalAlignment="Right" Margin="35,10" Width="90" Height="38" Background="White" Click="LoginButtonRegister_Click" />
+                </StackPanel>
+                <TextBox x:Name="loginTestInput" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            </StackPanel>
+        </Border>
+        <Border x:Name="registerBorder" BorderBrush="Black" BorderThickness="1" Margin="205,55,205,25" CornerRadius="10" Visibility="Hidden">
+
+            <StackPanel x:Name="registerStackPanel" HorizontalAlignment="Left" Height="340" VerticalAlignment="Top" Width="382" Margin="-1">
+                <Label Content="Register" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Width="382" Height="59" FontSize="36"/>
+                <Grid Height="279">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="115*"/>
+                        <ColumnDefinition Width="267*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+
+                    <Label Content="Surname" Padding="0" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Grid.Row="1" Height="26" Width="118" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Label Content="Nickname" Padding="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="2" Height="26" Width="118" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Label Content="Password" Padding="0" HorizontalAlignment="Left" Margin="10,11,0,0" VerticalAlignment="Top" Grid.Row="3" Height="26" Width="103" FontSize="20"/>
+                    <Label Content="Name"  Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Height="26" Width="118" Margin="10,10,0,0" FontSize="20" Grid.ColumnSpan="2"/>
+                    <Label Content="Email" Padding="0" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Grid.Row="4" Height="26" Width="103" FontSize="20"/>
+                    <Button x:Name="registerButtonBack" Content="Back" Padding="-3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="103" Grid.Row="5" Height="27" FontSize="20" Click="RegisterButtonBack_Click"/>
+                    <TextBox x:Name="registerInputName" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="47,13,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="173"/>
+                    <TextBox x:Name="registerInputSurname" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="47,14,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Width="173"/>
+                    <TextBox x:Name="registerInputNickname" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="47,10,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="173"/>
+                    <TextBox x:Name="registerInputEmail" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="47,10,0,0" Grid.Row="4" TextWrapping="Wrap" VerticalAlignment="Top" Width="173" RenderTransformOrigin="0.636,0.466"/>
+                    <PasswordBox x:Name="registerInputPassword" Grid.Column="1" HorizontalAlignment="Left" Margin="47,11,0,0" Grid.Row="3" VerticalAlignment="Top" Width="173" Height="20"/>
+                    <Button x:Name="registerButtonRegister" Content="Register" Padding="-3" Grid.Column="1" HorizontalAlignment="Left" Margin="47,10,0,0" Grid.Row="5" VerticalAlignment="Top" Width="101" Click="RegisterButtonRegister_Click" Height="27" FontSize="20"/>
+                </Grid>
+
+
+
+
+
+            </StackPanel>
+
+        </Border>
+
+
 
     </Grid>
 </Window>

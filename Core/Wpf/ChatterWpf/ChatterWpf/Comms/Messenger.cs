@@ -30,6 +30,7 @@ namespace ChatterWpf.Comms
             client.DefaultRequestHeaders
                   .Accept
                   .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+            client.Timeout = TimeSpan.FromSeconds(3);
             client.BaseAddress = new Uri(serverUrl);
 
         }
@@ -79,8 +80,22 @@ namespace ChatterWpf.Comms
         private async Task<string> RawSend(object message, string controller, HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(message);
-            HttpResponseMessage response = await client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
-            var serverJson = await response.Content.ReadAsStringAsync();
+            HttpResponseMessage response = null;
+            try
+            {
+                var task = client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
+                task.Wait();
+                response = task.Result;
+            }
+            catch(Exception e)
+            {
+                throw e;
+                Console.WriteLine();
+            }
+            //var response = task.Result;
+            var task2 = response.Content.ReadAsStringAsync();
+            task2.Wait();
+            var serverJson = task2.Result;
 
             if (!IsSuccessStatusCode((int)response.StatusCode))
             {
@@ -107,7 +122,7 @@ namespace ChatterWpf.Comms
         public T Obtain<T>(string controller, string action, HttpMethod method, object inData)
         {
             var task = SendAsync<T>(inData, controller + "/" + action, method);
-            task.Wait();
+            task.Wait(3000);
             return task.Result;
         }
 
