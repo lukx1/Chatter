@@ -81,7 +81,7 @@ public class MainSceneController {
     public Button addFriendsAddButton;
     public HBox FriendsHolder;
     public net.lukx.jchatter.java.controls.NotificationPane NotifPane;
-    public MessagePane MsgPane;
+    public FlowingMessagePane MsgPane;//HERE
     public MessageTextBox SendMessageTextField;
 
     private GaussianBlur blurEffect;

@@ -72,6 +72,10 @@ public abstract class LinedPane extends Pane{
         }
     }
 
+    public LinedPane(){
+        super();
+    }
+
     public LinedPane(InitArgs initArgs){
         super();
         this.initArgs = initArgs;
