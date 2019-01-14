@@ -2,9 +2,13 @@ package net.lukx.jchatter.java.supporting;
 
 import net.lukx.jchatter.lib.models.User;
 
+import java.util.Date;
+
 public class CurrentValues {
 
     private static CurrentValues instance;
+
+    private Date lastLogin = new Date();
 
     private CurrentValues(){}
 
@@ -23,5 +27,13 @@ public class CurrentValues {
 
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 }

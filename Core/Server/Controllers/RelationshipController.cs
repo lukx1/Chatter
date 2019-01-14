@@ -28,6 +28,16 @@ namespace Server.Controllers
         }
 
         [HttpPost]
+        public IActionResult GetRelAboutUser(IDMessage message)
+        {
+            if (IsLoginValid(message))
+            {
+                return Ok(relationshipRepository.GetRelAboutUser(message.ID));
+            }
+            return BadRequest();
+        }
+
+        [HttpPost]
         [ActionName("Rel")]
         public IActionResult SetRel(RelMessage message)
         {
@@ -57,8 +67,11 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                relationshipRepository.SetRel(message.Relationship);
-                return Ok();
+                if (relationshipRepository.AddRel(message.Relationship))
+                {
+                    return Ok();
+                }
+                return BadRequest("Identical relationship already exists!");
             }
             return BadRequest();
         }

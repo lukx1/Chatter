@@ -34,13 +34,43 @@ namespace Server.Repos
 
         public bool IsLoginValid(string login, string password)
         {
-            return PasswordHelper.VerifyPasswordPbkdf2(password, context.Users.FirstOrDefault(x => x.Login == login).Password);
+            var usr = context.Users.FirstOrDefault(x => x.Login == login);
+            if (usr == null)
+            {
+                return false;
+            }
+            var result = PasswordHelper.VerifyPasswordPbkdf2(password, usr.Password);
+            if (result)
+            {
+                usr.DateLastLogin = DateTime.Now;
+                context.SaveChanges();
+            }
+            return result;
         }
 
         public void RegisterUser(Users user)
         {
             user.Password = PasswordHelper.HashPasswordPbkdf2(Encoding.ASCII.GetString(user.Password)).AsBytes();
             context.Users.Add(user);
+            context.SaveChanges();
+        }
+
+        private IQueryable<Roomusers> GetAllRoomUsersWithUser(Users users)
+        {
+            return context.Roomusers.Where(r => r.Iduser == users.Id);
+        }
+
+        private void RemoveAllUsersRoom(Users users)
+        {
+            foreach (var roomse in new RepoHelper(context).GetAllOneOnOneRoomsWithUser(users.Id))
+            {
+                context.Rooms.Remove(roomse);
+            }
+            foreach (var roomusers in GetAllRoomUsersWithUser(users))
+            {
+                context.Roomusers.Remove(roomusers);
+            }
+
             context.SaveChanges();
         }
 
@@ -56,6 +86,7 @@ namespace Server.Repos
                     context.Cfiles.Remove(item);
                 }
             }
+            RemoveAllUsersRoom(user);
             context.Users.Remove(user);
             context.SaveChanges();
             return true;
@@ -66,10 +97,9 @@ namespace Server.Repos
             var user = context.Users.Find(u.Id);
             user.FirstName = u.FirstName;
             user.SecondName = u.SecondName;
-            if(u.Password != null)
+            if (u.Password != null)
             {
-                //TODO:Password factory here
-                user.Password = user.Password;
+                user.Password = PasswordHelper.HashPasswordPbkdf2(Encoding.UTF8.GetString(u.Password)).AsBytes();
             }
             user.Picture = u.Picture;
             user.Email = u.Email;

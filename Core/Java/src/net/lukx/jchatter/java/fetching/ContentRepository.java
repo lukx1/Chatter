@@ -80,6 +80,9 @@ public class ContentRepository {
     }
 
     public Image fetchImageWithFallback(byte[] uuid){
+        if(uuid == null){
+            return getFallbackImage();
+        }
         Image image;
         try {
             image = fetchImage(uuid);
@@ -88,9 +91,9 @@ public class ContentRepository {
             }
         }
         catch(IOException | URISyntaxException e){
-            return new Image("/pictures/nopicture.png");
+            return getFallbackImage();
         }
-        return new Image("/pictures/nopicture.png");
+        return getFallbackImage();
     }
 
     public File getStoreDir() {

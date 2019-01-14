@@ -49,9 +49,7 @@ namespace Server.Controllers
             if (IsLoginValid(message))
             {
                 var usr = UserRepository.GetUserWithLogin(message.UserLogin);
-                if(usr != null)
-                    return Ok(usr);
-                return NotFound("User not found");
+                return Ok(usr);
             }
             return BadRequest();
         }

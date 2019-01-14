@@ -9,7 +9,7 @@ public class ConcreteInitArgs implements InitArgs {
 
     public ConcreteInitArgs(){}
 
-    public ConcreteInitArgs(double padding, double width, double height) {
+    public ConcreteInitArgs(double padding, double width, double height, double topMargin) {
         this.padding = padding;
         this.width = width;
         this.height = height;

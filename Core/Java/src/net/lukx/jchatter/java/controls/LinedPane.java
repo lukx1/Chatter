@@ -8,12 +8,16 @@ import javafx.event.EventType;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import net.lukx.jchatter.lib.models.UserStatus;
 
 import javax.naming.OperationNotSupportedException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +49,7 @@ public abstract class LinedPane extends Pane{
         return this.getHeight()+initArgs.getTopMargin();
     }
 
-    protected abstract void initElements();
+    protected abstract void initElements() throws IOException, URISyntaxException;
 
     public void setStatusColor(UserStatus statusColor){
         switch (statusColor){
@@ -120,7 +124,7 @@ public abstract class LinedPane extends Pane{
     }
 
     protected void createLabelBellowLabel(Label labelToCreate, Label referenceLabel){
-        createLabelBellowLabel(labelToCreate,referenceLabel,referenceLabel.getWidth(),initArgs.getPadding());
+        createLabelBellowLabel(labelToCreate,referenceLabel,referenceLabel.getPrefWidth(),initArgs.getPadding());
     }
 
     protected void createLabelBellowLabel(Label labelToCreate, Label referenceLabel, double width){
@@ -130,7 +134,7 @@ public abstract class LinedPane extends Pane{
     protected void createLabelBellowLabel(Label labelToCreate, Label referenceLabel, double width, double topPadding) {
         labelToCreate.setLayoutX(referenceLabel.getLayoutX());
         labelToCreate.setMaxWidth(width);
-        labelToCreate.setLayoutY(referenceLabel.getLayoutY() + referenceLabel.getHeight() + topPadding);
+        labelToCreate.setLayoutY(referenceLabel.getLayoutY() + referenceLabel.getPrefHeight() + labelToCreate.getPrefHeight());
 
         getChildren().add(labelToCreate);
         addToLabelLines(labelToCreate);
@@ -141,16 +145,21 @@ public abstract class LinedPane extends Pane{
             throw new NullPointerException("Picture circle not initialized");
         if (largeText) {
             label.getStyleClass().add("LargeText");
+            label.setPrefHeight(20*1.25);
         }
-
+        else {
+            label.setPrefHeight(20);
+        }
         label.setLayoutY(initArgs.getPadding());
-        label.setLayoutX(2 * (initArgs.getPadding() * pictureCircleRef.getRadius()));
-        label.setMaxWidth(initArgs.getWidth() - label.getLayoutX() - initArgs.getPadding());
+        label.setLayoutX(2 * (initArgs.getPadding()+ pictureCircleRef.getRadius()));
+        label.setPrefWidth(initArgs.getWidth() - label.getLayoutX() - initArgs.getPadding());
+
 
         getChildren().add(label);
         headerLabelRef = label;
     }
 
+    @SuppressWarnings("Duplicates")
     protected void createStatusCircleOn(Circle statusCircle, Circle pictureCircle) {
         statusCircle.setRadius(pictureCircle.getRadius() / 3.0);
         statusCircle.setLayoutY(pictureCircle.getLayoutY() + pictureCircle.getRadius() / sqrtTwo);
@@ -162,8 +171,23 @@ public abstract class LinedPane extends Pane{
         this.statusCircleRef = statusCircle;
     }
 
+    @SuppressWarnings("Duplicates")
+    protected void createStatusCircleTextOn(Circle statusCircle, Text text, StackPane stackPane, Circle pictureCircle) {
+        statusCircle.setRadius(pictureCircle.getRadius() / 3.0);
+        stackPane.setLayoutY(pictureCircle.getLayoutY() + pictureCircle.getRadius() / sqrtTwo);
+        stackPane.setLayoutX(pictureCircle.getLayoutX() + pictureCircle.getRadius() / sqrtTwo);
+        statusCircle.setFill(Color.GRAY);
+        statusCircle.setStroke(null);
+
+        stackPane.getChildren().add(statusCircle);
+        stackPane.getChildren().add(text);
+
+        getChildren().add(stackPane);
+        this.statusCircleRef = statusCircle;
+    }
+
     protected void createCenterLeftCircle(Circle circle) {
-        circle.setRadius(initArgs.getHeight() - 2 * initArgs.getPadding());
+        circle.setRadius((initArgs.getHeight() - 2.0 * initArgs.getPadding())/2.0);
         circle.setLayoutY(circle.getRadius() + initArgs.getPadding());
         circle.setLayoutX(circle.getRadius() + initArgs.getPadding());
         circle.setFill(null);

@@ -5,26 +5,32 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import net.lukx.jchatter.java.controls.RoomPane;
+import net.lukx.jchatter.java.controls.*;
 import net.lukx.jchatter.java.fetching.ContentRepository;
-import net.lukx.jchatter.java.fetching.RoomMarshall;
 import net.lukx.jchatter.java.fetching.SelectedInfoPane;
 import net.lukx.jchatter.java.fetching.SelectedInformationMarshall;
 import net.lukx.jchatter.java.supporting.CurrentValues;
 import net.lukx.jchatter.java.supporting.PopupMarshall;
 import net.lukx.jchatter.java.supporting.Repos;
+import net.lukx.jchatter.lib.models.Relationship;
+import net.lukx.jchatter.lib.models.RelationshipStatus;
+import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
 
+import javax.management.relation.RelationType;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class MainSceneController {
@@ -48,7 +54,6 @@ public class MainSceneController {
     public Button LogoutButton;
     public ScrollPane ChatScrollPane;
     public Button SendButton;
-    public TextArea SendMessageTextField;
     public Button EmojiButton;
     public Button FileButton;
     public AnchorPane InfoPane;
@@ -76,6 +81,15 @@ public class MainSceneController {
     public Label PopupHeaderLabel;
     public Label PopupBodyLabel;
     public Circle PopupCircle;
+    public TextField addFriendsField;
+    public Button addFriendsSearchButton;
+    public UsersPane addFriendsUsersPane;
+    public Button addFriendsBackButton;
+    public Button addFriendsAddButton;
+    public HBox FriendsHolder;
+    public net.lukx.jchatter.java.controls.NotificationPane NotifPane;
+    public MessagePane MsgPane;
+    public MessageTextBox SendMessageTextField;
 
     private GaussianBlur blurEffect;
     private Repos repos;
@@ -84,7 +98,7 @@ public class MainSceneController {
 
     private PopupMarshall popupMarshall;
 
-    private RoomMarshall roomMarshall;
+    //private RoomMarshall roomMarshall;
     private SelectedInformationMarshall informationMarshall;
     private boolean popupVisible = false;
 
@@ -101,6 +115,29 @@ public class MainSceneController {
             e.printStackTrace();
         }
 
+    }
+
+    private Relationship getRelationshipWithOther(User other) throws IOException, URISyntaxException {
+        Relationship[] rels = repos.getRelationshipRepo().getRelForUser(other.id);
+        Relationship withOter = null;
+        for (Relationship rel : rels) {
+            if(rel.idtargetUser == other.id){
+                withOter = rel;
+            }
+        }
+        return withOter;
+    }
+
+    private User getOtherUserInRoom(Room room) throws IOException, URISyntaxException {
+        User[] users = repos.getRoomRepo().getUsersInRoom(room.id);
+        User other;
+        if(users[0] == currentValues.getCurrentUser()){
+            other = users[1];
+        }
+        else {
+            other = users[0];
+        }
+        return other;
     }
 
     private void changeCurrentUser(User user){
@@ -150,7 +187,7 @@ public class MainSceneController {
         TopContainer.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED,this::globalClickHandler);
 
 
-        roomMarshall = new RoomMarshall(RoomsPane,repos.getRoomRepo(),repos.getRelationshipRepo(),contentRepository,currentValues);
+        //roomMarshall = new RoomMarshall(RoomsPane,repos.getRoomRepo(),repos.getRelationshipRepo(),contentRepository,currentValues);
         informationMarshall = new SelectedInformationMarshall(
                 new SelectedInfoPane(
                         InfoPane,
@@ -165,14 +202,41 @@ public class MainSceneController {
                 currentValues
         );
         try {
-            roomMarshall.loadForUser();
+            //roomMarshall.loadForUser();
             informationMarshall.init();
+            NotifPane.showNotifications();
+            NotifPane.clearInner();
         } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
+            popupMarshall.makeError(e.toString());
         }
 
-        popupMarshall.makeInfo("asdasdasd");
+        RoomsPane.init(repos,contentRepository,currentValues);
+        RoomsPane.addInnerRoomClickedHandler(this::roomClickedHandler);
+        try {
+            RoomsPane.showAllRooms();
+        } catch (IOException | URISyntaxException e) {
+            popupMarshall.makeError(e.toString());
+        }
+        SendMessageTextField.init(repos,currentValues,popupMarshall);
+        MsgPane.init(repos,contentRepository,currentValues,popupMarshall);
+        List<Room> rooms = RoomsPane.getAllRoomsShown();
+        if(rooms.size() > 0){
+            try {
+                MsgPane.showAllMessagesInRoom(rooms.get(0));//TODO:Since
+            } catch (IOException | URISyntaxException e) {
+                popupMarshall.makeError(e.toString());
+            }
+        }
 
+    }
+
+    private void roomClickedHandler(RoomPane.InnerRoomClickedEvent e){
+        try {
+            MsgPane.showAllMessagesInRoom(e.getRoom());
+            SendMessageTextField.setRoom(e.getRoom());
+        } catch (IOException | URISyntaxException e1) {
+            popupMarshall.makeError(e.toString());
+        }
     }
 
     private void backgroundInit(){
@@ -183,6 +247,8 @@ public class MainSceneController {
     public void initialize(){
         popupMarshall = new PopupMarshall(PopupPane,PopupHeaderLabel,PopupBodyLabel,PopupCircle);
         popupMarshall.init();
+        addFriendsUsersPane.init(repos,contentRepository,currentValues);
+        NotifPane.init(repos,contentRepository,currentValues);
         backgroundInit();
         openLoginScene();
     }
@@ -234,7 +300,7 @@ public class MainSceneController {
                 return false;
             }
         } catch (IOException | URISyntaxException e) {
-            popupMarshall.makeWarning(e.getMessage());
+            popupMarshall.makeError(e.getMessage());
             return false;
         }
         return true;
@@ -275,7 +341,7 @@ public class MainSceneController {
         LoginRegisterHolder.setVisible(true);
     }
 
-    private void createUserFromOnScreen(){
+    private boolean createUserFromOnScreen(){
         User user = new User();
         user.firstName = RegisterNameField.getText();
         user.secondName = RegisterSurnameField.getText();
@@ -288,12 +354,16 @@ public class MainSceneController {
             popupMarshall.makeSuccess("Registered","You have been successfully registered");
         } catch (IOException | URISyntaxException e) {
             popupMarshall.makeError(e.toString());
+            return false;
         }
+        return true;
     }
 
     public void FinishRegisterButtonClicked(ActionEvent actionEvent) {
         if(isRegisterValid()){
-            createUserFromOnScreen();
+            if(!createUserFromOnScreen()){
+                return;
+            }
             RegisterHolder.setVisible(false);
             RegisterNicknameFIeld.setText("");
             RegisterSurnameField.setText("");
@@ -304,7 +374,26 @@ public class MainSceneController {
         }
     }
 
+    private void toggleFriendsWindow(){
+        if(!FriendsHolder.isVisible()){ // Show
+            toggleScreenBlur();
+            FriendsHolder.setVisible(true);
+            addFriendsField.setText("");
+            addFriendsUsersPane.clearInner();
+            try {
+                addFriendsUsersPane.showAllUsers();
+            } catch (IOException | URISyntaxException e) {
+                popupMarshall.makeError(e.toString());
+            }
+        }
+        else { // Hide
+            FriendsHolder.setVisible(false);
+            toggleScreenBlur();
+        }
+    }
+
     public void FriendsButtonClicked(ActionEvent actionEvent) {
+        toggleFriendsWindow();
     }
 
     public void GroupsButtonClicked(ActionEvent actionEvent) {
@@ -317,6 +406,69 @@ public class MainSceneController {
         double y = mouseEvent.getY();
         if((x > 60 && x < TopPane.getScene().getWidth()-60) && (y > 0 && y < 100)){
             popupMarshall.forcePopupHide();
+        }
+    }
+
+    private Relationship getRelWithUserOrNewRel(int user, Relationship[] relationships){
+        for (Relationship relationship : relationships) {
+            if(relationship.idtargetUser == user)
+                return relationship;
+        }
+        return new Relationship();
+    }
+
+    private void sendFriendsRequests(List<User> users){
+        if(users.size() < 1){
+            return;
+        }
+        try {
+            Relationship[] allMyRels = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+            for (User user : users) {
+                Relationship r = getRelWithUserOrNewRel(user.id,allMyRels);
+                if((r.relationType & RelationshipStatus.FRIENDSHIP_PENDING.getKey()) > 0 || //Already a friends
+                        (r.relationType & RelationshipStatus.FRIEND.getKey()) > 0){         //Or pending
+                    continue;
+                }
+                r.idtargetUser = user.id;
+                r.idsourceUser = currentValues.getCurrentUser().id;
+                r.relationType |= RelationshipStatus.FRIENDSHIP_PENDING.getKey();
+
+                repos.getRelationshipRepo().addRel(r);
+            }
+        }
+        catch(IOException | URISyntaxException e){
+            popupMarshall.makeError(e.toString());
+        }
+        popupMarshall.makeSuccess("Friendship","Friendship requests sent!");
+
+    }
+
+    public void addFriendsSearchButtonClicked(ActionEvent actionEvent) {
+        addFriendsUsersPane.clearInner();
+
+        try {
+            addFriendsUsersPane.showUsersMatchingRegex(addFriendsField.getText());
+        } catch (IOException | URISyntaxException e) {
+            popupMarshall.makeError(e.toString());
+        }
+    }
+
+    public void addFriendsAddButtonClicked(ActionEvent actionEvent) {
+        sendFriendsRequests(addFriendsUsersPane.getUsersSelected());
+        toggleFriendsWindow();
+    }
+
+    public void addFriendsBackButtonClicked(ActionEvent actionEvent) {
+        toggleFriendsWindow();
+    }
+
+    public void sendClicked(ActionEvent actionEvent) {
+        Date beforeSent = new Date();
+        SendMessageTextField.sendMessage();
+        try {
+            MsgPane.showAllMessagesInRoomSince(MsgPane.getCurrentRoom(),beforeSent);
+        } catch (IOException | URISyntaxException e) {
+            popupMarshall.makeError(e.toString());
         }
     }
 }

@@ -7,6 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <StackPanel HorizontalAlignment="Left" Height="100" Margin="178,83,0,0" VerticalAlignment="Top" Width="100" RenderTransformOrigin="0.5,0.5" Background="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}">
+            <StackPanel.Effect>
+                <BlurEffect/>
+            </StackPanel.Effect>
+            <StackPanel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-43.994"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </StackPanel.RenderTransform>
+        </StackPanel>
+
     </Grid>
 </Window>

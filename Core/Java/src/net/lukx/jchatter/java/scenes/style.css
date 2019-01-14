@@ -12,6 +12,22 @@ Button {
     -fx-cursor: hand;
 }
 
+.CursorHand {
+    -fx-cursor: hand;
+}
+
+.Blocked {
+    -fx-text-fill: red;
+}
+
+.Friend {
+    -fx-text-fill: lightgreen;
+}
+
+.FriendPending {
+    -fx-text-fill: yellowgreen;
+}
+
 #TopPane {
     -fx-background-color: #222631;
 }
@@ -31,6 +47,12 @@ Button {
 
 .LargeText {
     -fx-font-size: 125%;
+}
+
+.ObjSelected {
+    -fx-background-color: #ddd;
+    -fx-border-color: #00abb2;
+    -fx-border-width:1px;
 }
 
 .OnTop {

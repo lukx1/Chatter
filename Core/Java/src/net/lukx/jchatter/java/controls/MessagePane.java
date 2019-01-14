@@ -1,98 +1,162 @@
 package net.lukx.jchatter.java.controls;
 
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Box;
 import javafx.scene.shape.Circle;
-import net.lukx.jchatter.java.supporting.RemovingList;
+import net.lukx.jchatter.java.fetching.ContentRepository;
+import net.lukx.jchatter.java.supporting.CurrentValues;
+import net.lukx.jchatter.java.supporting.PopupMarshall;
+import net.lukx.jchatter.java.supporting.Repos;
 import net.lukx.jchatter.lib.models.Message;
+import net.lukx.jchatter.lib.models.Room;
+import net.lukx.jchatter.lib.models.User;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class MessagePane extends Pane{
+public class MessagePane extends LinedPaneManagerPane<LinedPane>{
 
-    private double innerElementPadding;
-    private double innerElementTopMargin;
-    private double innerElementHeight;
+    private Repos repos;
+    private ContentRepository contentRepository;
+    private CurrentValues currentValues ;
+    private InitArgs args = new ConcreteInitArgs(6,100,40,0);
+    private List<User> usersInRoom = new ArrayList<>();
+    private PopupMarshall popupMarshall;
+    private Room currentRoom;
 
-    private List<InnerMessagePane> messagePanes = new RemovingList<>(this);
-    
+    public MessagePane(){
+        super();
+    }
 
-    public class InnerMessagePane extends Pane implements Initable{
+    public void clearInner(){
+        this.currentRoom = null;
+        usersInRoom.clear();
+        clearInnerElements();
+    }
 
-        private Message message;
+    private void loadUsersInRoom(Room room) throws IOException, URISyntaxException {
+        for (User user : repos.getRoomRepo().getUsersInRoom(room.id)) {
+            if(user.id == currentValues.getCurrentUser().id){
+                continue;
+            }
 
-        private int heightIndex = 0;
+            usersInRoom.add(user);
+        }
+        if(usersInRoom.size() < 1){
+            throw new IllegalArgumentException("No users are in this room");
+        }
+    }
 
-        private Circle circle;
-        private Label name;
+    private User getUserWithId(int id){
+        if(id == currentValues.getCurrentUser().id){
+            return currentValues.getCurrentUser();
+        }
+        for (User user : usersInRoom) {
+            if(user.id == id){
+                return user;
+            }
+        }
+        throw new NullPointerException("User not found in room");
+    }
+
+    public void showAllMessagesInRoomSince(Room room, Date date) throws IOException, URISyntaxException {
+        this.currentRoom = room;
+        args = new ConcreteInitArgs(args.getPadding(),this.getWidth(),args.getHeight(),args.getTopMargin());
+        Message[] msgs = repos.getMessageRepo().getMessagesInRoomSince(room.id,date);
+        loadUsersInRoom(room);
+        if(msgs.length < 1){
+            popupMarshall.makeInfo("This room has no messages");
+            return;
+        }
+        for (Message message : msgs) {
+            InnerMessagePane imp = new InnerMessagePane(args,message);
+            imp.initElements();
+            addInnerElement(imp);
+        }
+    }
+
+    public void showAllMessagesInRoom(Room room) throws IOException, URISyntaxException {
+        this.currentRoom = room;
+        args = new ConcreteInitArgs(args.getPadding(),this.getWidth(),args.getHeight(),args.getTopMargin());
+        Message[] msgs = repos.getMessageRepo().getMessagesInRoom(room.id);
+        loadUsersInRoom(room);
+        if(msgs.length < 1){
+            popupMarshall.makeInfo("This room has no messages");
+            return;
+        }
+        for (Message message : msgs) {
+            InnerMessagePane imp = new InnerMessagePane(args,message);
+            imp.initElements();
+            addInnerElement(imp);
+        }
+    }
+
+    public void init(Repos repos, ContentRepository contentRepository, CurrentValues currentValues, PopupMarshall popupMarshall){
+        this.repos = repos;
+        this.contentRepository = contentRepository;
+        this.currentValues = currentValues;
+        this.popupMarshall = popupMarshall;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public class InnerMessagePane extends LinedPane{
+
+        private Circle picture;
+        private Label header;
         private Label text;
-        private Pane filePane;
+        private Message message;
+        private User sentBy;
 
-        public double getYOffset(){
-            return heightIndex*(innerElementHeight+innerElementTopMargin);
+        public InnerMessagePane(InitArgs initArgs, Message message) {
+            super(initArgs);
+            this.message = message;
+            this.sentBy = getUserWithId(message.idsender);
         }
 
-        public InnerMessagePane(){
-
-        }
-
-        public String getText(){
-            return this.text.getText();
-        }
-
-        public void setText(String text){
-
-        }
-
-        public String getName(){
-            return this.name.getText();
-        }
-
-        public void setName(String name){
-            this.name.setText(name);
-        }
-
-        public void setImage(Image image){
-            this.circle.setFill(new ImagePattern(image));
-        }
-
-        private void initCircle(){
-            circle = new Circle();
-            circle.setRadius(8);
-            circle.setLayoutY(circle.getRadius()+innerElementPadding);
-            circle.setLayoutX(circle.getRadius()+innerElementPadding);
-            circle.setFill(null);
-            circle.setStrokeWidth(1);
-            circle.setStroke(Color.BLACK);
-        }
-
-        private void initName(){
-            name = new Label();
-            name.setLayoutY(circle.getRadius()+innerElementPadding);
-            name.setLayoutX(2*(circle.getRadius()+innerElementPadding));
-            name.setText("Name not loaded");
-        }
-
-        private void initText(){
+        @Override
+        protected void initElements() throws IOException, URISyntaxException {
+            picture = new Circle();
+            header = new Label();
             text = new Label();
-            text.setLayoutY(2*(circle.getRadius()+innerElementPadding));
-            text.setLayoutX(innerElementPadding);
-            text.setMaxWidth(this.getMaxWidth()-innerElementPadding*2);
+
+            createCenterLeftCircle(picture);
+            createHeaderLabelNextToPicture(header);
+
+            text.setLayoutY(picture.getRadius()+ initArgs.getPadding());
             text.setWrapText(true);
+            text.setMaxWidth(initArgs.getWidth());
+
+            picture.setFill(new ImagePattern(contentRepository.fetchImageWithFallback(sentBy.picture)));
+            text.setText(message.content);
+
+            if(sentBy.id != currentValues.getCurrentUser().id){
+                header.setText(sentBy.login+"   "+message.dateSent+(message.edited ? " *":""));
+            }
+            else {
+                header.setText(sentBy.login+"   "+message.dateSent+(message.edited ? " *":""));
+            }
+        }
+    }
+
+    public class InnerFilePane extends LinedPane {
+        private Circle picture;
+        //private Box
+
+        public InnerFilePane(InitArgs initArgs) {
+            super(initArgs);
         }
 
-        public void initializeInside(int index){
-            this.heightIndex = index;
-            this.setLayoutY(getYOffset());
-            initCircle();
-            initName();
-            initText();
-            this.getChildren().addAll(circle,name,text);
-        }
+        @Override
+        protected void initElements() throws IOException, URISyntaxException {
 
+        }
     }
 
 }
