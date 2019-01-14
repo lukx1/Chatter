@@ -38,8 +38,9 @@ public class ProgramActivity extends AppCompatActivity {
         });
 
         listView = (ListView)findViewById(R.id.ListView_main);
-        CustomAdapter customAdapter = new CustomAdapter();
-        listView.setAdapter(customAdapter);
+        App.getInstance().PopupHandler.ShowDialog(this,"Succesfully logged as " + loggedUser.login);
+        //CustomAdapter customAdapter = new CustomAdapter();
+        //listView.setAdapter(customAdapter);
     }
 
     private void onProfilePicClick(View v)
@@ -53,16 +54,16 @@ public class ProgramActivity extends AppCompatActivity {
 
     class CustomAdapter extends BaseAdapter{
 
-        ArrayList<AndroidUser> rels;
+        User[] rels;
 
         public CustomAdapter()
         {
-            rels = App.getInstance().LoggedUser.Friends;
+            rels = App.getInstance().Connector.getUsers();
         }
 
         @Override
         public int getCount() {
-            return rels.size();
+            return 0;
         }
 
         @Override
@@ -77,12 +78,12 @@ public class ProgramActivity extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            convertView = getLayoutInflater().inflate(R.layout.friend_show_chat_cell,null);
-
-            ImageView imageView = (ImageView)findViewById(R.id.imageView_chatcell_pic);
-            TextView textView = (TextView)findViewById(R.id.textView_chatcell_name);
-
-            textView.setText(rels.get(position).firstName + " " + rels.get(position).secondName);
+            //convertView = getLayoutInflater().inflate(R.layout.friend_show_chat_cell,null);
+                //
+                    //ImageView imageView = (ImageView)findViewById(R.id.imageView_chatcell_pic);
+                        //TextView textView = (TextView)findViewById(R.id.textView_chatcell_name);
+                            //
+                                //textView.setText(rels.get(position).firstName + " " + rels.get(position).secondName);
 
             return null;
         }

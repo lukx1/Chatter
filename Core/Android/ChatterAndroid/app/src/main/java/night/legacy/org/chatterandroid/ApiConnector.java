@@ -40,6 +40,7 @@ public class ApiConnector {
     {
         return Users[id - 1];
     }
+    public User[] getUsers() {return Users;}
 
     public void loadRelForUser(AndroidUser user) throws IOException, URISyntaxException {
          Relationship[] rels = relRepo.getRelForUser(user.id);

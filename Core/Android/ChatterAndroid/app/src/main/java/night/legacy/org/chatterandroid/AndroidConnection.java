@@ -84,22 +84,17 @@ public class AndroidConnection implements Communicable {
     }
 
     private String ObtainJson(String controller,String action, final HttpMethod method, String inData) throws Exception {
-        Response response = ExecuteMessage(controller,action,method,inData);
-
-        if(response.isSuccessful()) {
-            String resp = response.body().string();
-            response.body().close();
-            return resp;
-        }
-        else {
-            throw new Exception("Error status received :"+response.code());
-        }
+        String response = ExecuteMessage(controller,action,method,inData);
+        String resp = response;
+        if(resp == null || resp.length() == 0)
+            throw new Exception("Response empty");
+        return resp;
     }
 
-    private Response ExecuteMessage(String controller,String action, final HttpMethod method, String inData) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
+    private String ExecuteMessage(String controller,String action, final HttpMethod method, String inData) throws IOException, URISyntaxException, ExecutionException, InterruptedException {
 
         Request req = getRequest(CombineWithServerInfo(controller,action),inData,method);
-        Response result = new ExecuteConnection().execute(req).get();
+        String result = new ExecuteConnection().execute(req).get();
         return result;
     }
 
@@ -150,7 +145,7 @@ public class AndroidConnection implements Communicable {
 
     @Override
     public void Close() throws IOException {
-        client.connectionPool().evictAll();
+        //client.connectionPool().evictAll();
     }
 
     @Override
@@ -163,12 +158,12 @@ public class AndroidConnection implements Communicable {
         ServerURI = uri;
     }
 
-    class ExecuteConnection extends AsyncTask<Request,Void,Response>
+    class ExecuteConnection extends AsyncTask<Request,Void,String>
     {
         @Override
-        protected Response doInBackground(Request... requests) {
+        protected String doInBackground(Request... requests) {
             try {
-                return client.newCall(requests[0]).execute();
+                return client.newCall(requests[0]).execute().body().string();
             } catch (IOException e) {
                 e.printStackTrace();
             }
