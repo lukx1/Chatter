@@ -58,9 +58,9 @@
          <center>
             <AnchorPane fx:id="CenterAnchorPane" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefWidth="200" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefWidth="200" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <MessagePane fx:id="MsgPane" prefHeight="458.0" prefWidth="398.0" />
+                        <MessagePane fx:id="MsgPane" prefHeight="459.0" prefWidth="398.0" />
                      </content></ScrollPane>
                   <AnchorPane fx:id="SendMessagePane" prefHeight="80.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>

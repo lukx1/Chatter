@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MessagePane extends LinedPaneManagerPane<LinedPane>{
+public class MessagePaneBad extends LinedPaneManagerPane<LinedPane>{
 
     private Repos repos;
     private ContentRepository contentRepository;
@@ -28,13 +28,13 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
     private PopupMarshall popupMarshall;
     private Room currentRoom;
 
-    public MessagePane(){
+    public MessagePaneBad(){
         super();
     }
 
     public void clearInner(){
+        this.currentRoom = null;
         usersInRoom.clear();
-        clearInnerElements();
     }
 
     private void loadUsersInRoom(Room room) throws IOException, URISyntaxException {
