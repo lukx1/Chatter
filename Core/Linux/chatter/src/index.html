@@ -9,8 +9,9 @@
 </head>
 <body>
 
-<form id="loginModal" class="modal ch-center">
+<form id="loginModal" class="modal ch-flex-column ch-center">
     <img src="../images/Logo.png" alt="app logo" width="250px" height="250px"/>
+    <br />
     <input name="loginFormLogin" id="loginFormLogin" placeholder="Login" type="text" required/>
     <br/>
     <input name="loginFormPassword" id="loginFormPassword" placeholder="Password" type="password" required/>
@@ -82,18 +83,12 @@
             </div>
         </div>
         <div class="ch-p10px" id="extraInfoArea">
-            <div>
-                DATA
-            </div>
-            <div>
-                MOAR DATA
-            </div>
+
         </div>
     </div>
 </main>
 
 <script>
-  //jQuery fix when running under node
   window.$ = window.jQuery = require('jquery');
   const fs = require('fs');
 
@@ -106,7 +101,6 @@
   let eRegisterFormFirstName = $('#registerFormFirstName');
   let eRegisterFormSecondName = $('#registerFormSecondName');
   let eRegisterFormEmail = $('#registerFormEmail');
-  let eRegisterFormPicture = $('#registerFormPicture');
   let eInfoModal = $('#infoModal');
 
   let apUserListSearchBar = $('#userListSearchBar');
@@ -135,8 +129,29 @@
     password: ''
   };
 
-  function printChat() {
-
+  function userStatusStr(status) {
+      switch(status) {
+          case 0:
+              return 'NONE'
+          case 1:
+              return 'ONLINE';
+          case 2:
+              return 'AWAY';
+          case 3:
+              return 'OFFLINE';
+          case 4:
+              return 'BUSY';
+      }
+  }
+  function relStatusStr(status) {
+      if(status & 4)
+          return 'BLOCKED';
+      else if(status & 2)
+          return 'FRIEND';
+      else if(status & 1)
+          return 'PENDING';
+      else
+          return 'NONE';
   }
 
   function printUsers() {
@@ -145,13 +160,13 @@
       let el = '';
       let imgsrc = '../images/profilePic_placeholder.png';
 
-      //if (x.picture !== null)
-      //  imgsrc = 'data:image/png;base64,' + x.picture;
-
-      el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
+      if(APPDATA.selectedUser !== null && APPDATA.selectedUser.id === x.id)
+          el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-active-room ch-justify-between">';
+      else
+          el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
       el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
       el += '<div>' + x.login + '</div>';
-      el += '<div>' + x.status + '</div>';
+      el += '<div>' + userStatusStr(x.status) + '</div>';
       el += '</div>';
 
       apUserList.append(el);
@@ -163,14 +178,11 @@
       let el = '';
       let imgsrc = '../images/profilePic_placeholder.png';
 
-      //if (x.picture !== null)
-      //  imgsrc = 'data:image/png;base64,' + x.picture;
-
       if(APPDATA.selectedRoom !== null && APPDATA.selectedRoom.id === x.id)
         el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-active-room ch-justify-between">';
       else
         el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-justify-between">';
-      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="Room profile picture" />';
       el += '<div>' + x.name + '</div>';
       el += '</div>';
 
@@ -250,6 +262,8 @@
       });
   }
 
+
+
   function launchAfterLoginStuff() {
     createUserFileDir();
     initData();
@@ -259,10 +273,6 @@
 
   function fillCurrentUserInfo() {
     let imgsrc = '../images/profilePic_placeholder.png';
-
-    //if (APPDATA.currentUser.picture !== null) {
-    //  imgsrc = 'data:image/png;base64,' + APPDATA.currentUser.picture;
-    //}
 
     $('#currentUserImg')
       .attr('src', imgsrc);
@@ -338,7 +348,6 @@
         });
 
 
-      // TODO: registration works not
       $('#registerFormBackToLoginButton')
         .click(() => {
           eLoginModal.modal({
@@ -392,11 +401,15 @@
         fetch(SERVER_URL + 'api/User/RegisterUser', {
           method: 'PUT',
           body: JSON.stringify({
-            Firstname: eRegisterFormFirstName.val(),
-            Secondname: eRegisterFormSecondName.val(),
-            Login: eRegisterFormLogin.val(),
-            Password: eRegisterFormPassword.val(),
-            Email: eRegisterFormEmail.val()
+              Login: '',
+              Password: '',
+              User: {
+                  Firstname: eRegisterFormFirstName.val(),
+                  Secondname: eRegisterFormSecondName.val(),
+                  Login: eRegisterFormLogin.val(),
+                  Password: eRegisterFormPassword.val(),
+                  Email: eRegisterFormEmail.val()
+              }
           }),
           headers: {
             'Content-type': 'application/json; charset=UTF-8'
