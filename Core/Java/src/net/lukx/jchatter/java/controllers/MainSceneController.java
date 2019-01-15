@@ -1,11 +1,11 @@
 package net.lukx.jchatter.java.controllers;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.ImagePattern;
@@ -17,20 +17,13 @@ import net.lukx.jchatter.java.fetching.SelectedInformationMarshall;
 import net.lukx.jchatter.java.supporting.CurrentValues;
 import net.lukx.jchatter.java.supporting.PopupMarshall;
 import net.lukx.jchatter.java.supporting.Repos;
-import net.lukx.jchatter.lib.models.Relationship;
-import net.lukx.jchatter.lib.models.RelationshipStatus;
-import net.lukx.jchatter.lib.models.Room;
-import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.models.*;
 
-import javax.management.relation.RelationType;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class MainSceneController {
@@ -88,7 +81,7 @@ public class MainSceneController {
     public Button addFriendsAddButton;
     public HBox FriendsHolder;
     public net.lukx.jchatter.java.controls.NotificationPane NotifPane;
-    public MessagePane MsgPane;
+    public FlowingMessagePane MsgPane;//HERE
     public MessageTextBox SendMessageTextField;
 
     private GaussianBlur blurEffect;
@@ -105,6 +98,8 @@ public class MainSceneController {
     private CurrentValues currentValues = CurrentValues.createInstance();
 
     private File contentRepoFile = new File(System.getenv("LOCALAPPDATA")+"/Chatter/Content");
+
+    private Timer timer = new Timer();
 
     public MainSceneController(){
         try {
@@ -181,6 +176,43 @@ public class MainSceneController {
         PasswordField.setText("");
         toggleScreenBlur();
         loggedIn();
+        setStatusOnline();
+        timer.scheduleAtFixedRate(new TimerTask() { public void run() { timerTick(); }},0,1000);
+    }
+
+    private int TimerIndex = 0;
+    private void timerTick(){
+        if(TimerIndex > 1000000){
+            TimerIndex = 0;
+        }
+
+        if(TimerIndex % 10 == 0){
+            setStatusOnline();
+        }
+
+        if(MsgPane.getCurrentRoom() != null) {
+            Platform.runLater(() -> {
+                try {
+                    MsgPane.clearInner();
+                    MsgPane.showAllMessagesInRoom(MsgPane.getCurrentRoom());
+                } catch (IOException | URISyntaxException e) {
+                    popupMarshall.makeError(e.toString());
+                }
+            });
+        }
+    }
+
+    private void setStatusOnline(){
+        /*User cur = currentValues.getCurrentUser();
+        cur.dateLastLogin = new Date();
+        cur.status = UserStatus.ONLINE.getKey();
+        currentValues.setCurrentUser(cur);
+
+        try {
+            repos.getUserRepo().setUser(cur);
+        } catch (IOException | URISyntaxException e) {
+            popupMarshall.makeError(e.toString());
+        }*/
     }
 
     private void loggedIn(){
@@ -221,8 +253,9 @@ public class MainSceneController {
         MsgPane.init(repos,contentRepository,currentValues,popupMarshall);
         List<Room> rooms = RoomsPane.getAllRoomsShown();
         if(rooms.size() > 0){
+            SendMessageTextField.setRoom(rooms.get(0));//TODO:Since
             try {
-                MsgPane.showAllMessagesInRoom(rooms.get(0));//TODO:Since
+                MsgPane.showAllMessagesInRoom(rooms.get(0));
             } catch (IOException | URISyntaxException e) {
                 popupMarshall.makeError(e.toString());
             }
@@ -232,6 +265,7 @@ public class MainSceneController {
 
     private void roomClickedHandler(RoomPane.InnerRoomClickedEvent e){
         try {
+            MsgPane.clearInner();
             MsgPane.showAllMessagesInRoom(e.getRoom());
             SendMessageTextField.setRoom(e.getRoom());
         } catch (IOException | URISyntaxException e1) {
@@ -465,6 +499,7 @@ public class MainSceneController {
     public void sendClicked(ActionEvent actionEvent) {
         Date beforeSent = new Date();
         SendMessageTextField.sendMessage();
+        SendMessageTextField.setText("");
         try {
             MsgPane.showAllMessagesInRoomSince(MsgPane.getCurrentRoom(),beforeSent);
         } catch (IOException | URISyntaxException e) {

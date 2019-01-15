@@ -12,6 +12,10 @@ Button {
     -fx-cursor: hand;
 }
 
+.DarkerBg {
+    -fx-background-color: #aaa;
+}
+
 .CursorHand {
     -fx-cursor: hand;
 }

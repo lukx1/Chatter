@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<?import net.lukx.jchatter.java.controls.MessagePane?>
+<?import net.lukx.jchatter.java.controls.FlowingMessagePane?>
 <?import net.lukx.jchatter.java.controls.MessageTextBox?>
 <?import net.lukx.jchatter.java.controls.NotificationPane?>
 <?import net.lukx.jchatter.java.controls.RoomPane?>
@@ -58,9 +58,9 @@
          <center>
             <AnchorPane fx:id="CenterAnchorPane" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefWidth="200" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefHeight="474.0" prefWidth="400.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <MessagePane fx:id="MsgPane" prefHeight="458.0" prefWidth="398.0" />
+                        <FlowingMessagePane fx:id="MsgPane" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" rowValignment="TOP" />
                      </content></ScrollPane>
                   <AnchorPane fx:id="SendMessagePane" prefHeight="80.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>

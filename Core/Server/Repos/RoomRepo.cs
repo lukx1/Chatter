@@ -41,6 +41,7 @@ namespace Server.Repos
             return (from r in Context.Rooms
                    join ru in Context.Roomusers on r.Id equals ru.Idroom
                    join u in Context.Users on ru.Iduser equals u.Id
+                   where ru.Iduser == idUser
                    select r).Distinct();
         }
 
@@ -49,6 +50,7 @@ namespace Server.Repos
             return from r in Context.Rooms
                    join ru in Context.Roomusers on r.Id equals ru.Idroom
                    join u in Context.Users on ru.Iduser equals u.Id
+                   where r.Id == id
                    select u;
         }
 

@@ -1,8 +1,9 @@
 package net.lukx.jchatter.java.controls;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Box;
 import javafx.scene.shape.Circle;
 import net.lukx.jchatter.java.fetching.ContentRepository;
 import net.lukx.jchatter.java.supporting.CurrentValues;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class MessagePane extends LinedPaneManagerPane<LinedPane>{
+public class FlowingMessagePane extends FlowPane {
 
     private Repos repos;
     private ContentRepository contentRepository;
@@ -28,13 +29,13 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
     private PopupMarshall popupMarshall;
     private Room currentRoom;
 
-    public MessagePane(){
+    public FlowingMessagePane(){
         super();
     }
 
     public void clearInner(){
         usersInRoom.clear();
-        clearInnerElements();
+        getChildren().clear();
     }
 
     private void loadUsersInRoom(Room room) throws IOException, URISyntaxException {
@@ -73,9 +74,9 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
             return;
         }
         for (Message message : msgs) {
-            InnerMessagePane imp = new InnerMessagePane(args,message);
+            FlowingMessagePane.InnerMessagePane imp = new FlowingMessagePane.InnerMessagePane(args,message);
             imp.initElements();
-            addInnerElement(imp);
+            getChildren().add(imp);
         }
     }
 
@@ -90,9 +91,9 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
             return;
         }
         for (Message message : msgs) {
-            InnerMessagePane imp = new InnerMessagePane(args,message);
+            FlowingMessagePane.InnerMessagePane imp = new FlowingMessagePane.InnerMessagePane(args,message);
             imp.initElements();
-            addInnerElement(imp);
+            getChildren().add(imp);
         }
     }
 
@@ -115,9 +116,14 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
         private User sentBy;
 
         public InnerMessagePane(InitArgs initArgs, Message message) {
-            super(initArgs);
+            this.initArgs = initArgs;
+            this.setMaxWidth(initArgs.getWidth());
             this.message = message;
             this.sentBy = getUserWithId(message.idsender);
+        }
+
+        private void doSetHeight(double d){
+            this.setHeight(d);
         }
 
         @Override
@@ -125,6 +131,11 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
             picture = new Circle();
             header = new Label();
             text = new Label();
+            LinedPane thisLinedPane = this;
+
+            this.setMaxHeight(Double.NEGATIVE_INFINITY);
+            this.setMinHeight(initArgs.getHeight());
+            this.setPrefHeight(initArgs.getHeight());
 
             createCenterLeftCircle(picture,16);
             createHeaderLabelNextToPicture(header);
@@ -132,10 +143,20 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
             text.setLayoutY(picture.getRadius()+ initArgs.getPadding()*4);
             text.setWrapText(true);
             text.setLayoutX(initArgs.getPadding());
-            text.setMaxWidth(initArgs.getWidth()-initArgs.getPadding());
+            text.wrapTextProperty().setValue(true);
+            text.setAlignment(Pos.TOP_LEFT);
+            text.setMaxWidth(380);
+            text.setMaxHeight(Double.POSITIVE_INFINITY);
 
             picture.setFill(new ImagePattern(contentRepository.fetchImageWithFallback(sentBy.picture)));
             text.setText(message.content);
+
+            /*text.heightProperty().addListener((o,oldV,newV) -> {
+                //this.setPrefHeight(this.getPrefHeight()+(newV.doubleValue()-oldV.doubleValue()));\
+                thisLinedPane.setPrefHeight(100);
+                thisLinedPane.setMinHeight(100);
+                doSetHeight(100);
+            });*/
 
             getChildren().add(text);
 
@@ -145,7 +166,6 @@ public class MessagePane extends LinedPaneManagerPane<LinedPane>{
             else {
                 header.setText(sentBy.login+"   "+message.dateSent+(message.edited ? " *":""));
             }
-
 
             if(sentBy.id == currentValues.getCurrentUser().id){
                 getStyleClass().add("DarkerBg");

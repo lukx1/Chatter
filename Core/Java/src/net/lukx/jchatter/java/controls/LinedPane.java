@@ -72,6 +72,10 @@ public abstract class LinedPane extends Pane{
         }
     }
 
+    public LinedPane(){
+        super();
+    }
+
     public LinedPane(InitArgs initArgs){
         super();
         this.initArgs = initArgs;
@@ -187,7 +191,12 @@ public abstract class LinedPane extends Pane{
     }
 
     protected void createCenterLeftCircle(Circle circle) {
-        circle.setRadius((initArgs.getHeight() - 2.0 * initArgs.getPadding())/2.0);
+        createCenterLeftCircle(circle,(initArgs.getHeight() - 2.0 * initArgs.getPadding())/2.0);
+    }
+
+
+    protected void createCenterLeftCircle(Circle circle, double radius) {
+        circle.setRadius(radius);
         circle.setLayoutY(circle.getRadius() + initArgs.getPadding());
         circle.setLayoutX(circle.getRadius() + initArgs.getPadding());
         circle.setFill(null);
