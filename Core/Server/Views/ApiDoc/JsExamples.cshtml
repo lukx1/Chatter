@@ -1,0 +1,204 @@
+﻿
+@{
+    ViewData["Title"] = "JS Examples";
+    Layout = "~/Views/Shared/_ApiLayout.cshtml";
+}
+
+<div style="margin-top: 60px" class="container">
+<div style="border-bottom-left-radius: 0 !important;border-bottom-right-radius: 0 !important" class="jumbotron col-12 bg-dark text-light mb-0 pb-0 ml-0 mr-0 mt-2 pt-1 pr-0 pl-0">
+<div class="border-bottom p-2 bg-dark border-light">
+    <h2 class="pl-2 mb-2 pr-2 d-inline w-auto">Examples</h2>
+    <div class="d-inline-flex align-content-center">
+        <button class="btn btn-primary p-2 pl-4 pr-4 mr-2" id="ExampleBtn1"><h2>1</h2></button>
+        <button class="btn btn-secondary p-2 pl-4 pr-4 mr-2" id="ExampleBtn2"><h2>2</h2></button>
+        <button class="btn btn-secondary p-2 pl-4 pr-4 mr-2" id="ExampleBtn3"><h2>3</h2></button>
+    </div>
+</div>
+<div id="exampleWrapper" style="color:white">
+<div id="ExamplePage1">
+    <figure class="w-100 d-block code-showcase p-2 pt-0">
+        <pre>
+                    <code>
+fetch(SERVER_URL + 'api/User/GetUsers', {
+    method: 'POST',
+    body: JSON.stringify({
+        Login: LOGIN,
+        Password: PASSWORD
+    }),
+    headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+    }
+})
+    .then(resp => {
+        if(resp.ok)
+        {
+          //Perform task when OK
+        }
+        else
+          throw new Error('Error has occurred while fetching users!')
+    })
+    .catch(error => {
+        //Handle error
+    });
+});
+
+                    </code>
+                </pre>
+    </figure>
+</div>
+<div id="ExamplePage2">
+    <figure class="w-100 d-block code-showcase">
+        <pre>
+                    <code>
+fetch(SERVER_URL + 'api/User/ValidateLogin', {
+    method: 'POST',
+    body: JSON.stringify({
+        Login: LOGIN,
+        Password: PASSWORD
+    }),
+    headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+    }
+})
+.then(resp => {
+    if(resp.ok)
+        return resp.json();
+    throw new Error('Error has occurred!')
+})
+.then(json => {
+    if(json) {
+        //if login is valid
+    } else {
+        //if login is invalid
+    }
+})
+.catch(error => {
+    //handle errors
+});
+
+                    </code>
+                </pre>
+    </figure>
+</div>
+<div id="ExamplePage3">
+    <figure class="w-100 d-block code-showcase">
+        <pre>
+                    <code>
+fetch(SERVER_URL + 'api/User/RegisterUser', {
+    method: 'PUT',
+    body: JSON.stringify({
+        FirstName: FIRSTNAME,
+        SecondName: SECONDNAME,
+        Login: LOGIN,
+        Password: PASSWORD,
+        Email: EMAIL,
+        Picture: 64STRENCODEDIMAGE
+    }),
+    headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+    }
+})
+.then(resp => {
+    if(resp.ok)
+    {
+        //handle success
+    }
+    throw new Error('Error has occurred!')
+})
+.catch(error => {
+    //handle error
+});
+                </code>
+            </pre>
+    </figure>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    $("#ExamplePage1").show("fast",
+        function() {
+        });
+    $("#ExamplePage2").hide("fast",
+        function() {
+        });
+    $("#ExamplePage3").hide("fast",
+        function() {
+        });
+
+    $("#ExampleBtn1").click(function () {
+        $("#ExamplePage1").show("fast",
+            function() {
+            });
+        $("#ExampleBtn1").removeClass("btn-secondary");
+        $("#ExampleBtn1").addClass("btn-primary");
+
+        $("#ExamplePage2").hide("fast",
+            function() {
+            });
+        $("#ExampleBtn2").removeClass("btn-primary");
+        $("#ExampleBtn2").addClass("btn-secondary");
+
+        $("#ExamplePage3").hide("fast",
+            function() {
+            });
+        $("#ExampleBtn3").removeClass("btn-primary");
+        $("#ExampleBtn3").addClass("btn-secondary");
+    });
+
+    $("#ExampleBtn2").click(function() {
+        $("#ExamplePage2").show("fast",
+            function () {
+            });
+        $("#ExampleBtn2").removeClass("btn-secondary");
+        $("#ExampleBtn2").addClass("btn-primary");
+
+        $("#ExamplePage1").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn1").removeClass("btn-primary");
+        $("#ExampleBtn1").addClass("btn-secondary");
+
+        $("#ExamplePage3").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn3").removeClass("btn-primary");
+        $("#ExampleBtn3").addClass("btn-secondary");
+    });
+
+    $("#ExampleBtn3").click(function() {
+        $("#ExamplePage3").show("fast",
+            function () {
+            });
+        $("#ExampleBtn3").removeClass("btn-secondary");
+        $("#ExampleBtn3").addClass("btn-primary");
+
+        $("#ExamplePage2").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn2").removeClass("btn-primary");
+        $("#ExampleBtn2").addClass("btn-secondary");
+
+        $("#ExamplePage1").hide("fast",
+            function () {
+            });
+        $("#ExampleBtn1").removeClass("btn-primary");
+        $("#ExampleBtn1").addClass("btn-secondary");
+    });
+
+    {
+        var word =
+            'abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|float|native|super|while';
+        var rgx = new RegExp("\\b(" + word + ")\\b", 'ig');
+
+        $("code").contents().filter(function() {
+            return this.nodeType === 3;
+        }).each(function() {
+            window.$(this).replaceWith(window.$(this).text().replace(rgx, '<span style="color:#CC7832">$1</span>'));
+        });
+    }
+</script>
+
+
+
+

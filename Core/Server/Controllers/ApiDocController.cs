@@ -71,7 +71,7 @@ namespace Server.Controllers
             return View();
         }
 
-        public IActionResult CppExamples()
+        public IActionResult JsExamples()
         {
             return View();
         }

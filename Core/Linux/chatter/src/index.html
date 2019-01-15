@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
+    <link rel="stylesheet" href="appstyle.css"/>
+    <meta charset="utf-8">
+    <title>Chatter Dank Edition</title>
+</head>
+<body>
+
+<form id="loginModal" class="modal ch-center">
+    <img src="../images/Logo.png" alt="app logo" width="250px" height="250px"/>
+    <input name="loginFormLogin" id="loginFormLogin" placeholder="Login" type="text" required/>
+    <br/>
+    <input name="loginFormPassword" id="loginFormPassword" placeholder="Password" type="password" required/>
+    <br/>
+    <button id="loginFormSubmitButton" type="submit">Sign In</button>
+    <button id="loginFormRegisterButton" type="button">Sign Up</button>
+</form>
+
+<form id="registerModal" class="modal ch-center">
+    <input name="registerFormFirstName" id="registerFormFirstName" placeholder="First name" type="text" required/>
+    <br/>
+    <input name="registerFormSecondName" id="registerFormSecondName" placeholder="Second name" type="text"/>
+    <br/>
+    <input name="registerFormLogin" id="registerFormLogin" placeholder="Login" type="text" required/>
+    <br/>
+    <input name="registerFormPassword" id="registerFormPassword" placeholder="Password" type="password" required/>
+    <br/>
+    <input name="registerFormEmail" id="registerFormEmail" placeholder="Email" type="email"/>
+    <br/>
+    <button id="registerFormSubmitButton" type="submit">Register</button>
+    <button id="registerFormBackToLoginButton" type="button">Back to Login</button>
+</form>
+
+<div id="infoModal" class="modal"></div>
+
+<main>
+    <div id="headerArea" class="ch-dg-bg ch-p1">
+        <img src="../images/logochatter-wide.png" alt="wide logo owo" height="100px" width="300px"/>
+        <div class="ch-flex-row" id="currentUserInfo">
+            <div class="ch-flex-column ch-justify-between">
+                <div class="ch-bold ch-light" id="currentUserName">USERNAME</div>
+                <button id="logoutButton" type="button">Logout</button>
+            </div>
+            <img id="currentUserImg" class="ch-round" src="../images/profilePic_placeholder.png" width="100px" height="100px"
+                 alt="user pic"/>
+        </div>
+    </div>
+    <div id="mainAppArea">
+        <div class="ch-p10px" id="roomUserArea">
+            <div>
+                <div class="ch-hide ch-center" id="roomListCont">
+                    <input id="roomListSearchBar" placeholder="search"/>
+                    <div class="ch-center" id="roomList">
+
+                    </div>
+                </div>
+                <div class="ch-center" id="userListCont">
+                    <input id="userListSearchBar" placeholder="search"/>
+                    <div class="ch-center" id="userList">
+
+                    </div>
+                </div>
+            </div>
+            <div class="ch-flex-row ch-justify-between">
+                <input type="image" src="../images/icon_personAdd.png" width="30px" height="30px" alt="Add person" id="addFriendButton" />
+                <input type="image" src="../images/icon_mainWindow.png" width="30px" height="30px" alt="Main menu" id="openMenuButton" />
+                <input type="image" src="../images/icon_groupMenu.png" width="30px" height="30px" alt="Group/user menu" id="groupOrUserSwitchButton" />
+            </div>
+        </div>
+        <div class="ch-p10px ch-center" id="messageArea">
+            <div id="messageList">
+
+            </div>
+            <div id="messageInputArea">
+                <input class="ch-w80" id="messageInputText" type="text" placeholder="Your message"/>
+                <input type="image" src="../images/icon_emoji.png" width="30px" height="30px" alt="Pick emoji" id="pickEmojiButton" />
+                <input type="image" src="../images/icon_fileAttach.png" width="30px" height="30px" alt="Send file" id="sendFileButton" />
+                <input type="image" src="../images/icon_send.png" width="30px" height="30px" alt="Send" id="sendMessageButton" />
+            </div>
+        </div>
+        <div class="ch-p10px" id="extraInfoArea">
+            <div>
+                DATA
+            </div>
+            <div>
+                MOAR DATA
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+  //jQuery fix when running under node
+  window.$ = window.jQuery = require('jquery');
+  const fs = require('fs');
+
+  let eLoginModal = $('#loginModal');
+  let eRegisterModal = $('#registerModal');
+  let eLoginFormLogin = $('#loginFormLogin');
+  let eLoginFormPassword = $('#loginFormPassword');
+  let eRegisterFormLogin = $('#registerFormLogin');
+  let eRegisterFormPassword = $('#registerFormPassword');
+  let eRegisterFormFirstName = $('#registerFormFirstName');
+  let eRegisterFormSecondName = $('#registerFormSecondName');
+  let eRegisterFormEmail = $('#registerFormEmail');
+  let eRegisterFormPicture = $('#registerFormPicture');
+  let eInfoModal = $('#infoModal');
+
+  let apUserListSearchBar = $('#userListSearchBar');
+  let apRoomListSearchBar = $('#roomListSearchBar');
+
+  let apUserListCont = $('#userListCont');
+  let apRoomListCont = $('#roomListCont');
+
+  let apUserList = $('#userList');
+  let apRoomList = $('#roomList');
+
+  let APPDATA = {
+    currentUser: null,
+    selectedRoom: null,
+    selectedUser: null,
+    currentRoomMessages: [],
+    users: [],
+    rooms: [],
+  };
+
+  //Global data used by app
+  let SERVER_URL = 'http://78.102.218.164:8080/';
+  let activeList = 'USER';
+  let loginData = {
+    login: '',
+    password: ''
+  };
+
+  function printChat() {
+
+  }
+
+  function printUsers() {
+    apUserList.empty();
+    APPDATA.users.forEach(x => {
+      let el = '';
+      let imgsrc = '../images/profilePic_placeholder.png';
+
+      //if (x.picture !== null)
+      //  imgsrc = 'data:image/png;base64,' + x.picture;
+
+      el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
+      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+      el += '<div>' + x.login + '</div>';
+      el += '<div>' + x.status + '</div>';
+      el += '</div>';
+
+      apUserList.append(el);
+    });
+  }
+  function printRooms() {
+    apRoomList.empty();
+    APPDATA.rooms.forEach(x => {
+      let el = '';
+      let imgsrc = '../images/profilePic_placeholder.png';
+
+      //if (x.picture !== null)
+      //  imgsrc = 'data:image/png;base64,' + x.picture;
+
+      if(APPDATA.selectedRoom !== null && APPDATA.selectedRoom.id === x.id)
+        el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-active-room ch-justify-between">';
+      else
+        el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-justify-between">';
+      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+      el += '<div>' + x.name + '</div>';
+      el += '</div>';
+
+      apRoomList.append(el);
+    });
+  }
+
+  function timedEvent() {
+    console.log('Timed event fired!');
+  }
+
+  function createUserFileDir() {
+    if (!fs.existsSync('./userFiles')) {
+      fs.mkdirSync('./userFiles');
+    }
+  }
+  function fetchCurrentRooms() {
+    fetch(SERVER_URL + 'api/Room/GetRoomsWithUser', {
+      method: 'POST',
+      body: JSON.stringify({
+        Login: loginData.login,
+        Password: loginData.password,
+        ID: APPDATA.currentUser.id
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          throw new Error('Error has occurred while fetching rooms that user is residing in!');
+        }
+      })
+      .then(json => {
+        APPDATA.rooms = json;
+        printRooms();
+      })
+      .catch(error => {
+        eInfoModal.text(error.message);
+        eInfoModal.modal({
+          closeExisting: false
+        });
+      });
+  }
+  function initData() {
+    fetch(SERVER_URL + 'api/User/GetUsers', {
+      method: 'POST',
+      body: JSON.stringify({
+        Login: loginData.login,
+        Password: loginData.password
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      }
+    })
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          throw new Error('Error has occurred while fetching users!');
+        }
+      })
+      .then(json => {
+        APPDATA.users = json;
+        APPDATA.currentUser = APPDATA.users.find(e => e.login === loginData.login);
+        printUsers();
+        fetchCurrentRooms();
+        fillCurrentUserInfo();
+      })
+      .catch(error => {
+        eInfoModal.text(error.message);
+        eInfoModal.modal({
+          closeExisting: false
+        });
+      });
+  }
+
+  function launchAfterLoginStuff() {
+    createUserFileDir();
+    initData();
+
+    window.setInterval(timedEvent, 5000);
+  }
+
+  function fillCurrentUserInfo() {
+    let imgsrc = '../images/profilePic_placeholder.png';
+
+    //if (APPDATA.currentUser.picture !== null) {
+    //  imgsrc = 'data:image/png;base64,' + APPDATA.currentUser.picture;
+    //}
+
+    $('#currentUserImg')
+      .attr('src', imgsrc);
+    $('#currentUserName')
+      .text(APPDATA.currentUser.login);
+  }
+
+  function logout() {
+    window.clearInterval();
+    eLoginModal.modal({
+      escapeClose: false,
+      clickClose: false,
+      showClose: false
+    });
+  }
+
+  $(document)
+    .ready(() => {
+
+      $('#logoutButton')
+        .click(() => {
+          logout();
+        });
+
+      eLoginModal.modal({
+        escapeClose: false,
+        clickClose: false,
+        showClose: false
+      });
+
+      $('#groupOrUserSwitchButton').click(() => {
+        if(activeList === 'USER')
+        {
+          activeList = 'ROOM';
+          apRoomListCont.removeClass('ch-hide');
+          apUserListCont.addClass('ch-hide');
+        }
+        else
+        {
+          activeList = 'USER';
+          apUserListCont.removeClass('ch-hide');
+          apRoomListCont.addClass('ch-hide');
+        }
+      });
+
+      apRoomListSearchBar.change(() => {
+        apRoomList.children().each((i, e) => {
+          if($(e).attr('data-name').includes(apRoomListSearchBar.val())) {
+            $(e).show();
+          } else {
+            $(e).hide();
+          }
+        });
+      });
+      apUserListSearchBar.change(() => {
+        apUserList.children().each((i, e) => {
+          if($(e).attr('data-name').includes(apUserListSearchBar.val())) {
+            $(e).show();
+          } else {
+            $(e).hide();
+          }
+        });
+      });
+
+
+      $('#loginFormRegisterButton')
+        .click(() => {
+          eRegisterModal.modal({
+            escapeClose: false,
+            clickClose: false,
+            showClose: false
+          });
+        });
+
+
+      // TODO: registration works not
+      $('#registerFormBackToLoginButton')
+        .click(() => {
+          eLoginModal.modal({
+            escapeClose: false,
+            clickClose: false,
+            showClose: false
+          });
+        });
+
+      eLoginModal.submit((e) => {
+        fetch(SERVER_URL + 'api/User/ValidateLogin', {
+          method: 'POST',
+          body: JSON.stringify({
+            Login: eLoginFormLogin.val(),
+            Password: eLoginFormPassword.val()
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+          }
+        })
+          .then(resp => {
+            if (resp.ok) {
+              return resp.json();
+            }
+            throw new Error('Error has occurred!');
+          })
+          .then(json => {
+            if (json) {
+              eInfoModal.text('Login was successful!');
+              eInfoModal.modal();
+              loginData.login = eLoginFormLogin.val();
+              loginData.password = eLoginFormPassword.val();
+              launchAfterLoginStuff();
+            } else {
+              eInfoModal.text('Invalid credentials!');
+              eInfoModal.modal({
+                closeExisting: false
+              });
+            }
+          })
+          .catch(error => {
+            eInfoModal.text(error.message);
+            eInfoModal.modal({
+              closeExisting: false
+            });
+          });
+        e.preventDefault();
+      });
+
+      eRegisterModal.submit((e) => {
+        fetch(SERVER_URL + 'api/User/RegisterUser', {
+          method: 'PUT',
+          body: JSON.stringify({
+            Firstname: eRegisterFormFirstName.val(),
+            Secondname: eRegisterFormSecondName.val(),
+            Login: eRegisterFormLogin.val(),
+            Password: eRegisterFormPassword.val(),
+            Email: eRegisterFormEmail.val()
+          }),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+          }
+        })
+          .then(resp => {
+            if (resp.ok) {
+              eLoginModal.modal({
+                escapeClose: false,
+                clickClose: false,
+                showClose: false
+              });
+              eInfoModal.text('Registration was successful!');
+              eInfoModal.modal({
+                closeExisting: false
+              });
+            }
+            throw new Error('Error has occurred!');
+          })
+          .catch(error => {
+            eInfoModal.text(error.message);
+            eInfoModal.modal({
+              closeExisting: false
+            });
+          });
+        e.preventDefault();
+      });
+    });
+</script>
+</body>
+</html>
