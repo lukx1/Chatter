@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             app.LoggedUser = new AndroidUser(rep.getUserWithLogin(login));
             app.Connector.loadAllUsers();
             app.LoggedUser.loadRelationships();
+            app.Connector.getRoomsForUser(app.LoggedUser);
         }
         catch (Exception ex)
         {

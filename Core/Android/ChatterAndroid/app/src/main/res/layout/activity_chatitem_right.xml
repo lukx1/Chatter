@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/relativeLayout_chatitemleft"
+    android:padding="12dp"
+    >
+
+    <ImageView
+        android:id="@+id/imageView_chatItemLeft_pic"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        app:srcCompat="@drawable/profilepic_placeholder" />
+
+    <TextView
+        android:id="@+id/textView_chatitemleft_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/imageView_chatItemLeft_pic"
+        android:layout_marginStart="-94dp"
+        android:layout_marginLeft="-94dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginRight="9dp"
+        android:layout_marginBottom="25dp"
+        android:layout_toStartOf="@+id/imageView_chatItemLeft_pic"
+        android:layout_toLeftOf="@+id/imageView_chatItemLeft_pic"
+        android:layout_toEndOf="@+id/imageView_chatItemLeft_pic"
+        android:layout_toRightOf="@+id/imageView_chatItemLeft_pic"
+        android:text="TextView"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView_chatitemleft_message"
+        android:layout_width="287dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView_chatitemleft_name"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="-14dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginRight="21dp"
+        android:layout_toStartOf="@+id/imageView_chatItemLeft_pic"
+        android:layout_toLeftOf="@+id/imageView_chatItemLeft_pic"
+        android:text="text"
+        android:textColor="@color/colorAccent" />
+
+</RelativeLayout>

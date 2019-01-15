@@ -1,5 +1,6 @@
 package night.legacy.org.chatterandroid;
 
+import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
 
 import java.io.IOException;
@@ -12,9 +13,14 @@ public class AndroidUser extends User {
     public ArrayList<AndroidUser> Friends;
     public ArrayList<AndroidUser> FriendshipPending;
     public ArrayList<AndroidUser> Blocked;
+    public ArrayList<AndroidRoom> Rooms;
 
     public AndroidUser(User user)
     {
+        Friends = new ArrayList();
+        FriendshipPending = new ArrayList();
+        Blocked = new ArrayList();
+        Rooms = new ArrayList<>();
         this.firstName = user.firstName;
         this.secondName = user.secondName;
         this.login = user.login;
@@ -36,5 +42,12 @@ public class AndroidUser extends User {
         App.getInstance().Connector.loadRelForUser(this);
     }
 
-
+    public AndroidRoom getRoomByID(int id)
+    {
+        for (AndroidRoom item: Rooms) {
+            if(item.id == id)
+                return  item;
+        }
+        return null;
+    }
 }
