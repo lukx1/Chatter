@@ -18,6 +18,24 @@
         android:layout_marginTop="0dp"
         app:srcCompat="@drawable/profilepic_placeholder" />
 
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/textView_chatitemleft_message"
+        android:layout_alignLeft="@+id/textView_chatitemleft_message"
+        android:layout_alignTop="@+id/textView_chatitemleft_message"
+        android:layout_alignEnd="@+id/textView_chatitemleft_message"
+        android:layout_alignRight="@+id/textView_chatitemleft_message"
+        android:layout_alignBottom="@+id/textView_chatitemleft_message"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
+        app:srcCompat="@color/colorLightBlue" />
+
     <TextView
         android:id="@+id/textView_chatitemleft_name"
         android:layout_width="wrap_content"
@@ -49,6 +67,6 @@
         android:layout_toEndOf="@+id/imageView_chatItemLeft_pic"
         android:layout_toRightOf="@+id/imageView_chatItemLeft_pic"
         android:text="text"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/colorPrimary" />
 
 </RelativeLayout>

@@ -18,16 +18,30 @@
         android:layout_marginRight="0dp"
         app:srcCompat="@drawable/profilepic_placeholder" />
 
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textView_chatitemleft_message"
+        android:layout_alignEnd="@+id/textView_chatitemleft_message"
+        android:layout_alignRight="@+id/textView_chatitemleft_message"
+        android:layout_alignBottom="@+id/textView_chatitemleft_message"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        app:srcCompat="@color/colorLightBlue" />
+
     <TextView
         android:id="@+id/textView_chatitemleft_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/imageView_chatItemLeft_pic"
-        android:layout_marginStart="-94dp"
-        android:layout_marginLeft="-94dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginRight="9dp"
+        android:layout_marginStart="-357dp"
+        android:layout_marginLeft="-357dp"
+        android:layout_marginTop="-2dp"
+        android:layout_marginEnd="272dp"
+        android:layout_marginRight="272dp"
         android:layout_marginBottom="25dp"
         android:layout_toStartOf="@+id/imageView_chatItemLeft_pic"
         android:layout_toLeftOf="@+id/imageView_chatItemLeft_pic"
@@ -52,6 +66,6 @@
         android:layout_toStartOf="@+id/imageView_chatItemLeft_pic"
         android:layout_toLeftOf="@+id/imageView_chatItemLeft_pic"
         android:text="text"
-        android:textColor="@color/colorAccent" />
+        android:textColor="@color/colorPrimary" />
 
 </RelativeLayout>
