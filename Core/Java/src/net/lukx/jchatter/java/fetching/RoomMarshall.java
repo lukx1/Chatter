@@ -1,4 +1,4 @@
-package net.lukx.jchatter.java.fetching;
+/*package net.lukx.jchatter.java.fetching;
 
 import com.sun.istack.internal.NotNull;
 import javafx.scene.paint.Color;
@@ -96,3 +96,4 @@ public class RoomMarshall {
 
 }
 
+*/

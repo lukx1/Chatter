@@ -11,7 +11,8 @@ namespace Server.Repos
         IEnumerable<Relationships> GetRelForUser(int id);
         void SetRel(Relationships rel);
         bool RemoveRel(int id);
-        void AddRel(Relationships rel);
+        bool AddRel(Relationships rel);
+        IEnumerable<Relationships> GetRelAboutUser(int id);
     }
 
 }

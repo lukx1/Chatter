@@ -52,6 +52,14 @@ public class RemovingList<T extends Node> implements List<T> {
         return list.add(t);
     }
 
+    public void removeSilent(int index){
+        parent.getChildren().remove(index);
+    }
+
+    public void removeSilent(T element){
+        parent.getChildren().remove(element);
+    }
+
     @Override
     public boolean remove(Object o) {
         parent.getChildren().remove(o);

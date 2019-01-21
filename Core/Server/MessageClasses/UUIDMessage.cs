@@ -7,6 +7,6 @@ namespace Server.MessageClasses
 {
     public class UUIDMessage : LoginHeader
     {
-        public byte[] UUID { get; set; }
+        public string UUID { get; set; }
     }
 }

@@ -5,15 +5,18 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import net.lukx.jchatter.java.controls.FlowingMessagePane?>
+<?import net.lukx.jchatter.java.controls.MessageTextBox?>
+<?import net.lukx.jchatter.java.controls.NotificationPane?>
 <?import net.lukx.jchatter.java.controls.RoomPane?>
+<?import net.lukx.jchatter.java.controls.UsersPane?>
 
 <!--suppress JavaFxDefaultTag -->
 
@@ -34,8 +37,7 @@
          <left>
             <AnchorPane fx:id="LeftPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <TextField fx:id="SearchTextField" layoutX="26.0" layoutY="14.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0" />
-                  <ScrollPane fx:id="RoomsScrollPane" hbarPolicy="NEVER" layoutX="6.0" layoutY="45.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="37.0">
+                  <ScrollPane fx:id="RoomsScrollPane" hbarPolicy="NEVER" layoutX="6.0" layoutY="45.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0">
                      <content>
                         <RoomPane fx:id="RoomsPane" prefHeight="420.0" prefWidth="186.0" />
                      </content></ScrollPane>
@@ -47,25 +49,26 @@
          <top>
             <AnchorPane fx:id="TopPane" prefHeight="60.0" BorderPane.alignment="TOP_CENTER">
                <children>
-                  <Circle fx:id="CurrentUserPicture" fill="#ffffff00" layoutX="734.0" layoutY="30.0" radius="24.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="6.0" />
+                  <Circle fx:id="CurrentUserPicture" fill="#ffffff00" layoutX="734.0" layoutY="30.0" onMouseClicked="#CurrentUserPictureClicked" radius="24.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.bottomAnchor="6.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="6.0" />
                   <Button fx:id="LogoutButton" layoutX="652.0" layoutY="30.0" mnemonicParsing="false" onAction="#LogoutButtonClicked" text="LOGOUT" AnchorPane.rightAnchor="66.0" />
                   <Label fx:id="UsernameLabel" alignment="CENTER_RIGHT" layoutX="622.0" layoutY="6.0" prefHeight="17.0" prefWidth="278.0" text="Label" AnchorPane.rightAnchor="66.0" AnchorPane.topAnchor="6.0" />
+                  <Rectangle fx:id="logoRect" arcHeight="5.0" arcWidth="5.0" fill="WHITE" height="88.0" layoutX="45.0" layoutY="35.0" smooth="false" stroke="TRANSPARENT" strokeType="INSIDE" width="264.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="6.0" />
                </children>
             </AnchorPane>
          </top>
          <center>
             <AnchorPane fx:id="CenterAnchorPane" BorderPane.alignment="CENTER">
                <children>
-                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefWidth="200" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <ScrollPane fx:id="ChatScrollPane" hbarPolicy="NEVER" prefHeight="474.0" prefWidth="400.0" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <content>
-                        <Pane prefHeight="458.0" prefWidth="398.0" />
+                        <FlowingMessagePane fx:id="MsgPane" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" rowValignment="TOP" />
                      </content></ScrollPane>
                   <AnchorPane fx:id="SendMessagePane" prefHeight="80.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <children>
-                        <Button fx:id="SendButton" layoutX="766.0" layoutY="11.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" text="SEND" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0" />
-                        <TextArea fx:id="SendMessageTextField" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="24.0" prefWidth="740.0" wrapText="true" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="122.0" AnchorPane.topAnchor="6.0" />
-                        <Button fx:id="EmojiButton" layoutX="14.0" layoutY="42.0" mnemonicParsing="false" prefHeight="10.0" prefWidth="26.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="6.0" />
-                        <Button fx:id="FileButton" layoutX="46.0" layoutY="42.0" mnemonicParsing="false" prefHeight="21.0" prefWidth="26.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="40.0" />
+                        <Button fx:id="SendButton" layoutX="766.0" layoutY="11.0" mnemonicParsing="false" onAction="#sendClicked" prefHeight="30.0" prefWidth="100.0" text="SEND" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0" />
+                        <MessageTextBox fx:id="SendMessageTextField" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" minHeight="-Infinity" onKeyPressed="#SendMessageTextFieldKeyPressed" prefHeight="24.0" prefWidth="740.0" AnchorPane.bottomAnchor="36.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="122.0" AnchorPane.topAnchor="6.0" />
+                        <Button fx:id="EmojiButton" layoutX="14.0" layoutY="42.0" mnemonicParsing="false" onAction="#EmojiButtonClicked" prefHeight="25.0" prefWidth="29.0" text="☺" textOverrun="CLIP" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="10.0" />
+                        <Button fx:id="FileButton" layoutX="46.0" layoutY="42.0" mnemonicParsing="false" onAction="#FileButtonClicked" prefHeight="21.0" prefWidth="26.0" text="F" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="40.0" />
                      </children>
                      <padding>
                         <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
@@ -82,15 +85,15 @@
                         <Circle fx:id="PictueCircle" fill="#ffffff00" radius="75.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="25.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="25.0" />
                         <Label fx:id="SelectedUserOrGroupLabel" alignment="CENTER" layoutX="86.0" layoutY="188.0" text="Name" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
                         <Label fx:id="SelectedUserOrGroupInfo" alignment="CENTER" layoutX="86.0" layoutY="214.0" text="Email" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
-                        <Button fx:id="UnfriendOrManageUsersButton" layoutX="9.0" layoutY="239.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="160.0" text="UNFRIEND" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
-                        <Button fx:id="BlockOrLeaveButton" layoutX="73.0" layoutY="267.0" mnemonicParsing="false" text="BLOCK" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Button fx:id="UnfriendOrManageUsersButton" layoutX="9.0" layoutY="239.0" mnemonicParsing="false" onAction="#UnfriendOrManageUsersButtonClicked" prefHeight="25.0" prefWidth="160.0" text="UNFRIEND" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                        <Button fx:id="BlockOrLeaveButton" layoutX="73.0" layoutY="267.0" mnemonicParsing="false" onAction="#BlockOrLeaveButtonClicked" text="BLOCK" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+                     <ScrollPane prefHeight="200.0" prefWidth="200.0" AnchorPane.topAnchor="300.0">
+                       <content>
+                         <NotificationPane fx:id="NotifPane" minHeight="0.0" minWidth="0.0" prefHeight="198.0" prefWidth="198.0" />
+                       </content>
+                     </ScrollPane>
                      </children>
                   </AnchorPane>
-                <AnchorPane fx:id="NotificationPane" minHeight="0.0" minWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="300.0">
-                  <children>
-                     <Circle fx:id="NotificationCountCircle" fill="#ffffff00" layoutX="32.0" layoutY="32.0" radius="32.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="6.0" />
-                  </children>
-               </AnchorPane>
 
             </AnchorPane>
          </right>
@@ -111,38 +114,72 @@
       </HBox>
       <HBox fx:id="RegisterHolder" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <AnchorPane fx:id="RegisterInnerPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="224.0" prefWidth="239.0" styleClass="OnTop">
+            <AnchorPane fx:id="RegisterInnerPane" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="330.0" prefWidth="239.0" styleClass="OnTop">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="6.0" styleClass="LargeText" text="Register" textAlignment="CENTER" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="66.0" />
-                  <Label layoutX="7.0" layoutY="31.0" text="Name" AnchorPane.leftAnchor="6.0" />
-                  <Label layoutX="10.0" layoutY="62.0" text="Surname" AnchorPane.leftAnchor="6.0" />
-                  <Label layoutX="7.0" layoutY="93.0" text="Nickname" AnchorPane.leftAnchor="6.0" />
-                  <Label layoutX="8.0" layoutY="124.0" text="Password" AnchorPane.leftAnchor="6.0" />
-                  <PasswordField fx:id="RegisterPasswordField" layoutX="51.0" layoutY="103.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="120.0" />
-                  <TextField fx:id="RegisterNameField" layoutX="51.0" layoutY="27.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="27.0" />
-                  <TextField fx:id="RegisterSurnameField" layoutX="51.0" layoutY="53.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="58.0" />
-                  <TextField fx:id="RegisterNicknameFIeld" layoutX="51.0" layoutY="78.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="89.0" />
-                  <TextField fx:id="RegisterEmailField" layoutX="51.0" layoutY="127.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="151.0" />
-                  <Label layoutX="8.0" layoutY="155.0" text="Email" AnchorPane.leftAnchor="6.0" />
-                  <Button fx:id="FinishRegisterButton" layoutX="48.0" layoutY="170.0" mnemonicParsing="false" onAction="#FinishRegisterButtonClicked" prefHeight="25.0" prefWidth="88.0" text="REGISTER" AnchorPane.leftAnchor="65.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="180.0" />
-                  <Button fx:id="BackRegisterButton" layoutX="66.0" layoutY="180.0" mnemonicParsing="false" onAction="#BackRegisterButtonClicked" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="180.0" />
+                  <Label fx:id="RegisterHeader" alignment="CENTER" contentDisplay="CENTER" layoutX="66.0" layoutY="6.0" styleClass="LargeText" text="Register" textAlignment="CENTER" AnchorPane.leftAnchor="66.0" AnchorPane.rightAnchor="66.0" />
+                  <AnchorPane layoutX="6.0" layoutY="27.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="150.0">
+                     <children>
+                        <Label layoutY="4.0" text="Name" />
+                        <Label layoutY="35.0" text="Surname" />
+                        <Label layoutY="66.0" text="Nickname" />
+                        <Label layoutY="97.0" text="Password" />
+                        <TextField fx:id="RegisterNameField" layoutX="78.0" />
+                        <TextField fx:id="RegisterSurnameField" layoutX="78.0" layoutY="31.0" />
+                        <TextField fx:id="RegisterNicknameFIeld" layoutX="78.0" layoutY="62.0" />
+                        <PasswordField fx:id="RegisterPasswordField" layoutX="78.0" layoutY="93.0" />
+                        <TextField fx:id="RegisterEmailField" layoutX="78.0" layoutY="124.0" />
+                        <Label layoutY="128.0" text="Email" />
+                        <Button fx:id="FinishRegisterButton" layoutX="59.0" layoutY="153.0" mnemonicParsing="false" onAction="#FinishRegisterButtonClicked" prefHeight="25.0" prefWidth="88.0" text="REGISTER" AnchorPane.rightAnchor="0.0" />
+                        <Button fx:id="BackRegisterButton" layoutY="153.0" mnemonicParsing="false" onAction="#BackRegisterButtonClicked" text="BACK" />
+                     </children>
+                  </AnchorPane>
+                  <Circle fx:id="registerCircle" fill="#1f93ff00" layoutX="120.0" layoutY="74.0" onMouseClicked="#registerCircleClicked" radius="56.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.leftAnchor="64.0" AnchorPane.rightAnchor="63.0" AnchorPane.topAnchor="30.0" />
                </children></AnchorPane>
          </children>
       </HBox>
-      <HBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox fx:id="FriendsHolder" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="418.0" prefWidth="300.0">
                <children>
-                  <TextField layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="216.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="26.0" />
-                  <Button layoutX="234.0" layoutY="14.0" mnemonicParsing="false" text="SEARCH" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="26.0" />
+                  <TextField fx:id="addFriendsField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="26.0" />
+                  <Button fx:id="addFriendsSearchButton" layoutX="234.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addFriendsSearchButtonClicked" prefHeight="25.0" prefWidth="84.0" text="SEARCH" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="26.0" />
                   <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="46.0" prefHeight="324.0" prefWidth="271.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="56.0">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="286.0" />
+                      <UsersPane fx:id="addFriendsUsersPane" minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="286.0" />
                     </content>
                   </ScrollPane>
-                  <Button layoutX="234.0" layoutY="370.0" mnemonicParsing="false" text="ADD" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="385.0" />
-                  <Button layoutX="6.0" layoutY="358.0" mnemonicParsing="false" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Button fx:id="addFriendsAddButton" layoutX="234.0" layoutY="370.0" mnemonicParsing="false" onAction="#addFriendsAddButtonClicked" text="ADD" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Button fx:id="addFriendsBackButton" layoutX="6.0" layoutY="358.0" mnemonicParsing="false" onAction="#addFriendsBackButtonClicked" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="385.0" />
                   <Label alignment="CENTER" layoutX="136.0" layoutY="6.0" text="ADD FRIENDS" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <HBox fx:id="addGroupHolder" alignment="CENTER" onMouseClicked="#addGroupHolderClicked" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="57.0" prefWidth="231.0">
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="9.0" layoutY="6.0" prefHeight="17.0" prefWidth="121.0" text="ADD GROUP" textAlignment="CENTER" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="6.0" />
+                  <TextField fx:id="addGroupTextField" layoutX="12.0" layoutY="23.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="52.0" />
+                  <Button fx:id="addGroupButton" layoutX="160.0" layoutY="23.0" mnemonicParsing="false" onAction="#addGroupButtonClicked" text="ADD" AnchorPane.rightAnchor="6.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <HBox fx:id="addFriendsToGroupHolder" alignment="CENTER" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="418.0" prefWidth="300.0">
+               <children>
+                  <TextField fx:id="addFriendsToGroupField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="195.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="99.0" AnchorPane.topAnchor="26.0" />
+                  <Button fx:id="addFriendstoGroupSearchButton" layoutX="234.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#addFriendstoGroupSearchButtonClicked" prefHeight="25.0" prefWidth="84.0" text="SEARCH" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="26.0" />
+                  <ScrollPane hbarPolicy="NEVER" layoutX="14.0" layoutY="46.0" prefHeight="324.0" prefWidth="271.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="56.0">
+                     <content>
+                        <UsersPane fx:id="addFriendstoGroupUsersPane" minHeight="0.0" minWidth="0.0" prefHeight="322.0" prefWidth="286.0" />
+                     </content>
+                  </ScrollPane>
+                  <Button fx:id="addFriendstoGroupAddButton" layoutX="234.0" layoutY="370.0" mnemonicParsing="false" onAction="#addFriendstoGroupAddButtonClicked" text="ADD" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Button fx:id="addFriendstoGroupBackButton" layoutX="6.0" layoutY="358.0" mnemonicParsing="false" onAction="#addFriendstoGroupBackButtonClicked" text="BACK" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="385.0" />
+                  <Label alignment="CENTER" layoutX="136.0" layoutY="6.0" text="ADD/REMOVE FRIENDS" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="6.0" />
                </children>
             </AnchorPane>
          </children>

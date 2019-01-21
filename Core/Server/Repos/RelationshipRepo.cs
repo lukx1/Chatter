@@ -15,10 +15,72 @@ namespace Server.Repos
             this.context = new ChatterContext();
         }
 
-        public void AddRel(Relationships rel)
+        private bool DoesSameRelExist(Relationships rel)
         {
+            return context.Relationships.Any(r =>
+                r.IdsourceUser == rel.IdsourceUser && r.IdtargetUser == rel.IdtargetUser);
+        }
+
+        private bool AreUsersFriends(Relationships rel)
+        {
+            return (rel.RelationType & (1 << 1)) > 0;
+        }
+
+
+        private void attemptCreateNewFriendsChat(Relationships rel)
+        {
+            if (!AreUsersFriends(rel))
+            {
+                return;
+            }
+            if (new RepoHelper(context).GetAllOneOnOneRoomsWithRel(rel).Any())
+            {
+                return;
+            }
+            createNewFriendsChat(rel);
+        }
+
+        private void createNewFriendsChat(Relationships rel)
+        {
+            Rooms newRoom = new Rooms()
+            {
+                OneOnOne = true,
+                Idcreator = rel.IdsourceUser,
+                Name = "1o1",
+            };
+            context.Rooms.Add(newRoom);
+
+            Roomusers ruSource = new Roomusers()
+            {
+                Iduser = rel.IdsourceUser,
+                IdroomNavigation = newRoom
+            };
+            Roomusers ruTarget = new Roomusers()
+            {
+                Iduser = rel.IdtargetUser,
+                IdroomNavigation = newRoom,
+            };
+            context.Roomusers.Add(ruSource);
+            context.Roomusers.Add(ruTarget);
+            context.SaveChanges();
+        }
+
+        public bool AddRel(Relationships rel)
+        {
+            if (DoesSameRelExist(rel))
+            {
+                return false;
+            }
+            rel.DateCreated = DateTime.Now;
             context.Relationships.Add(rel);
             context.SaveChanges();
+            attemptCreateNewFriendsChat(rel);
+            return true;
+        }
+
+        public IEnumerable<Relationships> GetRelAboutUser(int id)
+        {
+            return context.Relationships.Where(r => r.IdtargetUser == id);
         }
 
         public IEnumerable<Relationships> GetRelForUser(int id)
@@ -29,11 +91,23 @@ namespace Server.Repos
         public bool RemoveRel(int id)
         {
             var rel = context.Relationships.Find(id);
-            if(rel == null)
+            if (rel == null)
             {
                 return false;
             }
             context.Relationships.Remove(rel);
+            var otherRel = context.Relationships.FirstOrDefault(r =>
+                r.IdsourceUser == rel.IdtargetUser && r.IdtargetUser == rel.IdsourceUser);
+            if (otherRel != null)
+            {
+                context.Relationships.Remove(otherRel);
+            }
+
+            var rooms = new RepoHelper(context).GetAllOneOnOneRoomsWithRel(rel);
+            foreach (var room in rooms)
+            {
+                context.Rooms.Remove(room);
+            }
             context.SaveChanges();
             return true;
         }
@@ -45,6 +119,7 @@ namespace Server.Repos
             r.IdtargetUser = rel.IdtargetUser;
             r.RelationType = rel.RelationType;
             context.SaveChanges();
+            attemptCreateNewFriendsChat(r);
         }
     }
 }

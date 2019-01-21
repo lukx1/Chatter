@@ -65,10 +65,10 @@ public class ContentRepository {
     public Image fetchImage(byte[] uuid) throws IOException, URISyntaxException {
         File f;
         if((f = hasLocal(uuid)) != null){
-            return new Image(f.toURI().toString());
+            return new Image("file:///"+f.toURI().toString());
         }
         else if((f = fetchAndSave(uuid)) != null) {
-            return new Image(f.toURI().toString());
+            return new Image("file:///"+f.toURI().toString());
         }
         else {
             throw new FileNotFoundException("Image not found locally or on server");
@@ -80,6 +80,9 @@ public class ContentRepository {
     }
 
     public Image fetchImageWithFallback(byte[] uuid){
+        if(uuid == null){
+            return getFallbackImage();
+        }
         Image image;
         try {
             image = fetchImage(uuid);
@@ -88,9 +91,9 @@ public class ContentRepository {
             }
         }
         catch(IOException | URISyntaxException e){
-            return new Image("/pictures/nopicture.png");
+            return getFallbackImage();
         }
-        return new Image("/pictures/nopicture.png");
+        return getFallbackImage();
     }
 
     public File getStoreDir() {

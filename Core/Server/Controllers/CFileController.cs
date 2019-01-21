@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ using Server.Repos;
 using Server.MessageClasses;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 
 namespace Server.Controllers
 {
@@ -30,7 +33,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                return Ok(await repository.GetFile(message.UUID));
+                return Ok(await repository.GetFile(Convert.FromBase64String(message.UUID)));
             }
             return BadRequest();
         }
@@ -41,7 +44,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                await repository.GetFile(message.UUID);
+                await repository.GetFile(Convert.FromBase64String(message.UUID));
                 return Ok();
             }
             return BadRequest();
@@ -51,15 +54,18 @@ namespace Server.Controllers
         [ActionName("File")]
         public async Task<IActionResult> AddFile(ContentCFileMessage message)
         {
+            message.HiddenContent = Convert.FromBase64String(message.Content);
+            message.Content = null;
             if (IsLoginValid(message))
             {
-                if (message.Content == null || message.Content == new byte[0])
+                if (message.HiddenContent == null || message.HiddenContent == new byte[0] || message.HiddenContent.Length < 1)
                     return BadRequest("No content received");
-                if (message.Content.Length > (1000000 * 3))
+                if (message.HiddenContent.Length > (1000000 * 3))
                     return BadRequest("File too large (max 3MB)");
-                if (Regex.IsMatch(message.CFile.FileName, "^.*\\.((jpg)|(jpeg)|(png))$", RegexOptions.IgnoreCase) && message.Content.Length > 500000)
+                if (Regex.IsMatch(message.CFile.FileName, "^.*\\.((jpg)|(jpeg)|(png))$", RegexOptions.IgnoreCase) && message.HiddenContent.Length > 500000)
                     return BadRequest("Image too large (max 500KB)");
-                return Ok(await repository.AddFile(message.Content, message.CFile));
+                var resp = await repository.AddFile(message.HiddenContent, message.CFile);
+                return Ok(resp);
             }
             return BadRequest();
         }
@@ -106,7 +112,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                return Ok(await repository.GetFileContents(message.UUID));
+                return Ok(await repository.GetFileContents(Convert.FromBase64String(message.UUID)));
             }
             return BadRequest();
         }

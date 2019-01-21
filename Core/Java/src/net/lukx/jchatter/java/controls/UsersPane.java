@@ -1,23 +1,21 @@
 package net.lukx.jchatter.java.controls;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import net.lukx.jchatter.java.fetching.ContentRepository;
 import net.lukx.jchatter.java.supporting.CurrentValues;
-import net.lukx.jchatter.java.supporting.RemovingList;
 import net.lukx.jchatter.java.supporting.Repos;
+import net.lukx.jchatter.lib.models.Relationship;
+import net.lukx.jchatter.lib.models.RelationshipStatus;
 import net.lukx.jchatter.lib.models.User;
 import net.lukx.jchatter.lib.models.UserStatus;
 
-import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class UsersPane extends LinedPaneManagerPane<LinedPane> {
 
@@ -25,18 +23,85 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
     private ContentRepository contentRepository;
     private CurrentValues currentValues;
 
-    private InitArgs initArgs = new ConcreteInitArgs(6,100,60);
+    private Relationship[] myRelationships;
 
-    public UsersPane(Repos repos, ContentRepository contentRepository, CurrentValues currentValues) {
+    private Button addRemoveButton;
+
+    private InitArgs initArgs = new ConcreteInitArgs(6,100,60,0);
+
+    private User[] usersInThisRoom;
+
+    public boolean isUserAlreadyInRoom(User user){
+        //Works only for group room
+        if(usersInThisRoom == null) {
+            throw new IllegalArgumentException("Can't use this like this");
+        }
+        for (User user1 : usersInThisRoom) {
+            if(user1.id == user.id){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<UsersPane.UserInnerPane> innerPanesClicked = new ArrayList<>();
+    public boolean asGroupsPane = false;
+
+    public UsersPane(){
+        super();
+    }
+
+    public void clearInner(){
+        clearInnerElements();
+    }
+
+    public void init(Repos repos, ContentRepository contentRepository, CurrentValues currentValues) {
         this.repos = repos;
         this.contentRepository = contentRepository;
         this.currentValues = currentValues;
     }
 
     private List<User> getUsersAsList() throws IOException, URISyntaxException {
-        return Arrays.asList(repos.getUserRepo().getUsers());
+        return getUsersAsList(true);
     }
 
+    private List<User> getUsersAsList(boolean filterCurrentUser) throws IOException, URISyntaxException {
+        List<User> users = new ArrayList<>(Arrays.asList(repos.getUserRepo().getUsers()));
+        users.sort(Comparator.comparingInt(a -> a.status));
+
+        if(filterCurrentUser) {
+            User toRemove = null;
+            for (User user : users) {
+                if (user.id == currentValues.getCurrentUser().id) {
+                    toRemove = user;
+                    break;
+                }
+            }
+            users.remove(toRemove);
+        }
+
+        return users;
+    }
+
+    public void showAllFriends(int roomId, Button addRemoveButton) throws IOException, URISyntaxException {
+        clearInnerElements();
+        this.addRemoveButton = addRemoveButton;
+        asGroupsPane = true;
+        this.usersInThisRoom = repos.getRoomRepo().getUsersInRoom(roomId);
+        myRelationships = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+        initArgs = new ConcreteInitArgs(initArgs.getPadding(),this.getWidth(),initArgs.getHeight(),initArgs.getTopMargin());
+        List<User> users = getUsersAsList();
+        List<User> showUsers = new ArrayList<>();
+        for (User user : users) {
+            for (Relationship myRelationship : myRelationships) {
+                if(myRelationship.idtargetUser == user.id && RelationshipStatus.fromKey(myRelationship.relationType).contains(RelationshipStatus.FRIEND)){
+                    showUsers.add(user);
+                }
+            }
+        }
+        addIesForUsers(showUsers);
+    }
+    
     public void showAllUsers() throws IOException, URISyntaxException {
         showAllUsers(100);
     }
@@ -44,30 +109,82 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
     public void showUsersMatchingRegex(String regex) throws IOException, URISyntaxException {
         List<User> goodUsers = new ArrayList<>();
 
-        for (User user : getUsersAsList()) {
+        regex = regex.toLowerCase();
 
+        for (User user : getUsersAsList()) {
+            if(user.login.toLowerCase().contains(regex)){
+                goodUsers.add(user);
+            }
+            else if((user.firstName.toLowerCase()+" "+user.secondName).toLowerCase().contains(regex)){
+                goodUsers.add(user);
+            }
+        }
+
+        addIesForUsers(goodUsers);
+    }
+
+    public List<User> getUsersSelected(){
+        List<User> selected = new ArrayList<>();
+        for (UserInnerPane userInnerPane : innerPanesClicked) {
+            selected.add(userInnerPane.user);
+        }
+        return selected;
+    }
+
+    private void deselectPane(UserInnerPane uip){
+        uip.getStyleClass().remove("ObjSelected");
+    }
+
+    private void selectPane(UserInnerPane uip){
+        uip.getStyleClass().add("ObjSelected");
+    }
+
+    private void innerPaneClicked(MouseEvent e){
+        UserInnerPane uip = ((UserInnerPane)e.getSource());
+        if(innerPanesClicked.contains(uip)){ //DESELECTED
+            deselectPane(uip);
+            innerPanesClicked.remove(uip);
+            addRemoveButton.setText("ADD");
+        }
+        else { // SELECTED
+            selectPane(uip);
+            innerPanesClicked.add(uip);
+            if(usersInThisRoom != null && usersInThisRoom.length > 0){
+                for (User user : usersInThisRoom) {
+                    if(uip.getUser().id == user.id){ // Is already in this room
+                        addRemoveButton.setText("REMOVE");
+                        return;
+                    }
+                }
+            }
+            addRemoveButton.setText("ADD");
         }
     }
 
-    public void addIEsFromUsers(List<User> users){
+    public void addIesForUsers(List<User> users) throws IOException, URISyntaxException {
         for (User user : users) {
-            addInnerElement(new UserInnerPane(user,initArgs));
+            LinedPane p = new UserInnerPane(user,initArgs);
+            p.initElements();
+            p.addEventHandler(MouseEvent.MOUSE_CLICKED, this::innerPaneClicked);
+            addInnerElement(p);
         }
+        int x = 0;
     }
 
     public void showAllUsers(int limit) throws IOException, URISyntaxException {
         clearInnerElements();
-        initArgs = new ConcreteInitArgs(initArgs.getPadding(),this.getWidth(),initArgs.getPadding());
+        myRelationships = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+        initArgs = new ConcreteInitArgs(initArgs.getPadding(),this.getWidth(),initArgs.getHeight(),initArgs.getTopMargin());
         List<User> users = getUsersAsList();
-        addIEsFromUsers(users.subList(0,Math.min(users.size(),limit)));
+        addIesForUsers(users.subList(0,Math.min(users.size(),limit)));
     }
 
     public class UserInnerPane extends LinedPane {
 
-        private Circle pictureCircle = new Circle();
-        private Circle statusCircle = new Circle();
-        private Label headerLabel = new Label();
-        private Label fullNameLabel = new Label();
+        private Circle pictureCircle;
+        private Circle statusCircle;
+        private Label headerLabel;
+        private Label fullNameLabel;
         private User user;
 
         public User getUser(){return user;}
@@ -77,9 +194,33 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
             this.user = user;
         }
 
+        private String shouldCreateRelStatusLabel(User targetUser){
+            for (Relationship myRelationship : myRelationships) {
+                if(myRelationship.idtargetUser == targetUser.id && myRelationship.relationType != 0){
+                    EnumSet<RelationshipStatus> es = RelationshipStatus.fromKey(myRelationship.relationType);
+                    if(es.contains(RelationshipStatus.BLOCKED)){
+                        return " (BLOCKED)";
+                    }
+                    else if(es.contains(RelationshipStatus.FRIEND)){
+                        return " (FRIEND)";
+                    }
+                    else if(es.contains(RelationshipStatus.FRIENDSHIP_PENDING)){
+                        return " (PENDING)";
+                    }
+
+                }
+            }
+            return "";
+        }
 
         @Override
         protected void initElements() {
+            pictureCircle = new Circle();
+            statusCircle = new Circle();
+            headerLabel = new Label();
+            fullNameLabel = new Label();
+
+
             this.createCenterLeftCircle(pictureCircle);
             this.createHeaderLabelNextToPicture(headerLabel);
             this.createStatusCircleOn(statusCircle,pictureCircle);
@@ -87,8 +228,18 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
 
             setPicture(new ImagePattern(contentRepository.fetchImageWithFallback(user.picture)));
             setStatusColor(UserStatus.fromKey(user.status));
-            setHeaderText(user.login);
+            setHeaderText(user.login+shouldCreateRelStatusLabel(user));
+
             setTextOnLabelLine(user.firstName+" "+user.secondName,0);
+
+            if(asGroupsPane){
+                if(isUserAlreadyInRoom(user)){
+                    setHeaderText(user.login+" (MEMBER)");
+                    headerLabel.getStyleClass().add("Friend");
+                }
+            }
+
+            this.getStyleClass().add("CursorHand");
         }
     }
 

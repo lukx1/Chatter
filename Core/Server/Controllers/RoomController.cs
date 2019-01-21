@@ -36,14 +36,12 @@ namespace Server.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPut]
         [ActionName("Room")]
         public IActionResult AddRoom(RoomMessage message)
         {
-            if (IsLoginValid(message))
-            {
-                roomRepository.AddRoom(message.Room);
-                return Ok();
+            if (IsLoginValid(message)) { 
+                return Ok(roomRepository.AddRoom(message.Room));
             }
             return BadRequest();
         }
@@ -89,8 +87,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                roomRepository.RemoveUserFromRoom(message.IDUser, message.IDRoom);
-                return Ok();
+                return Ok(roomRepository.RemoveUserFromRoom(message.IDUser, message.IDRoom));
             }
             return BadRequest();
         }

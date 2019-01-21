@@ -2,14 +2,44 @@
     src: url("DejaVuSans-ExtraLight.ttf");
 }
 
+@font-face {
+    font-family: 'OpenSansEmoji';
+    src: url("OpenSansEmoji.ttf");
+}
+
 * {
     -fx-font-family: "DejaVu Sans Light";
+}
+
+
+#MsgPane, #SendMessageTextField {
+    -fx-font-family: "OpenSansEmoji" !important;
 }
 
 Button {
     -fx-background-color: white;
     -fx-text-fill: #222631;
     -fx-cursor: hand;
+}
+
+.DarkerBg {
+    -fx-background-color: #aaa;
+}
+
+.CursorHand {
+    -fx-cursor: hand;
+}
+
+.Blocked {
+    -fx-text-fill: red;
+}
+
+.Friend {
+    -fx-text-fill: lightgreen;
+}
+
+.FriendPending {
+    -fx-text-fill: yellowgreen;
 }
 
 #TopPane {
@@ -31,6 +61,12 @@ Button {
 
 .LargeText {
     -fx-font-size: 125%;
+}
+
+.ObjSelected {
+    -fx-background-color: #ddd;
+    -fx-border-color: #00abb2;
+    -fx-border-width:1px;
 }
 
 .OnTop {

@@ -1,50 +1,76 @@
 package net.lukx.jchatter.java.controls;
 
-import com.sun.org.apache.xml.internal.security.Init;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import net.lukx.jchatter.java.supporting.RemovingList;
-import net.lukx.jchatter.lib.models.Room;
+import net.lukx.jchatter.java.fetching.ContentRepository;
+import net.lukx.jchatter.java.supporting.CurrentValues;
+import net.lukx.jchatter.java.supporting.Repos;
+import net.lukx.jchatter.lib.models.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class RoomPane extends Pane {
+public class RoomPane extends LinedPaneManagerPane<LinedPane> {
 
-    private double innerElementHeight = 60;
-    private double innerElementPadding = 6;
-    private double innerElementTopMargin = 6;
+    private Repos repos;
+    private ContentRepository contentRepository;
+    private CurrentValues currentValues;
+    private InitArgs args = new ConcreteInitArgs(6,100,60,0);
 
-    private List<InnerRoomPane> roomPanes = new RemovingList<>(this);
+    private List<InnerRoomClickedHandler> innerRoomClickedHandlers = new ArrayList<>();
 
-    public List<InnerRoomPane> getRoomPanes(){
-        return roomPanes;
+    public List<Room> getAllRoomsShown(){
+        List<Room> rooms = new ArrayList<>(this.innerElements.size());
+        for (LinedPane innerElement : this.innerElements) {
+            if(innerElement instanceof InnerRoomPane){
+                rooms.add(((InnerRoomPane)innerElement).getRoom());
+            }
+        }
+        return rooms;
     }
 
-    private void recalculateHeight(){
-        this.setPrefHeight(
-                Math.max(
-                        roomPanes.size()*(innerElementHeight+innerElementPadding),
-                        this.getPrefHeight()
-                )
-        );
+    public RoomPane(){
+        super();
     }
 
-    public class InnerRoomPane extends Pane implements Initable {
+    public void clearInner(){
+        clearInnerElements();
+    }
 
-        private Circle pictureCircle;
-        private Circle statusCircle;
-        private Label nameLabel;
-        private double height;
-        private double width;
+    public void addInnerRoomClickedHandler(InnerRoomClickedHandler h){
+        innerRoomClickedHandlers.add(h);
+    }
+
+    public void removeInnerRoomClickedHandler(InnerRoomClickedHandler h){
+        innerRoomClickedHandlers.remove(h);
+    }
+
+    public void init(Repos repos, ContentRepository contentRepository, CurrentValues currentValues){
+        this.repos = repos;
+        this.contentRepository = contentRepository;
+        this.currentValues = currentValues;
+    }
+
+    public void showAllRooms() throws IOException, URISyntaxException {
+        args = new ConcreteInitArgs(args.getPadding(),this.getWidth(),args.getHeight(),args.getTopMargin());
+        for (Room room : repos.getRoomRepo().getRoomsWithUser(currentValues.getCurrentUser().id)) {
+            InnerRoomPane irp = new InnerRoomPane(room,args);
+            irp.initElements();
+            addInnerElement(irp);
+        }
+    }
+
+    public class InnerRoomClickedEvent{
+        private Object source;
         private Room room;
-        private int heightIndex;
-        private static final double sqrtTwo = 1.4142135623746;
 
-        public InnerRoomPane(Room room) {
+        public InnerRoomClickedEvent(Object source, Room room) {
+            this.source = source;
             this.room = room;
         }
 
@@ -52,130 +78,94 @@ public class RoomPane extends Pane {
             return room;
         }
 
-        public boolean isStatusCircleHidden(){
-            return !statusCircle.isVisible();
+        public Object getSource() {
+            return source;
+        }
+    }
+
+    public interface InnerRoomClickedHandler{
+        void innerRoomClicked(InnerRoomClickedEvent e);
+    }
+
+    private void fireEvents(InnerRoomClickedEvent e){
+        for (InnerRoomClickedHandler innerRoomClickedHandler : innerRoomClickedHandlers) {
+            innerRoomClickedHandler.innerRoomClicked(e);
+        }
+    }
+
+    private void innerRoomClickedHandlerMethod(MouseEvent e){
+        Room room = ((InnerRoomPane)e.getSource()).getRoom();
+        fireEvents( new InnerRoomClickedEvent(
+            e.getSource(),room
+        ));
+    }
+
+    public class InnerRoomPane extends LinedPane {
+
+        private Circle pictureCircle;
+        private Label headerLabel;
+        private Circle statusCircle;
+        private Room room;
+
+
+
+        public Room getRoom(){return room;}
+
+        public InnerRoomPane(Room room,InitArgs initArgs){
+            super(initArgs);
+            this.room = room;
         }
 
-        public void showStatusCircle(){
-            statusCircle.setVisible(true);
-        }
 
-        public void hideStatusCircle(){
-            statusCircle.setVisible(false);
-        }
-
-        public int getHeightIndex() {
-            return heightIndex;
-        }
-
-        public void setHeightIndex(int heightIndex) {
-            if(this.heightIndex == heightIndex) {
-                return;
+        private void setInner() throws IOException, URISyntaxException {
+            if(room.oneOnOne){
+                User otherUser = RoomUtils.getOtherUserInRoom(repos,room,currentValues.getCurrentUser());
+                pictureCircle.setFill(new ImagePattern(contentRepository.fetchImageWithFallback(otherUser.picture)));
+                headerLabel.setText(otherUser.login+" - "+ otherUser.firstName);
             }
-            this.heightIndex = heightIndex;
-            this.setLayoutY(getYOffset());
-        }
-
-        public void setStatusColor(Color color){
-            this.statusCircle.setFill(color);
-        }
-
-        public void setImage(Image image){
-            this.pictureCircle.setFill(new ImagePattern(image));
-        }
-
-        public String getName(){
-            return this.nameLabel.getText();
-        }
-
-        public void setName(String name){
-            this.nameLabel.setText(name);
+            else {
+                pictureCircle.setFill(new ImagePattern(contentRepository.fetchImageWithFallback(room.picture)));
+                headerLabel.setText(room.name);
+            }
         }
 
         @Override
-        public double getYOffset(){
-            return heightIndex*(innerElementHeight+innerElementTopMargin);
-        }
-
-        private void initPictureCircle(){
+        protected void initElements() throws IOException, URISyntaxException {
             pictureCircle = new Circle();
-            pictureCircle.setRadius((innerElementHeight-2*innerElementPadding)/2.0);
-            pictureCircle.setLayoutX(innerElementPadding+pictureCircle.getRadius());
-            pictureCircle.setLayoutY(innerElementPadding+pictureCircle.getRadius());
-            pictureCircle.setFill(null);
-            pictureCircle.setStroke(Color.BLACK);
-            pictureCircle.setStrokeWidth(1);
-        }
-
-        private void initStatusCircle(){
-            statusCircle = new Circle();
-            statusCircle.setRadius(pictureCircle.getRadius()/3.0);
-            statusCircle.setLayoutY(pictureCircle.getLayoutY()+pictureCircle.getRadius()/sqrtTwo);
-            statusCircle.setLayoutX(pictureCircle.getLayoutX()+pictureCircle.getRadius()/sqrtTwo);
-            statusCircle.setFill(Color.GRAY);
-            statusCircle.setStroke(null);
-        }
-
-        private void initNameLabel(){
-            nameLabel = new Label();
-            nameLabel.getStyleClass().add("roomName");
-            nameLabel.setLayoutY(innerElementPadding);
-            nameLabel.setLayoutX(2*(innerElementPadding*pictureCircle.getRadius()));
-        }
-
-        @Override
-        public void initializeInside(int heightIndex){
-            this.heightIndex = heightIndex;
-            this.setLayoutY(getYOffset());
-            recalculateHeight();
-            initPictureCircle();
-            initStatusCircle();
-            initNameLabel();
-            this.getChildren().addAll(pictureCircle,statusCircle,nameLabel);
-        }
+            headerLabel = new Label();
 
 
-    }
+            this.createCenterLeftCircle(pictureCircle);
+            this.createHeaderLabelNextToPicture(headerLabel);
 
-    public double getInnerElementHeight() {
-        return innerElementHeight;
-    }
 
-    public void setInnerElementHeight(double innerElementHeight) {
-        this.innerElementHeight = innerElementHeight;
-    }
+            if(room.oneOnOne){
+                statusCircle = new Circle();
+                this.createStatusCircleOn(statusCircle,pictureCircle);
 
-    public double getInnerElementPadding() {
-        return innerElementPadding;
-    }
-
-    public void setInnerElementPadding(double innerElementPadding) {
-        this.innerElementPadding = innerElementPadding;
-    }
-
-    public double getInnerElementTopMargin() {
-        return innerElementTopMargin;
-    }
-
-    public void setInnerElementTopMargin(double innerElementTopMargin) {
-        this.innerElementTopMargin = innerElementTopMargin;
-    }
-
-    private InnerRoomPane getPaneWithWindow(Room room){
-        InnerRoomPane pane = null;
-        for (InnerRoomPane roomPane : roomPanes) {
-            if(roomPane.room == room){
-                pane = roomPane;
-                break;
+                User other = RoomUtils.getOtherUserInRoom(repos,room,currentValues.getCurrentUser());
+                Relationship[] relsWithOthers = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+                boolean isBlocked = false;
+                for (Relationship relsWithOther : relsWithOthers) {
+                    if(relsWithOther.idtargetUser != other.id){
+                        continue;
+                    }
+                    if(RelationshipStatus.fromKey(relsWithOther.relationType).contains(RelationshipStatus.BLOCKED)){
+                        isBlocked = true;
+                        this.setDisable(true);
+                        setStatusColor(Color.RED);
+                    }
+                }
+                if(!isBlocked)
+                    setStatusColor(UserStatus.fromKey(other.status));
             }
+
+            setInner();
+
+            this.getStyleClass().add("CursorHand");
+
+            this.addEventHandler(MouseEvent.MOUSE_CLICKED,RoomPane.this::innerRoomClickedHandlerMethod);
         }
-        return pane;
     }
-
-
-    public RoomPane() {
-
-    }
-
 
 }

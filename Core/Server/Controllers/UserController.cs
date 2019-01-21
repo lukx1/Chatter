@@ -32,6 +32,17 @@ namespace Server.Controllers
             return Forbid();
         }
 #endif
+
+        public IActionResult GetUser(IDMessage message)
+        {
+            if (IsLoginValid(message))
+            {
+                return Ok(UserRepository.GetUser(message.ID));
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost]
         public IActionResult GetUsers(LoginHeader header)
         {
@@ -49,9 +60,7 @@ namespace Server.Controllers
             if (IsLoginValid(message))
             {
                 var usr = UserRepository.GetUserWithLogin(message.UserLogin);
-                if(usr != null)
-                    return Ok(usr);
-                return NotFound("User not found");
+                return Ok(usr);
             }
             return BadRequest();
         }

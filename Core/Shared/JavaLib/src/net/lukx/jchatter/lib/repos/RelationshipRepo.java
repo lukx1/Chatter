@@ -49,6 +49,23 @@ public class RelationshipRepo extends AbstractRepo {
     }
 
     /***
+     * Gets all relationships other users have with this user
+     * @param id of the user
+     * @return relationships
+     * @throws IOException if exception occurs
+     * @throws URISyntaxException if uri is malformed
+     */
+    @PublicApi
+    public Relationship[] getRelAboutUser(int id) throws IOException, URISyntaxException {
+        return communicable.Obtain(
+                getController(),
+                "GetRelAboutUser",
+                HttpMethod.POST,
+                createIdObject(id),
+                Relationship[].class);
+    }
+
+    /***
      * Updates information about a specified relationship
      * @param relationship to set
      * @throws IOException if exception occurs

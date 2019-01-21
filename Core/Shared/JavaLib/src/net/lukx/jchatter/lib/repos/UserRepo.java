@@ -109,7 +109,7 @@ public class UserRepo extends AbstractRepo {
      */
     @PublicApi
     public void setUser(User user) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "User", HttpMethod.POST, getLoginHeader(), Void.class);
+        communicable.Obtain(getController(), "User", HttpMethod.POST, createCustomObjectWithHeader(new KeyValuePair("User",user)), Void.class);
     }
 
     @SuppressWarnings("unused")

@@ -7,7 +7,6 @@ namespace Server.Models
     {
         public Rooms()
         {
-            Cfiles = new HashSet<Cfiles>();
             Messages = new HashSet<Messages>();
             Roomusers = new HashSet<Roomusers>();
         }
@@ -19,8 +18,6 @@ namespace Server.Models
         public byte[] Picture { get; set; }
 
         public virtual Users IdcreatorNavigation { get; set; }
-        public virtual Cfiles PictureNavigation { get; set; }
-        public virtual ICollection<Cfiles> Cfiles { get; set; }
         public virtual ICollection<Messages> Messages { get; set; }
         public virtual ICollection<Roomusers> Roomusers { get; set; }
     }

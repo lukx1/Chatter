@@ -7,6 +7,7 @@ namespace Server.MessageClasses
 {
     public class ContentCFileMessage : CfilesMessage
     {
-        public byte[] Content { get; set; }
+        public string Content { get; set; }
+        public byte[] HiddenContent { get; set; }
     }
 }

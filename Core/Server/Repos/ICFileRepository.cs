@@ -14,8 +14,8 @@ namespace Server.Repos
         Task SetFile(Cfiles file);
         Task<IEnumerable<Cfiles>> GetFilesByUser(int ID);
         Task<IEnumerable<Cfiles>> GetFilesInRoom(int ID);
-        Task<byte[]> GetFileContents(byte[] UUID);
-        Task<IDictionary<byte[], byte[]>> GetFilesContents(IEnumerable<byte[]> UUIDs);
+        Task<string> GetFileContents(byte[] UUID);
+        Task<IDictionary<byte[], string>> GetFilesContents(IEnumerable<byte[]> UUIDs);
     }
 
 }

@@ -9,10 +9,11 @@ namespace Server.Repos
     public class RoomRepo : BaseRepo,IRoomRepository
     {
 
-        public void AddRoom(Rooms room)
+        public int AddRoom(Rooms room)
         {
             Context.Rooms.Add(room);
             Context.SaveChanges();
+            return room.Id;
         }
 
         public void AddUserToRoom(int idUser, int idRoom)
@@ -21,7 +22,7 @@ namespace Server.Repos
 
             if (room != null)
             {
-                throw new Exception("User already is in this room");
+                return;
             }
             if(Context.Rooms.Find(idRoom) == null)
             {
@@ -38,10 +39,11 @@ namespace Server.Repos
 
         public IEnumerable<Rooms> GetRoomsWithUser(int idUser)
         {
-            return from r in Context.Rooms
+            return (from r in Context.Rooms
                    join ru in Context.Roomusers on r.Id equals ru.Idroom
                    join u in Context.Users on ru.Iduser equals u.Id
-                   select r;
+                   where ru.Iduser == idUser
+                   select r).Distinct();
         }
 
         public IEnumerable<Users> GetUsersInRoom(int id)
@@ -49,6 +51,7 @@ namespace Server.Repos
             return from r in Context.Rooms
                    join ru in Context.Roomusers on r.Id equals ru.Idroom
                    join u in Context.Users on ru.Iduser equals u.Id
+                   where r.Id == id
                    select u;
         }
 

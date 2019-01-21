@@ -1,6 +1,8 @@
 package net.lukx.jchatter.lib.repos;
 
 import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import net.lukx.jchatter.lib.PublicApi;
 import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.HttpMethod;
@@ -41,7 +43,7 @@ public class CFileRepo extends AbstractRepo{
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public CFile getFile(byte[] uuid) throws IOException, URISyntaxException {
+    public CFile getFile(String uuid) throws IOException, URISyntaxException {
         return communicable.Obtain(getController(),"File", HttpMethod.POST,createUUIDObject(uuid),CFile.class);
     }
 
@@ -53,19 +55,19 @@ public class CFileRepo extends AbstractRepo{
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public boolean removeFile(byte[] uuid) throws IOException, URISyntaxException {
+    public boolean removeFile(String uuid) throws IOException, URISyntaxException {
         return communicable.Obtain(getController(),"File", HttpMethod.DELETE,createUUIDObject(uuid),boolean.class);
     }
 
     /***
      *Uploads a file to the server.Maximum content size is 3MB. File upload quotas apply. Empty files are not allowed. If the upload is successful the server responds with UUID assigned to the file.
-     * @param Content data
+     * @param Content data base64
      * @param file to add
      * @throws IOException if exception occurs
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public byte[] addFile(byte[] Content, CFile file) throws IOException, URISyntaxException {
+    public String addFile(String Content, CFile file) throws IOException, URISyntaxException {
         return communicable.Obtain(
                 getController(),
                 "File",
@@ -74,7 +76,7 @@ public class CFileRepo extends AbstractRepo{
                         new KeyValuePair("Content",Content),
                         new KeyValuePair("CFile",file)
                 ),
-                byte[].class
+                String.class
         );
     }
 
@@ -131,13 +133,13 @@ public class CFileRepo extends AbstractRepo{
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public byte[] getFileContents(byte[] uuid) throws IOException, URISyntaxException {
+    public String getFileContents(String uuid) throws IOException, URISyntaxException {
         return communicable.Obtain(
                 getController(),
                 "getFileContents",
                 HttpMethod.POST,
                 createUUIDObject(uuid),
-                byte[].class);
+                String.class);
     }
 
     /***
@@ -148,16 +150,16 @@ public class CFileRepo extends AbstractRepo{
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public Map<byte[],byte[]> getFilesContents(byte[] uuid) throws IOException, URISyntaxException {
+    public Map<byte[],byte[]> getFilesContents(String uuid) throws IOException, URISyntaxException {
         return communicable.Obtain(
                 getController(),
                 "getFilesContents",
                 HttpMethod.POST,
                 createUUIDObject(uuid),
-                new TypeToken<Map<byte[],byte[]>>(){}.getType());
+                new TypeToken<Map<byte[],String>>(){}.getType());
     }
 
-    private Object createUUIDObject(byte[] uuid){
+    private Object createUUIDObject(String uuid){
         return new UUIDObject(uuid);
     }
 
@@ -166,9 +168,9 @@ public class CFileRepo extends AbstractRepo{
 
         private String Login = getLoginHeader().getLogin();
         private String  Password = getLoginHeader().getPassword();
-        private byte[] UUID;
+        private String UUID;
 
-        UUIDObject(byte[] uuid){
+        UUIDObject(String uuid){
             this.UUID = uuid;
         }
     }

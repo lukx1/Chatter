@@ -85,8 +85,8 @@ public class RoomRepo extends AbstractRepo {
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public void addRoom(Room room) throws IOException, URISyntaxException {
-        communicable.Obtain(getController(), "Room", HttpMethod.PUT, createRoomObject(room), void.class);
+    public int addRoom(Room room) throws IOException, URISyntaxException {
+        return communicable.Obtain(getController(), "Room", HttpMethod.PUT, createRoomObject(room), int.class);
     }
 
     /***

@@ -14,6 +14,10 @@ public class LinedPaneManagerPane<T extends LinedPane> extends Pane {
         innerElements.clear();
     }
 
+    public LinedPaneManagerPane(){
+        super();
+    }
+
     protected double getTotalHeightAtIndex(int index){
         double height = 0;
         for (int i = 0; i < index; i++) {
@@ -35,8 +39,9 @@ public class LinedPaneManagerPane<T extends LinedPane> extends Pane {
     }
 
     protected void addInnerElement(T element){
-        element.setLayoutY(getTotalHeightAtInnerEnd());//TODO:maybe add topMargin
+        element.setLayoutY(getTotalHeightAtInnerEnd());
         innerElements.add(element);
+        this.setPrefHeight(getTotalHeightAtInnerEnd());
     }
 
     protected void insertInnerElementAtLine(T element, int line){
@@ -56,8 +61,8 @@ public class LinedPaneManagerPane<T extends LinedPane> extends Pane {
     }
 
     public void removeInnerElementAtLine(int index){
+        T elemToRemove = innerElements.get(index);
         if(index != innerElements.size()-1){ // Element is not last
-            T elemToRemove = innerElements.get(index);
             for (int i = index; i < innerElements.size(); i++) {
                 T ie = innerElements.get(i);
                 ie.setLayoutY(ie.getLayoutY()-elemToRemove.getHeightWithTopMargin());
@@ -67,6 +72,7 @@ public class LinedPaneManagerPane<T extends LinedPane> extends Pane {
         else {
             innerElements.remove(index);
         }
+        this.setPrefHeight(getTotalHeightAtInnerEnd());
     }
 
     public boolean containsInnerElement(T inner){
