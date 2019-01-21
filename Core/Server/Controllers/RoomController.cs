@@ -87,8 +87,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                roomRepository.RemoveUserFromRoom(message.IDUser, message.IDRoom);
-                return Ok();
+                return Ok(roomRepository.RemoveUserFromRoom(message.IDUser, message.IDRoom));
             }
             return BadRequest();
         }

@@ -1,5 +1,6 @@
 package net.lukx.jchatter.java.controls;
 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
@@ -24,9 +25,27 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
 
     private Relationship[] myRelationships;
 
+    private Button addRemoveButton;
+
     private InitArgs initArgs = new ConcreteInitArgs(6,100,60,0);
 
+    private User[] usersInThisRoom;
+
+    public boolean isUserAlreadyInRoom(User user){
+        //Works only for group room
+        if(usersInThisRoom == null) {
+            throw new IllegalArgumentException("Can't use this like this");
+        }
+        for (User user1 : usersInThisRoom) {
+            if(user1.id == user.id){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private List<UsersPane.UserInnerPane> innerPanesClicked = new ArrayList<>();
+    public boolean asGroupsPane = false;
 
     public UsersPane(){
         super();
@@ -64,8 +83,11 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
         return users;
     }
 
-    public void showAllFriends() throws IOException, URISyntaxException {
+    public void showAllFriends(int roomId, Button addRemoveButton) throws IOException, URISyntaxException {
         clearInnerElements();
+        this.addRemoveButton = addRemoveButton;
+        asGroupsPane = true;
+        this.usersInThisRoom = repos.getRoomRepo().getUsersInRoom(roomId);
         myRelationships = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
         initArgs = new ConcreteInitArgs(initArgs.getPadding(),this.getWidth(),initArgs.getHeight(),initArgs.getTopMargin());
         List<User> users = getUsersAsList();
@@ -119,13 +141,23 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
 
     private void innerPaneClicked(MouseEvent e){
         UserInnerPane uip = ((UserInnerPane)e.getSource());
-        if(innerPanesClicked.contains(uip)){
+        if(innerPanesClicked.contains(uip)){ //DESELECTED
             deselectPane(uip);
             innerPanesClicked.remove(uip);
+            addRemoveButton.setText("ADD");
         }
-        else {
+        else { // SELECTED
             selectPane(uip);
             innerPanesClicked.add(uip);
+            if(usersInThisRoom != null && usersInThisRoom.length > 0){
+                for (User user : usersInThisRoom) {
+                    if(uip.getUser().id == user.id){ // Is already in this room
+                        addRemoveButton.setText("REMOVE");
+                        return;
+                    }
+                }
+            }
+            addRemoveButton.setText("ADD");
         }
     }
 
@@ -199,6 +231,13 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
             setHeaderText(user.login+shouldCreateRelStatusLabel(user));
 
             setTextOnLabelLine(user.firstName+" "+user.secondName,0);
+
+            if(asGroupsPane){
+                if(isUserAlreadyInRoom(user)){
+                    setHeaderText(user.login+" (MEMBER)");
+                    headerLabel.getStyleClass().add("Friend");
+                }
+            }
 
             this.getStyleClass().add("CursorHand");
         }

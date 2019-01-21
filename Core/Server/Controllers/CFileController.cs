@@ -33,7 +33,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                return Ok(await repository.GetFile(message.UUID));
+                return Ok(await repository.GetFile(Convert.FromBase64String(message.UUID)));
             }
             return BadRequest();
         }
@@ -44,7 +44,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                await repository.GetFile(message.UUID);
+                await repository.GetFile(Convert.FromBase64String(message.UUID));
                 return Ok();
             }
             return BadRequest();
@@ -112,7 +112,7 @@ namespace Server.Controllers
         {
             if (IsLoginValid(message))
             {
-                return Ok(await repository.GetFileContents(message.UUID));
+                return Ok(await repository.GetFileContents(Convert.FromBase64String(message.UUID)));
             }
             return BadRequest();
         }

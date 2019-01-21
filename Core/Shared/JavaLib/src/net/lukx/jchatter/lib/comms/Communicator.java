@@ -76,7 +76,8 @@ public class Communicator implements Communicable {
         return gson.fromJson(data,type);
     }
 
-    private <T> T ParseToJson(String data, Class<T> clazz){
+    private <T> T ParseToJson(String data, Class<T> clazz)
+    {
         return gson.fromJson(data,clazz);
     }
 

@@ -2,8 +2,18 @@
     src: url("DejaVuSans-ExtraLight.ttf");
 }
 
+@font-face {
+    font-family: 'OpenSansEmoji';
+    src: url("OpenSansEmoji.ttf");
+}
+
 * {
     -fx-font-family: "DejaVu Sans Light";
+}
+
+
+#MsgPane, #SendMessageTextField {
+    -fx-font-family: "OpenSansEmoji" !important;
 }
 
 Button {

@@ -1,5 +1,8 @@
 package net.lukx.jchatter.java.controllers;
 
+import com.sun.glass.ui.Robot;
+import com.sun.javafx.robot.FXRobot;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,6 +17,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jdk.nashorn.internal.runtime.ECMAException;
 import net.lukx.jchatter.java.controls.*;
 import net.lukx.jchatter.java.fetching.ContentRepository;
@@ -123,12 +128,22 @@ public class MainSceneController {
 
     private Timer timer = new Timer();
 
+
+    private void pressWindowsDot(){
+        Robot robot = com.sun.glass.ui.Application.GetApplication().createRobot();
+        robot.keyPress(java.awt.event.KeyEvent.VK_WINDOWS); // Left windows key
+        robot.keyPress(java.awt.event.KeyEvent.VK_PERIOD); /// The '.' key
+        robot.keyRelease(java.awt.event.KeyEvent.VK_PERIOD);
+        robot.keyRelease(java.awt.event.KeyEvent.VK_WINDOWS);
+    }
+
     public MainSceneController(){
         try {
             //repos = new Repos(new URI("http://78.102.218.164:8080/api"));
             repos = new Repos(new URI("http://127.0.0.1:8080/api"));
             repos.init("aaa","aaa");
             contentRepository = new ContentRepository(repos.getcFileRepo(),contentRepoFile);
+
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -206,6 +221,17 @@ public class MainSceneController {
     private void timerTick(){
         if(TimerIndex > 1000000){
             TimerIndex = 0;
+        }
+
+        if(TimerIndex % 10 == 0){
+            Platform.runLater(() -> {
+                try {
+                    RoomsPane.clearInner();
+                    RoomsPane.showAllRooms();
+                } catch (IOException | URISyntaxException e) {
+                    popupMarshall.makeError(e.toString());
+                }
+            });
         }
 
         if(MsgPane.getCurrentRoom() != null) {
@@ -305,7 +331,8 @@ public class MainSceneController {
                 popupMarshall.makeError(e.toString());
             }
         }
-
+        Stage stage = (Stage) TopContainer.getScene().getWindow();
+        stage.setOnCloseRequest(this::closeRequestHandler);
     }
 
     private void roomClickedHandler(RoomPane.InnerRoomClickedEvent e){
@@ -335,6 +362,18 @@ public class MainSceneController {
         NotifPane.addNotificationButtonClickedHandler(this::notificationButtonClickedHandler);
         backgroundInit();
         openLoginScene();
+
+    }
+
+    private void closeRequestHandler(WindowEvent e){
+        if(currentValues.getCurrentUser() != null){
+            currentValues.getCurrentUser().status = 0;
+            try {
+                repos.getUserRepo().setUser(currentValues.getCurrentUser());
+            } catch (IOException | URISyntaxException e1) {
+                e1.printStackTrace();
+            }
+        }
     }
 
     private void notificationButtonClickedHandler(net.lukx.jchatter.java.controls.NotificationPane.NotificationButtonEvent e){
@@ -770,7 +809,7 @@ public class MainSceneController {
         else { // SHOW
             addFriendsToGroupHolder.setVisible(true);
             try {
-                addFriendstoGroupUsersPane.showAllFriends();
+                addFriendstoGroupUsersPane.showAllFriends(MsgPane.getCurrentRoom().id,addFriendstoGroupAddButton);
             } catch (IOException | URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -810,6 +849,47 @@ public class MainSceneController {
                 } catch (IOException | URISyntaxException e) {
                     popupMarshall.makeError(e.toString());
                 }
+            }
+        } //Block user
+        else { // Leave room
+            try {
+                Room room = MsgPane.getCurrentRoom();
+                User[] usersInThisRoom = repos.getRoomRepo().getUsersInRoom(room.id);
+                if (room.idcreator == currentValues.getCurrentUser().id && usersInThisRoom.length > 1) { // Give the creator status to someone else
+                    for (User user : usersInThisRoom) {
+                        if(user.id == currentValues.getCurrentUser().id){
+                            continue;
+                        }
+                        else {
+                            room.idcreator = user.id;
+                            repos.getRoomRepo().setRoom(room);
+                            repos.getRoomRepo().removeUserFromRoom(currentValues.getCurrentUser().id,room.id);
+                            popupMarshall.makeInfo("You left the group chat and the ownership was given to "+user.login);
+                            break;
+                        }
+                    }
+                }
+                else if(room.idcreator != currentValues.getCurrentUser().id && usersInThisRoom.length > 1){ // Isnt creator nor only person
+                    repos.getRoomRepo().removeUserFromRoom(currentValues.getCurrentUser().id,room.id);
+                    popupMarshall.makeInfo("You left the group chat");
+                }
+                else if(usersInThisRoom.length <= 1){ // Last person in room
+                    repos.getRoomRepo().removeRoom(room.id);
+                    popupMarshall.makeInfo("Group chat "+room.name+" has been disbanded");
+                }
+                else {
+                    popupMarshall.makeError("Unexpected branch");
+                }
+                Room[] allRoomsThisUserIsIn = repos.getRoomRepo().getRoomsWithUser(currentValues.getCurrentUser().id);
+                if(allRoomsThisUserIsIn.length > 1)
+                    MsgPane.showAllMessagesInRoom(allRoomsThisUserIsIn[0]);
+                else {
+                    MsgPane.clearInner();
+                    MsgPane.setCurrentRoomDoNotUse(null);
+                }
+            }
+            catch (Exception e){
+                popupMarshall.makeError(e.toString());
             }
         }
     }
@@ -859,15 +939,28 @@ public class MainSceneController {
             popupMarshall.makeError("Room mismatch");
             return;
         }
-
+        StringBuilder msg = new StringBuilder();
         for (User user : selected) {
             try {
-                repos.getRoomRepo().addUserToRoom(user.id,room.id);
+                if(addFriendstoGroupUsersPane.isUserAlreadyInRoom(user)){
+                    msg.append("Removed ").append(user.login).append(" from the room.");
+                    repos.getRoomRepo().removeUserFromRoom(user.id,room.id);
+                }
+                else {
+                    msg.append("Added ").append(user.login).append(" to the room.");
+                    repos.getRoomRepo().addUserToRoom(user.id,room.id);
+                }
             } catch (IOException | URISyntaxException e) {
                 popupMarshall.makeError(e.toString());
             }
         }
-        popupMarshall.makeSuccess("Users added to the room");
+        addFriendstoGroupUsersPane.clearInner();
+        try {
+            addFriendstoGroupUsersPane.showAllFriends(MsgPane.getCurrentRoom().id,addFriendstoGroupAddButton);
+        } catch (IOException | URISyntaxException e) {
+            popupMarshall.makeError(e.toString());
+        }
+        popupMarshall.makeSuccess("Room management",msg.toString());
     }
 
     public void addFriendstoGroupBackButtonClicked(ActionEvent actionEvent) {
@@ -880,6 +973,45 @@ public class MainSceneController {
             addFriendstoGroupUsersPane.showUsersMatchingRegex(addFriendsToGroupField.getText());
         } catch (IOException | URISyntaxException e) {
             popupMarshall.makeError(e.toString());
+        }
+    }
+
+    public void EmojiButtonClicked(ActionEvent actionEvent) {
+        SendMessageTextField.requestFocus();
+        pressWindowsDot();
+    }
+
+    public void FileButtonClicked(ActionEvent actionEvent) {
+        if(MsgPane.getCurrentRoom() == null)
+            return;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Upload file");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Any file", "*.*"));
+        File selectedFile = fileChooser.showOpenDialog(TopContainer.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                byte[] content = Files.readAllBytes(selectedFile.toPath());
+                if(content.length > 3000000){
+                    popupMarshall.makeError("File is too large (3MB max)");
+                    return;
+                }
+                CFile cFile = new CFile();
+                cFile.dateUploaded = new Date();
+                cFile.expired = false;
+                cFile.fileName = selectedFile.getName();
+                cFile.idroom = MsgPane.getCurrentRoom().id;
+                cFile.iduploader = currentValues.getCurrentUser().id;
+                byte[] uuid = repos.getcFileRepo().addFile(Base64.getEncoder().encodeToString(content),cFile);
+                Message message = new Message();
+                message.idsender = currentValues.getCurrentUser().id;
+                message.idroomReceiver = MsgPane.getCurrentRoom().id;
+                message.dateSent = new Date();
+                message.content = "!<"+Base64.getEncoder().encodeToString(uuid)+">!";
+                repos.getMessageRepo().addMessage(message);
+            } catch (IOException | URISyntaxException e) {
+                popupMarshall.makeError(e.toString());
+                return;
+            }
         }
     }
 }

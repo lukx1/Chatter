@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -14,6 +15,7 @@ import net.lukx.jchatter.java.fetching.ContentRepository;
 import net.lukx.jchatter.java.supporting.CurrentValues;
 import net.lukx.jchatter.java.supporting.PopupMarshall;
 import net.lukx.jchatter.java.supporting.Repos;
+import net.lukx.jchatter.lib.models.CFile;
 import net.lukx.jchatter.lib.models.Message;
 import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FlowingMessagePane extends FlowPane {
 
@@ -51,6 +55,10 @@ public class FlowingMessagePane extends FlowPane {
         });
     }
 
+
+    public void setCurrentRoomDoNotUse(Room room){
+        currentRoom = room;
+    }
 
     public void clearInner() {
         usersInRoom.clear();
@@ -133,12 +141,48 @@ public class FlowingMessagePane extends FlowPane {
         private Label text;
         private Message message;
         private User sentBy;
+        private String fileUuid;
+        private CFile cFile;
+
+        public CFile getCFile(){
+            return cFile;
+        }
+
+        public boolean hasFile(){
+            return fileUuid!=null;
+        }
+
+        private void extractFiles(){
+            if(!message.content.contains("!<")){
+                // No files
+            }
+            else {
+                fileUuid = message.content.substring(
+                        message.content.indexOf("!<")+2,
+                        message.content.indexOf(">!")
+                );
+                message.content = message.content.replaceAll("<!.*!>","");
+                try {
+                    cFile = repos.getcFileRepo().getFile(fileUuid);
+                    if(cFile.expired){
+                        message.content = "File expired. " + message.content;
+                    }
+                    else {
+                        message.content = "File " + cFile.fileName + ". " + message.content;
+                    }
+                } catch (IOException | URISyntaxException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
 
         public InnerMessagePane(InitArgs initArgs, Message message) {
             this.initArgs = initArgs;
             this.setMaxWidth(initArgs.getWidth());
             this.message = message;
             this.sentBy = getUserWithId(message.idsender);
+            extractFiles();
             handleMessage();
         }
 
@@ -201,6 +245,31 @@ public class FlowingMessagePane extends FlowPane {
             this.header.setText(builder.toString());
         }
 
+        private String getImageForExt(){
+            if(cFile == null){
+                return "/pictures/unknownicon.png";
+            }
+            String ext = cFile.fileName.substring(cFile.fileName.lastIndexOf('.'));
+            if(ext.equals("exe")){
+                return "/pictures/exeicon.png";
+            }
+            else if(ext.equals("txt")){
+                return "/pictures/txticon.png";
+            }
+            else if(ext.equals("jpg")){
+                return "/pictures/jpgicon.png";
+            }
+            else if(ext.equals("pdf")){
+                return "/pictures/pdficon.png";
+            }
+            else if(ext.equals("png")){
+                return "/pictures/pngicon.png";
+            }
+            else {
+                return "/pictures/unknownicon.png";
+            }
+        }
+
         @Override
         protected void initElements() throws IOException, URISyntaxException {
             picture = new Circle();
@@ -242,6 +311,10 @@ public class FlowingMessagePane extends FlowPane {
             getChildren().add(text);
 
             makeHeadeText();
+
+            if(hasFile()){
+                text.setGraphic(new ImageView(""));
+            }
 
             if (sentBy.id == currentValues.getCurrentUser().id) {
                 getStyleClass().add("DarkerBg");

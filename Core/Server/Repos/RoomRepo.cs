@@ -22,7 +22,7 @@ namespace Server.Repos
 
             if (room != null)
             {
-                throw new Exception("User already is in this room");
+                return;
             }
             if(Context.Rooms.Find(idRoom) == null)
             {

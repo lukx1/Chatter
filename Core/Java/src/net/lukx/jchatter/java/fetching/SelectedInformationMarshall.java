@@ -1,5 +1,6 @@
 package net.lukx.jchatter.java.fetching;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import net.lukx.jchatter.java.controls.RoomUtils;
 import net.lukx.jchatter.java.supporting.CurrentValues;
@@ -87,7 +88,7 @@ public class SelectedInformationMarshall {
     }
 
     private void clickedOnRoom(Room room){
-        selectedInfoPane.getCircle().setFill(new ImagePattern(contentRepository.fetchImageWithFallback(room.picture)));
+        selectedInfoPane.getCircle().setFill(new ImagePattern(new Image("/pictures/nopicture_group.png")));
         selectedInfoPane.getTopLabel().setText(room.name);
         selectedInfoPane.getBottomLAbel().setText("");
         selectedInfoPane.getTopButton().setText("ADD/REMOVE USERS");
