@@ -13,11 +13,18 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using System.Timers;
+using Microsoft.EntityFrameworkCore;
+using Server.Models;
+
 
 namespace Server
 {
     public class Startup
     {
+        private Timer timer;
+        private ChatterContext context;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -67,6 +74,26 @@ namespace Server
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+            timer = new Timer();
+            timer.Interval = 600000;
+            timer.Elapsed += TimerOnElapsed;
+            timer.Start();
+            TimerOnElapsed(null,null);
+        }
+
+        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
+        {
+            if (context == null)
+            {
+                context = new ChatterContext();
+            }
+
+            var users = context.Users.Where(u => (DateTime.Now - u.DateLastLogin).Minutes > 10);
+            foreach (var user in users)
+            {
+                user.Status = 0;
+            }
+            context.SaveChanges();
         }
     }
 }

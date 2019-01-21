@@ -2,6 +2,7 @@ package net.lukx.jchatter.java.controls;
 
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import net.lukx.jchatter.java.fetching.ContentRepository;
@@ -103,7 +104,10 @@ public class RoomPane extends LinedPaneManagerPane<LinedPane> {
 
         private Circle pictureCircle;
         private Label headerLabel;
+        private Circle statusCircle;
         private Room room;
+
+
 
         public Room getRoom(){return room;}
 
@@ -130,8 +134,31 @@ public class RoomPane extends LinedPaneManagerPane<LinedPane> {
             pictureCircle = new Circle();
             headerLabel = new Label();
 
+
             this.createCenterLeftCircle(pictureCircle);
             this.createHeaderLabelNextToPicture(headerLabel);
+
+
+            if(room.oneOnOne){
+                statusCircle = new Circle();
+                this.createStatusCircleOn(statusCircle,pictureCircle);
+
+                User other = RoomUtils.getOtherUserInRoom(repos,room,currentValues.getCurrentUser());
+                Relationship[] relsWithOthers = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+                boolean isBlocked = false;
+                for (Relationship relsWithOther : relsWithOthers) {
+                    if(relsWithOther.idtargetUser != other.id){
+                        continue;
+                    }
+                    if(RelationshipStatus.fromKey(relsWithOther.relationType).contains(RelationshipStatus.BLOCKED)){
+                        isBlocked = true;
+                        this.setDisable(true);
+                        setStatusColor(Color.RED);
+                    }
+                }
+                if(!isBlocked)
+                    setStatusColor(UserStatus.fromKey(other.status));
+            }
 
             setInner();
 

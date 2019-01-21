@@ -39,7 +39,7 @@ public class LinedPaneManagerPane<T extends LinedPane> extends Pane {
     }
 
     protected void addInnerElement(T element){
-        element.setLayoutY(getTotalHeightAtInnerEnd());//TODO:maybe add topMargin
+        element.setLayoutY(getTotalHeightAtInnerEnd());
         innerElements.add(element);
         this.setPrefHeight(getTotalHeightAtInnerEnd());
     }

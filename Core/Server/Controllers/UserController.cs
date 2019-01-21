@@ -32,6 +32,17 @@ namespace Server.Controllers
             return Forbid();
         }
 #endif
+
+        public IActionResult GetUser(IDMessage message)
+        {
+            if (IsLoginValid(message))
+            {
+                return Ok(UserRepository.GetUser(message.ID));
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost]
         public IActionResult GetUsers(LoginHeader header)
         {

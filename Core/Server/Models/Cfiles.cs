@@ -7,7 +7,6 @@ namespace Server.Models
     {
         public Cfiles()
         {
-            Rooms = new HashSet<Rooms>();
             Users = new HashSet<Users>();
         }
 
@@ -18,9 +17,7 @@ namespace Server.Models
         public DateTime DateUploaded { get; set; }
         public bool Expired { get; set; }
 
-        public virtual Rooms IdroomNavigation { get; set; }
         public virtual Users IduploaderNavigation { get; set; }
-        public virtual ICollection<Rooms> Rooms { get; set; }
         public virtual ICollection<Users> Users { get; set; }
     }
 }

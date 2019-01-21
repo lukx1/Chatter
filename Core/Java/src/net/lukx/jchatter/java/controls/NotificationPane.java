@@ -53,6 +53,8 @@ public class NotificationPane extends LinedPaneManagerPane<LinedPane> {
         innerButtonsClicked.add(h);
     }
 
+
+
     public void removeNotificationButtonHandler(NotificationButtonHandler h){
         innerButtonsClicked.remove(h);
     }
@@ -83,7 +85,7 @@ public class NotificationPane extends LinedPaneManagerPane<LinedPane> {
     private void showNewMessagesNotifications() throws IOException, URISyntaxException {
         Room[] roomsUserIsIn = repos.getRoomRepo().getRoomsWithUser(currentValues.getCurrentUser().id);
         for (Room room : roomsUserIsIn) {
-            Message[] msgs = repos.getMessageRepo().getMessagesInRoomSince(room.id,currentValues.getLastLogin());
+            Message[] msgs = repos.getMessageRepo().getMessagesInRoomSince(room.id,currentValues.getCurrentUser().dateLastLogin);
             if(msgs.length > 0){
                 Message lastMsg = msgs[msgs.length-1];
                 InnerNotificationNewMessagesPane ip = new InnerNotificationNewMessagesPane(args,room,msgs.length,lastMsg.content);
@@ -97,7 +99,7 @@ public class NotificationPane extends LinedPaneManagerPane<LinedPane> {
     public void showNotifications() throws IOException, URISyntaxException {
         args = new ConcreteInitArgs(args.getPadding(),getWidth(),args.getHeight(),args.getTopMargin());
         showNewFriendsNotifications();
-        showNewMessagesNotifications();
+        //showNewMessagesNotifications();
     }
 
     public void clearInner() {
@@ -269,20 +271,35 @@ public class NotificationPane extends LinedPaneManagerPane<LinedPane> {
             createHeaderLabelNextToPicture(name,true);
             createLabelBellowLabel(status,name);
 
-            accept.setLayoutY(status.getLayoutY()+26);
+            accept.setLayoutY(status.getLayoutY()+32);
             accept.setLayoutX(6);
             accept.setText("ACCEPT");
             accept.getStyleClass().add("Friend");
 
-            refuse.setLayoutY(status.getLayoutY()+26);
-            refuse.setLayoutX(12+accept.getWidth());
+            refuse.setLayoutY(status.getLayoutY()+32);
+            refuse.setLayoutX(72);
             refuse.setText("REFUSE");
             refuse.getStyleClass().add("FriendPending");
 
-            block.setLayoutY(status.getLayoutY()+26);
-            block.setLayoutX(accept.getWidth()+refuse.getWidth()+18);
+            block.setLayoutY(status.getLayoutY()+32);
+            block.setLayoutX(138);
             block.setText("BLOCK");
             block.getStyleClass().add("Blocked");
+
+            status.setWrapText(true);
+            status.setText("Wants to be your friend");
+
+            try {
+                User other = repos.getUserRepo().getUser(relationship.idsourceUser);
+                picture.setFill(new ImagePattern(contentRepository.fetchImageWithFallback(other.picture))); //TODO:Finish thios
+                name.setText(other.login);
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            this.getChildren().add(accept);
+            this.getChildren().add(refuse);
+            this.getChildren().add(block);
 
             accept.addEventHandler(MouseEvent.MOUSE_CLICKED,this::fireNotificationEvent);
             refuse.addEventHandler(MouseEvent.MOUSE_CLICKED,this::fireNotificationEvent);

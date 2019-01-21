@@ -96,6 +96,18 @@ namespace Server.Repos
                 return false;
             }
             context.Relationships.Remove(rel);
+            var otherRel = context.Relationships.FirstOrDefault(r =>
+                r.IdsourceUser == rel.IdtargetUser && r.IdtargetUser == rel.IdsourceUser);
+            if (otherRel != null)
+            {
+                context.Relationships.Remove(otherRel);
+            }
+
+            var rooms = new RepoHelper(context).GetAllOneOnOneRoomsWithRel(rel);
+            foreach (var room in rooms)
+            {
+                context.Rooms.Remove(room);
+            }
             context.SaveChanges();
             return true;
         }

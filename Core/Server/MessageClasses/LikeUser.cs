@@ -28,7 +28,7 @@ namespace Server.MessageClasses
                 FirstName = FirstName,
                 SecondName = SecondName,
                 Login = Login,
-                Password = Encoding.UTF8.GetBytes(Password),
+                Password = Password == null ? null : Encoding.UTF8.GetBytes(Password),
                 Picture = Picture,
                 Email = Email,
                 DateRegistered = DateRegistered,

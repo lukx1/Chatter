@@ -1,6 +1,8 @@
 package net.lukx.jchatter.lib.repos;
 
 import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
+import com.sun.org.apache.xml.internal.security.utils.Base64;
 import net.lukx.jchatter.lib.PublicApi;
 import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.comms.HttpMethod;
@@ -59,14 +61,14 @@ public class CFileRepo extends AbstractRepo{
 
     /***
      *Uploads a file to the server.Maximum content size is 3MB. File upload quotas apply. Empty files are not allowed. If the upload is successful the server responds with UUID assigned to the file.
-     * @param Content data
+     * @param Content data base64
      * @param file to add
      * @throws IOException if exception occurs
      * @throws URISyntaxException if uri is malformed
      */
     @PublicApi
-    public byte[] addFile(byte[] Content, CFile file) throws IOException, URISyntaxException {
-        return communicable.Obtain(
+    public byte[] addFile(String Content, CFile file) throws IOException, URISyntaxException {
+        String resp = communicable.Obtain(
                 getController(),
                 "File",
                 HttpMethod.PUT,
@@ -74,8 +76,13 @@ public class CFileRepo extends AbstractRepo{
                         new KeyValuePair("Content",Content),
                         new KeyValuePair("CFile",file)
                 ),
-                byte[].class
+                String.class
         );
+        try {
+            return Base64.decode(resp);
+        } catch (Base64DecodingException e) {
+            return null;
+        }
     }
 
     /***

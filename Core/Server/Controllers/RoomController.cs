@@ -36,14 +36,12 @@ namespace Server.Controllers
             return BadRequest();
         }
 
-        [HttpPost]
+        [HttpPut]
         [ActionName("Room")]
         public IActionResult AddRoom(RoomMessage message)
         {
-            if (IsLoginValid(message))
-            {
-                roomRepository.AddRoom(message.Room);
-                return Ok();
+            if (IsLoginValid(message)) { 
+                return Ok(roomRepository.AddRoom(message.Room));
             }
             return BadRequest();
         }

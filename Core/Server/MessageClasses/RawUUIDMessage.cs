@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace Server.MessageClasses
 {
-    public class ContentCFileMessage : CfilesMessage
+    public class RawUUIDMessage
     {
-        public string Content { get; set; }
-        public byte[] HiddenContent { get; set; }
+        public byte[] UUID { get; set; }
     }
 }

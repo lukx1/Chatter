@@ -9,10 +9,11 @@ namespace Server.Repos
     public class RoomRepo : BaseRepo,IRoomRepository
     {
 
-        public void AddRoom(Rooms room)
+        public int AddRoom(Rooms room)
         {
             Context.Rooms.Add(room);
             Context.SaveChanges();
+            return room.Id;
         }
 
         public void AddUserToRoom(int idUser, int idRoom)

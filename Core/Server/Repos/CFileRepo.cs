@@ -13,12 +13,18 @@ namespace Server.Repos
     {
         private ChatterContext context = new ChatterContext();
         private IHostingEnvironment environment;
-        private string userContentDir => Path.Combine(environment.WebRootPath, "Content", "UserContent");
-
+        private string userContentDir => Path.Combine(environment.ContentRootPath, "Content", "UserContent");
+        private static readonly char[] padding = { '=' };
         public CFileRepo(IHostingEnvironment environment)
         {
             this.environment = environment;
  
+        }
+
+        private string UuidToPathSafe(byte[] b)
+        {
+            return System.Convert.ToBase64String(b)
+                .TrimEnd(padding).Replace('+', '-').Replace('/', '_');
         }
 
         private void OldFileCheck()
@@ -48,7 +54,7 @@ namespace Server.Repos
 
         private async Task AddFileToDisk(byte[] Content, Cfiles file)
         {
-            string name = Convert.ToBase64String(file.Uuid);
+            string name = UuidToPathSafe(file.Uuid);
             await Task.Run(() =>
             {
                using(var writer = new BinaryWriter(new FileStream(Path.Combine(userContentDir, name),FileMode.Create)))
@@ -60,10 +66,14 @@ namespace Server.Repos
 
         public async Task<byte[]> AddFile(byte[] Content, Cfiles file)
         {
-            var task1 = AddFileToDisk(Content, file);
-            var task2 =  context.Cfiles.AddAsync(file);
-            await task1;
+            var task2 = context.Cfiles.AddAsync(file);
             await task2;
+            await context.SaveChangesAsync();
+            file.Uuid = file.Uuid;
+            var task1 = AddFileToDisk(Content, file);
+           
+            await task1;
+            
             await context.SaveChangesAsync();
             return file.Uuid;
         }
@@ -77,7 +87,7 @@ namespace Server.Repos
         {
             try
             {
-                File.Delete(Path.Combine(userContentDir, Convert.ToBase64String(uuid)));
+                File.Delete(Path.Combine(userContentDir, UuidToPathSafe(uuid)));
                 return true;
             }
             catch (FileNotFoundException e)
@@ -111,19 +121,19 @@ namespace Server.Repos
             return context.Cfiles.Where(r => r.Idroom == ID).ToList();
         }
 
-        public async Task<byte[]> GetFileContents(byte[] UUID)
+        public async Task<string> GetFileContents(byte[] UUID)
         {
-            var file = Path.Combine(userContentDir, Convert.ToBase64String(UUID));
+            var file = Path.Combine(userContentDir, UuidToPathSafe(UUID));
             if (!File.Exists(file))
             {
                 return null;
             }
-            return File.ReadAllBytes(file);
+            return Convert.ToBase64String(File.ReadAllBytes(file));
         }
 
-        public async Task<IDictionary<byte[], byte[]>> GetFilesContents(IEnumerable<byte[]> UUIDs)
+        public async Task<IDictionary<byte[], string>> GetFilesContents(IEnumerable<byte[]> UUIDs)
         {
-            var dict = new Dictionary<byte[], byte[]>();
+            var dict = new Dictionary<byte[], string>();
             foreach (var uuid in UUIDs)
             {
                 dict.Add(uuid,await GetFileContents(uuid));

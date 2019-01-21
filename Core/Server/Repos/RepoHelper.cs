@@ -33,12 +33,21 @@ namespace Server.Repos
             return context.Rooms.Where(
                 r =>
                     r.OneOnOne &&
-                    (r.Idcreator == rel.IdsourceUser ||
-                    r.Idcreator == rel.IdtargetUser) ||
-                    r.Roomusers.Any(
-                        ru =>
-                            ru.Iduser == rel.IdsourceUser ||
-                            ru.Iduser == rel.IdtargetUser));
+                    (
+                        (r.Idcreator == rel.IdsourceUser) &&
+                        r.Roomusers.Any(
+                            ru =>
+                                ru.Iduser == rel.IdtargetUser)
+                    )
+                    ||
+                    (
+                        (r.Idcreator == rel.IdtargetUser) &&
+                        r.Roomusers.Any(
+                            ru =>
+                                ru.Iduser == rel.IdsourceUser)
+                    )
+                    )
+                ;
         }
 
     }

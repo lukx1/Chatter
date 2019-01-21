@@ -90,7 +90,7 @@ public class Communicator implements Communicable {
             return json;
         }
         else {
-            throw new ClientProtocolException("Error status received :"+statusCode);
+            throw new ClientProtocolException("Error status received :"+statusCode+"\r\n"+EntityUtils.toString(resp.getEntity(), "UTF-8"));
         }
     }
 
@@ -133,7 +133,10 @@ public class Communicator implements Communicable {
     @PublicApi
     public <T> T Obtain(@NotNull String controller, @NotNull String action, final HttpMethod method, final Object inData, Class<T> clazz) throws IOException, URISyntaxException {
         if(clazz == Void.class){
-            ExecuteMessage(controller,action,method,inData);
+            CloseableHttpResponse resp = ExecuteMessage(controller,action,method,inData);
+            if(resp.getStatusLine().getStatusCode() > 300){
+                throw new ClientProtocolException("Error status received :"+resp.getStatusLine().getStatusCode()+"\r\n"+EntityUtils.toString(resp.getEntity(), "UTF-8"));
+            }
             return null;
         }
         return ParseToJson(ObtainJson(controller,action,method,inData),clazz);

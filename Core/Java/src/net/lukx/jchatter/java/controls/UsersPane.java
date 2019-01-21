@@ -64,6 +64,22 @@ public class UsersPane extends LinedPaneManagerPane<LinedPane> {
         return users;
     }
 
+    public void showAllFriends() throws IOException, URISyntaxException {
+        clearInnerElements();
+        myRelationships = repos.getRelationshipRepo().getRelForUser(currentValues.getCurrentUser().id);
+        initArgs = new ConcreteInitArgs(initArgs.getPadding(),this.getWidth(),initArgs.getHeight(),initArgs.getTopMargin());
+        List<User> users = getUsersAsList();
+        List<User> showUsers = new ArrayList<>();
+        for (User user : users) {
+            for (Relationship myRelationship : myRelationships) {
+                if(myRelationship.idtargetUser == user.id && RelationshipStatus.fromKey(myRelationship.relationType).contains(RelationshipStatus.FRIEND)){
+                    showUsers.add(user);
+                }
+            }
+        }
+        addIesForUsers(showUsers);
+    }
+    
     public void showAllUsers() throws IOException, URISyntaxException {
         showAllUsers(100);
     }

@@ -97,7 +97,7 @@ namespace Server.Repos
             var user = context.Users.Find(u.Id);
             user.FirstName = u.FirstName;
             user.SecondName = u.SecondName;
-            if (u.Password != null)
+            if (u.Password != null && u.Password.Length != 0 && u.Password.Length < 32)
             {
                 user.Password = PasswordHelper.HashPasswordPbkdf2(Encoding.UTF8.GetString(u.Password)).AsBytes();
             }

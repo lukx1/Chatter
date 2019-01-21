@@ -57,11 +57,6 @@ namespace Server.Models
                     .HasColumnName("IDUploader")
                     .HasColumnType("int(11)");
 
-                entity.HasOne(d => d.IdroomNavigation)
-                    .WithMany(p => p.Cfiles)
-                    .HasForeignKey(d => d.Idroom)
-                    .HasConstraintName("FK_cfiles_rooms");
-
                 entity.HasOne(d => d.IduploaderNavigation)
                     .WithMany(p => p.Cfiles)
                     .HasForeignKey(d => d.Iduploader)
@@ -191,12 +186,6 @@ namespace Server.Models
                     .WithMany(p => p.Rooms)
                     .HasForeignKey(d => d.Idcreator)
                     .HasConstraintName("FK_rooms_users");
-
-                entity.HasOne(d => d.PictureNavigation)
-                    .WithMany(p => p.Rooms)
-                    .HasForeignKey(d => d.Picture)
-                    .OnDelete(DeleteBehavior.Cascade)
-                    .HasConstraintName("FK_rooms_cfiles");
             });
 
             modelBuilder.Entity<Roomusers>(entity =>
