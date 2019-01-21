@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".RegisterUserActivity" />
         <activity android:name=".ProgramActivity" />
-        <activity android:name=".ActivityShowUser"></activity>
+        <activity android:name=".ActivityShowUser" />
+        <activity android:name=".ChatActivity"></activity>
     </application>
 
 </manifest>

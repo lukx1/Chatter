@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ProgramActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_program);
         TextView name =  (TextView)findViewById(R.id.textView_LoggedLogin);
-        User loggedUser = App.getInstance().LoggedUser;
+        AndroidUser loggedUser = App.getInstance().LoggedUser;
         name.setText(loggedUser.firstName + " " + loggedUser.secondName);
         profilePic = (ImageView)findViewById(R.id.imageView_ProfilePic);
         profilePic.setOnClickListener(new View.OnClickListener(){
@@ -44,7 +45,7 @@ public class ProgramActivity extends AppCompatActivity {
         });
 
         recyView = (RecyclerView)findViewById(R.id.recyclerView);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(App.getInstance().Connector.getUsers(),this);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(loggedUser.Rooms.toArray(new AndroidRoom[loggedUser.Rooms.size()]),this);
 
         recyView.setAdapter(adapter);
         recyView.setLayoutManager(new LinearLayoutManager(this));
@@ -62,15 +63,24 @@ public class ProgramActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void onElementClick(Room i)
+    {
+        Intent intent = new Intent(this, ChatActivity.class);
+        Bundle b = new Bundle();
+        b.putInt("roomID",i.id);
+        intent.putExtras(b); //Put your id to your next Intent
+        startActivity(intent);
+    }
+
     class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
         private static final String TAG = "RecyclerViewAdapter";
 
-        public User[] Users;
+        public AndroidRoom[] Rooms;
         public Context context;
 
-        public RecyclerViewAdapter(User[] users, Context mContext)
+        public RecyclerViewAdapter(AndroidRoom[] rooms, Context mContext)
         {
-            Users = users;
+            Rooms = rooms;
             context = mContext;
         }
 
@@ -84,11 +94,14 @@ public class ProgramActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-            viewHolder.fullname.setText(Users[i].firstName + " " + Users[i].secondName);
+            User logged = App.getInstance().LoggedUser;
+            User shown = Rooms[i].getOtherUser(logged);
+            final Room currentroom = Rooms[i];
+            viewHolder.fullname.setText(shown.firstName + " " + shown.secondName);
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                   onElementClick(currentroom);
                 }
             });
             viewHolder.imagePic.setImageResource(R.drawable.profilepic_placeholder);
@@ -96,7 +109,7 @@ public class ProgramActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return Users.length;
+            return Rooms.length;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

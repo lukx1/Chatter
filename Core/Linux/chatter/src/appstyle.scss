@@ -1,0 +1,127 @@
+@font-face {
+  font-family: 'DejaVu Sans Extra Light';
+  src: url("../fonts/DejaVuSans-ExtraLight.ttf");
+}
+
+:root {
+  font-family: 'DejaVu Sans Extra Light';
+}
+
+input {
+  margin: 5px;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.ch-w80 {
+  width: 80%;
+}
+
+#mainAppArea {
+  overflow-y: scroll;
+  width: auto;
+  height: auto;
+}
+
+#roomUserArea {
+  float: left;
+  width: 200px;
+  height: auto;
+  overflow-y: scroll;
+}
+
+#extraInfoArea {
+  float: right;
+  width: 200px;
+}
+
+#messageArea {
+  margin: 0 200px;
+}
+
+.ch-p10px {
+  padding: 10px;
+}
+
+.ch-bold {
+  font-weight: bold;
+}
+
+.ch-hide {
+  display: none;
+}
+
+.ch-active-room {
+  background-color: #00abb2;
+}
+
+.ch-p1 {
+  padding: 1em;
+}
+
+.ch-justify-between {
+  justify-content: space-between;
+}
+
+.ch-flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.ch-flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.ch-round {
+  border-radius: 50%;
+}
+
+.ch-center {
+  text-align: center;
+}
+
+.ch-dg {
+  color: #222631;
+}
+
+.ch-dg-bg {
+  background-color: #222631;
+}
+
+.ch-ldg {
+  color: #363d43;
+}
+
+.ch-ldg-bg {
+  background-color: #363d43;
+}
+
+.ch-cyan {
+  color: #00abb2;
+}
+
+.ch-cyan-bg {
+  background-color: #00abb2;
+}
+
+.ch-light {
+  color: #eeeeee;
+}
+
+.ch-light-bg {
+  background-color: #eeeeee;
+}
+
+
+#headerArea {
+  display: flex;
+  justify-content: space-between;
+}

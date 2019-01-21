@@ -3,8 +3,11 @@ package night.legacy.org.chatterandroid;
 import net.lukx.jchatter.lib.comms.Communicable;
 import net.lukx.jchatter.lib.models.Relationship;
 import net.lukx.jchatter.lib.models.RelationshipStatus;
+import net.lukx.jchatter.lib.models.Room;
 import net.lukx.jchatter.lib.models.User;
+import net.lukx.jchatter.lib.repos.MessageRepo;
 import net.lukx.jchatter.lib.repos.RelationshipRepo;
+import net.lukx.jchatter.lib.repos.RoomRepo;
 import net.lukx.jchatter.lib.repos.UserRepo;
 
 import java.io.IOException;
@@ -17,6 +20,8 @@ public class ApiConnector {
     private AndroidConnection connection;
     public UserRepo userRepo;
     public RelationshipRepo relRepo;
+    public RoomRepo roomRepo;
+    public MessageRepo messageRepo;
     private User[]  Users;
 
 
@@ -25,6 +30,8 @@ public class ApiConnector {
         connection.setServerURI(new URI("http://78.102.218.164:8080/api"));
         userRepo = new UserRepo(connection);
         relRepo = new RelationshipRepo(connection);
+        roomRepo = new RoomRepo(connection);
+        messageRepo = new MessageRepo(connection);
     }
 
     public void loadAllUsers() throws Exception {
@@ -63,5 +70,16 @@ public class ApiConnector {
                     user.Blocked.add(new AndroidUser(getUser(item.idtargetUser)));
             }
         }
+    }
+
+    public void getRoomsForUser(AndroidUser user) throws IOException, URISyntaxException {
+        Room[] rooms = roomRepo.getRoomsWithUser(user.id);
+        for (Room item:rooms) {
+            user.Rooms.add(new AndroidRoom(item,roomRepo.getUsersInRoom(item.id)));
+        }
+    }
+
+    public void getRoomMessages(AndroidRoom room) throws IOException, URISyntaxException {
+        room.Messages = messageRepo.getMessagesInRoom(room.id);
     }
 }
