@@ -11,7 +11,7 @@
 
 <form id="loginModal" class="modal ch-flex-column ch-center">
     <img src="../images/Logo.png" alt="app logo" width="250px" height="250px"/>
-    <br />
+    <br/>
     <input name="loginFormLogin" id="loginFormLogin" placeholder="Login" type="text" required/>
     <br/>
     <input name="loginFormPassword" id="loginFormPassword" placeholder="Password" type="password" required/>
@@ -45,41 +45,59 @@
                 <div class="ch-bold ch-light" id="currentUserName">USERNAME</div>
                 <button id="logoutButton" type="button">Logout</button>
             </div>
-            <img id="currentUserImg" class="ch-round" src="../images/profilePic_placeholder.png" width="100px" height="100px"
+            <img id="currentUserImg" class="ch-round" src="../images/profilePic_placeholder.png" width="100px"
+                 height="100px"
                  alt="user pic"/>
         </div>
     </div>
-    <div id="mainAppArea">
+    <div class="ch-flex-row" id="mainAppArea">
         <div class="ch-p10px" id="roomUserArea">
             <div>
                 <div class="ch-hide ch-center" id="roomListCont">
-                    <input id="roomListSearchBar" placeholder="search"/>
+                    <input class="ch-w90" id="roomListSearchBar" placeholder="search"/>
+                    <div>
+                        <input type="text" id="makeNewRoomInputText" placeholder="New room name"/>
+                        <br/>
+                        <button id="makeNewRoomButton">Make a new room</button>
+                    </div>
                     <div class="ch-center" id="roomList">
 
                     </div>
                 </div>
                 <div class="ch-center" id="userListCont">
-                    <input id="userListSearchBar" placeholder="search"/>
+                    <input class="ch-w90" id="userListSearchBar" placeholder="search"/>
                     <div class="ch-center" id="userList">
+
+                    </div>
+                </div>
+                <div class="ch-center ch-hide" id="nonFriendCont">
+                    <input class="ch-w90" id="nonFriendSearchBar" placeholder="search"/>
+                    <div class="ch-center" id="nonFriendList">
 
                     </div>
                 </div>
             </div>
             <div class="ch-flex-row ch-justify-between">
-                <input type="image" src="../images/icon_personAdd.png" width="30px" height="30px" alt="Add person" id="addFriendButton" />
-                <input type="image" src="../images/icon_mainWindow.png" width="30px" height="30px" alt="Main menu" id="openMenuButton" />
-                <input type="image" src="../images/icon_groupMenu.png" width="30px" height="30px" alt="Group/user menu" id="groupOrUserSwitchButton" />
+                <input type="image" src="../images/icon_personAdd.png" width="30px" height="30px" alt="Add person"
+                       id="addFriendButton"/>
+                <input type="image" src="../images/icon_mainWindow.png" width="30px" height="30px" alt="Main menu"
+                       id="mainSwitchButton"/>
+                <input type="image" src="../images/icon_groupMenu.png" width="30px" height="30px" alt="Group/user menu"
+                       id="groupSwitchButton"/>
             </div>
         </div>
-        <div class="ch-p10px ch-center" id="messageArea">
+        <div class="ch-p10px ch-center ch-flex-column" id="messageArea">
             <div id="messageList">
-
             </div>
-            <div id="messageInputArea">
+            <div class="ch-flex-row" id="messageInputArea">
                 <input class="ch-w80" id="messageInputText" type="text" placeholder="Your message"/>
-                <input type="image" src="../images/icon_emoji.png" width="30px" height="30px" alt="Pick emoji" id="pickEmojiButton" />
-                <input type="image" src="../images/icon_fileAttach.png" width="30px" height="30px" alt="Send file" id="sendFileButton" />
-                <input type="image" src="../images/icon_send.png" width="30px" height="30px" alt="Send" id="sendMessageButton" />
+                <input type="image" src="../images/icon_emoji.png" width="30px" height="30px" alt="Pick emoji"
+                       id="pickEmojiButton"/>
+                <input class="ch-hide" type="image" src="../images/icon_fileAttach.png" width="30px" height="30px"
+                       alt="Send file"
+                       id="sendFileButton"/>
+                <input type="image" src="../images/icon_send.png" width="30px" height="30px" alt="Send"
+                       id="sendMessageButton"/>
             </div>
         </div>
         <div class="ch-p10px" id="extraInfoArea">
@@ -89,355 +107,1147 @@
 </main>
 
 <script>
-  window.$ = window.jQuery = require('jquery');
-  const fs = require('fs');
+    window.$ = window.jQuery = require('jquery');
+    const fs = require('fs');
 
-  let eLoginModal = $('#loginModal');
-  let eRegisterModal = $('#registerModal');
-  let eLoginFormLogin = $('#loginFormLogin');
-  let eLoginFormPassword = $('#loginFormPassword');
-  let eRegisterFormLogin = $('#registerFormLogin');
-  let eRegisterFormPassword = $('#registerFormPassword');
-  let eRegisterFormFirstName = $('#registerFormFirstName');
-  let eRegisterFormSecondName = $('#registerFormSecondName');
-  let eRegisterFormEmail = $('#registerFormEmail');
-  let eInfoModal = $('#infoModal');
+    let bigUpdateCounter = 1;
 
-  let apUserListSearchBar = $('#userListSearchBar');
-  let apRoomListSearchBar = $('#roomListSearchBar');
+    let eLoginModal = $('#loginModal');
+    let eRegisterModal = $('#registerModal');
+    let eLoginFormLogin = $('#loginFormLogin');
+    let eLoginFormPassword = $('#loginFormPassword');
+    let eRegisterFormLogin = $('#registerFormLogin');
+    let eRegisterFormPassword = $('#registerFormPassword');
+    let eRegisterFormFirstName = $('#registerFormFirstName');
+    let eRegisterFormSecondName = $('#registerFormSecondName');
+    let eRegisterFormEmail = $('#registerFormEmail');
+    let eInfoModal = $('#infoModal');
 
-  let apUserListCont = $('#userListCont');
-  let apRoomListCont = $('#roomListCont');
+    let apSendMessageButton = $('#sendMessageButton');
 
-  let apUserList = $('#userList');
-  let apRoomList = $('#roomList');
+    let apUserListSearchBar = $('#userListSearchBar');
+    let apRoomListSearchBar = $('#roomListSearchBar');
+    let apNonFriendSearchBar = $('#nonFriendSearchBar');
 
-  let APPDATA = {
-    currentUser: null,
-    selectedRoom: null,
-    selectedUser: null,
-    currentRoomMessages: [],
-    users: [],
-    rooms: [],
-  };
+    let apUserListCont = $('#userListCont');
+    let apRoomListCont = $('#roomListCont');
+    let apNonFriendCont = $('#nonFriendCont');
 
-  //Global data used by app
-  let SERVER_URL = 'http://78.102.218.164:8080/';
-  let activeList = 'USER';
-  let loginData = {
-    login: '',
-    password: ''
-  };
+    let apUserList = $('#userList');
+    let apRoomList = $('#roomList');
+    let apNonFriendList = $('#nonFriendList');
 
-  function userStatusStr(status) {
-      switch(status) {
-          case 0:
-              return 'NONE'
-          case 1:
-              return 'ONLINE';
-          case 2:
-              return 'AWAY';
-          case 3:
-              return 'OFFLINE';
-          case 4:
-              return 'BUSY';
-      }
-  }
-  function relStatusStr(status) {
-      if(status & 4)
-          return 'BLOCKED';
-      else if(status & 2)
-          return 'FRIEND';
-      else if(status & 1)
-          return 'PENDING';
-      else
-          return 'NONE';
-  }
+    let apHeaderArea = $('#headerArea');
+    let apRoomUserArea = $('#roomUserArea');
+    let apMessageArea = $('#messageArea');
+    let apExtraInfoArea = $('#extraInfoArea');
+    let apMessageList = $('#messageList');
+    let apMessageInputText = $('#messageInputText');
 
-  function printUsers() {
-    apUserList.empty();
-    APPDATA.users.forEach(x => {
-      let el = '';
-      let imgsrc = '../images/profilePic_placeholder.png';
+    let apMakeNewRoomButton = $('#makeNewRoomButton');
+    let apMakeNewRoomInputText = $('#makeNewRoomInputText');
 
-      if(APPDATA.selectedUser !== null && APPDATA.selectedUser.id === x.id)
-          el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-active-room ch-justify-between">';
-      else
-          el += '<div data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
-      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
-      el += '<div>' + x.login + '</div>';
-      el += '<div>' + userStatusStr(x.status) + '</div>';
-      el += '</div>';
+    let APPDATA = {
+        currentUser: null,
+        selectedRoom: null,
+        selectedUser: null,
+        selectedNonFriend: null,
+        relationships: [],
+        currentRoomMessages: [],
+        allUsers: [],
+        users: [],
+        rooms: [],
+        nonFriends: []
+    };
 
-      apUserList.append(el);
-    });
-  }
-  function printRooms() {
-    apRoomList.empty();
-    APPDATA.rooms.forEach(x => {
-      let el = '';
-      let imgsrc = '../images/profilePic_placeholder.png';
+    //Global data used by app
+    let SERVER_URL = 'http://78.102.218.164:8080/';
+    let activeList = 'USER';
+    let loginData = {
+        login: '',
+        password: ''
+    };
 
-      if(APPDATA.selectedRoom !== null && APPDATA.selectedRoom.id === x.id)
-        el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-active-room ch-justify-between">';
-      else
-        el += '<div data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-justify-between">';
-      el += '<img class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="Room profile picture" />';
-      el += '<div>' + x.name + '</div>';
-      el += '</div>';
-
-      apRoomList.append(el);
-    });
-  }
-
-  function timedEvent() {
-    console.log('Timed event fired!');
-  }
-
-  function createUserFileDir() {
-    if (!fs.existsSync('./userFiles')) {
-      fs.mkdirSync('./userFiles');
+    function userStatusStr(status) {
+        switch (status) {
+            case 0:
+                return '';
+            case 1:
+                return 'ONLINE';
+            case 2:
+                return 'AWAY';
+            case 3:
+                return 'OFFLINE';
+            case 4:
+                return 'BUSY';
+        }
     }
-  }
-  function fetchCurrentRooms() {
-    fetch(SERVER_URL + 'api/Room/GetRoomsWithUser', {
-      method: 'POST',
-      body: JSON.stringify({
-        Login: loginData.login,
-        Password: loginData.password,
-        ID: APPDATA.currentUser.id
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          throw new Error('Error has occurred while fetching rooms that user is residing in!');
-        }
-      })
-      .then(json => {
-        APPDATA.rooms = json;
-        printRooms();
-      })
-      .catch(error => {
-        eInfoModal.text(error.message);
-        eInfoModal.modal({
-          closeExisting: false
-        });
-      });
-  }
-  function initData() {
-    fetch(SERVER_URL + 'api/User/GetUsers', {
-      method: 'POST',
-      body: JSON.stringify({
-        Login: loginData.login,
-        Password: loginData.password
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
-    })
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          throw new Error('Error has occurred while fetching users!');
-        }
-      })
-      .then(json => {
-        APPDATA.users = json;
-        APPDATA.currentUser = APPDATA.users.find(e => e.login === loginData.login);
-        printUsers();
-        fetchCurrentRooms();
-        fillCurrentUserInfo();
-      })
-      .catch(error => {
-        eInfoModal.text(error.message);
-        eInfoModal.modal({
-          closeExisting: false
-        });
-      });
-  }
 
-
-
-  function launchAfterLoginStuff() {
-    createUserFileDir();
-    initData();
-
-    window.setInterval(timedEvent, 5000);
-  }
-
-  function fillCurrentUserInfo() {
-    let imgsrc = '../images/profilePic_placeholder.png';
-
-    $('#currentUserImg')
-      .attr('src', imgsrc);
-    $('#currentUserName')
-      .text(APPDATA.currentUser.login);
-  }
-
-  function logout() {
-    window.clearInterval();
-    eLoginModal.modal({
-      escapeClose: false,
-      clickClose: false,
-      showClose: false
-    });
-  }
-
-  $(document)
-    .ready(() => {
-
-      $('#logoutButton')
-        .click(() => {
-          logout();
-        });
-
-      eLoginModal.modal({
-        escapeClose: false,
-        clickClose: false,
-        showClose: false
-      });
-
-      $('#groupOrUserSwitchButton').click(() => {
-        if(activeList === 'USER')
-        {
-          activeList = 'ROOM';
-          apRoomListCont.removeClass('ch-hide');
-          apUserListCont.addClass('ch-hide');
-        }
+    function relStatusStr(status) {
+        if (status & 4)
+            return 'BLOCKED';
+        else if (status & 2)
+            return 'FRIEND';
+        else if (status & 1)
+            return 'PENDING';
         else
-        {
-          activeList = 'USER';
-          apUserListCont.removeClass('ch-hide');
-          apRoomListCont.addClass('ch-hide');
-        }
-      });
+            return 'NONE';
+    }
 
-      apRoomListSearchBar.change(() => {
-        apRoomList.children().each((i, e) => {
-          if($(e).attr('data-name').includes(apRoomListSearchBar.val())) {
-            $(e).show();
-          } else {
-            $(e).hide();
-          }
-        });
-      });
-      apUserListSearchBar.change(() => {
-        apUserList.children().each((i, e) => {
-          if($(e).attr('data-name').includes(apUserListSearchBar.val())) {
-            $(e).show();
-          } else {
-            $(e).hide();
-          }
-        });
-      });
+    function getUserNameFromId(id) {
+        return APPDATA.allUsers.find(e => e.id === id).login;
+    }
 
+    function printRoomUsers() {
+        apExtraInfoArea.empty();
 
-      $('#loginFormRegisterButton')
-        .click(() => {
-          eRegisterModal.modal({
-            escapeClose: false,
-            clickClose: false,
-            showClose: false
-          });
-        });
-
-
-      $('#registerFormBackToLoginButton')
-        .click(() => {
-          eLoginModal.modal({
-            escapeClose: false,
-            clickClose: false,
-            showClose: false
-          });
-        });
-
-      eLoginModal.submit((e) => {
-        fetch(SERVER_URL + 'api/User/ValidateLogin', {
-          method: 'POST',
-          body: JSON.stringify({
-            Login: eLoginFormLogin.val(),
-            Password: eLoginFormPassword.val()
-          }),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-          }
+        fetch(SERVER_URL + 'api/Room/GetUsersInRoom', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                ID: APPDATA.selectedRoom.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
         })
-          .then(resp => {
-            if (resp.ok) {
-              return resp.json();
-            }
-            throw new Error('Error has occurred!');
-          })
-          .then(json => {
-            if (json) {
-              eInfoModal.text('Login was successful!');
-              eInfoModal.modal();
-              loginData.login = eLoginFormLogin.val();
-              loginData.password = eLoginFormPassword.val();
-              launchAfterLoginStuff();
-            } else {
-              eInfoModal.text('Invalid credentials!');
-              eInfoModal.modal({
-                closeExisting: false
-              });
-            }
-          })
-          .catch(error => {
-            eInfoModal.text(error.message);
-            eInfoModal.modal({
-              closeExisting: false
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching rooms that user is residing in!');
+                }
+            })
+            .then(json => {
+                json.forEach(x => {
+                    let el = '';
+                    let imgsrc = '../images/profilePic_placeholder.png';
+
+                    el += '<div class="ch-flex-row" data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
+                    el += '<img style="margin-right: 5px;" class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+                    el += '<div class="ch-flex-column">';
+                    el += '<div>' + x.login + '</div>';
+                    el += '<button onclick="removeUserFromCurrentRoom(' + x.id + ')">X</button>';
+                    el += '</div>';
+                    el += '</div>';
+                    apExtraInfoArea.append(el);
+                });
             });
-          });
-        e.preventDefault();
-      });
+    }
 
-      eRegisterModal.submit((e) => {
-        fetch(SERVER_URL + 'api/User/RegisterUser', {
-          method: 'PUT',
-          body: JSON.stringify({
-              Login: '',
-              Password: '',
-              User: {
-                  Firstname: eRegisterFormFirstName.val(),
-                  Secondname: eRegisterFormSecondName.val(),
-                  Login: eRegisterFormLogin.val(),
-                  Password: eRegisterFormPassword.val(),
-                  Email: eRegisterFormEmail.val()
-              }
-          }),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-          }
+    function findRelStatus(id) {
+        if (APPDATA.relationships.length === 0)
+            return 'NONE';
+
+        let foundRels = APPDATA.relationships.filter(x => x.idsourceUser == id || x.idtargetUser == id);
+
+        if (!Array.isArray(foundRels) || array.length === 0)
+            return 'NONE';
+
+        for (let i = 0, len = foundRels.length; i < len; i++) {
+            if (foundRels[i].idsourceUser == id && relStatusStr(foundRels[i].relationType) === 'BLOCKED') {
+                return 'BLOCKED BY';
+            } else if (foundRels[i].idsourceUser == APPDATA.currentUser.id && relStatusStr(foundRels[i].relationType) === 'BLOCKED') {
+                return 'BLOCKED';
+            } else if (foundRels[i].idsourceUser == id && relStatusStr(foundRels[i].relationType) === 'PENDING') {
+                return 'PENDED BY';
+            } else if (foundRels[i].idsourceUser == APPDATA.currentUser.id && relStatusStr(foundRels[i].relationType) === 'PENDING') {
+                return 'PENDING';
+            } else if (foundRels[i].idsourceUser == id && relStatusStr(foundRels[i].relationType) === 'FRIEND') {
+                return 'FRIEND';
+            } else if (foundRels[i].idsourceUser == APPDATA.currentUser.id && relStatusStr(foundRels[i].relationType) === 'FRIEND') {
+                return 'FRIEND';
+            }
+        }
+
+        return 'NONE';
+    }
+
+    function printNonFriends() {
+        apNonFriendList.empty();
+        APPDATA.nonFriends.forEach(x => {
+            let el = '';
+            let imgsrc = '../images/profilePic_placeholder.png';
+
+            if (APPDATA.selectedNonFriend !== null && APPDATA.selectedNonFriend.id === x.id)
+                el += '<div onclick="clickNonFriend(' + x.id + ')" class="ch-flex-row ch-justify-between" data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-active-room ch-justify-between">';
+            else
+                el += '<div onclick="clickNonFriend(' + x.id + ')" class="ch-flex-row ch-justify-between" data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
+            el += '<img style="margin-right: 5px;" class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+            el += '<div class="ch-flex-column">';
+            el += '<div class="ch-flex-row">';
+            el += '<div>' + x.login + '</div>';
+
+            let relStatus = findRelStatus(x.id);
+            if (relStatus !== 'BLOCKED BY') {
+                if (relStatus === 'BLOCKED')
+                    el += '<button onclick="unblockUser(' + x.id + ')">Unblock</button>';
+                else {
+                    el += '<button onclick="blockUser(' + x.id + ')">Block</button>';
+                    if (relStatus === 'PENDED BY') {
+                        el += '<button onclick="acceptUser(' + x.id + ')">Accept</button>';
+                        el += '<button onclick="denyUser(' + x.id + ')">Deny</button>';
+                    } else if (relStatus === 'PENDING')
+                        el += '<button onclick="stopPendingBy(' + x.id + ')">Stop pending</button>';
+                    else if (relStatus === 'FRIEND')
+                        el += '<button onclick="shatterFriendUser(' + x.id + ')">Shatter</button>';
+                    else
+                        el += '<button onclick="requestFriendUser(' + x.id + ')">Request</button>';
+                }
+            }
+
+            el += '</div>';
+            el += '<button onclick="addUserToCurrentRoom(' + x.id + ')">Add to current</button>';
+            el += '<button onclick="make1on1Room(' + x.id + ')">Make 1on1</button>';
+            el += '</div>';
+            el += '</div>';
+
+            apNonFriendList.append(el);
+        });
+    }
+
+    function printUsers() {
+        apUserList.empty();
+        APPDATA.users.forEach(x => {
+            let el = '';
+            let imgsrc = '../images/profilePic_placeholder.png';
+
+            if (APPDATA.selectedUser !== null && APPDATA.selectedUser.id === x.id)
+                el += '<div onclick="clickFriend(' + x.id + ')" class="ch-flex-row ch-justify-between" data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-active-room ch-justify-between">';
+            else
+                el += '<div onclick="clickFriend(' + x.id + ')" class="ch-flex-row ch-justify-between" data-name="' + (x.login === null ? "" : x.login) + '" class="ch-flex-row ch-justify-between">';
+            el += '<img style="margin-right: 5px;" class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="User profile picture" />';
+            el += '<div class="ch-flex-column">';
+            el += '<div class="ch-flex-row">';
+            el += '<div>' + x.login + '</div>';
+            el += ' | ';
+            el += '<div>' + userStatusStr(x.status) + '</div>';
+            el += '</div>';
+            el += '<button onclick="addUserToCurrentRoom(' + x.id + ')">Add to current</button>';
+            el += '<button onclick="make1on1Room(' + x.id + ')">Make 1on1</button>';
+            el += '</div>';
+            el += '</div>';
+
+            apUserList.append(el);
+        });
+    }
+
+    function printRooms() {
+        apRoomList.empty();
+        APPDATA.rooms.forEach(x => {
+            let el = '';
+            let imgsrc = '../images/profilePic_placeholder.png';
+
+            if (APPDATA.selectedRoom !== null && APPDATA.selectedRoom.id === x.id)
+                el += '<div onclick="clickGroup(' + x.id + ')" data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-active-room ch-justify-between">';
+            else
+                el += '<div onclick="clickGroup(' + x.id + ')" data-name="' + (x.name === null ? "" : x.name) + '" class="ch-flex-row ch-justify-between">';
+            el += '<img style="margin-right: 5px;" class="ch-round" width="50px" height="50px" src="' + imgsrc + '" alt="Room profile picture" />';
+            el += '<div class="ch-flex-column">';
+            el += '<div>' + (x.oneOnOne ? "1 on 1" : x.name) + '</div>';
+            el += '<button onclick="anihilateRoom(' + x.id + ')">X</button>';
+            el += '</div>';
+            el += '</div>';
+
+            apRoomList.append(el);
+        });
+    }
+
+    function printCurrentRoomMessages() {
+        apMessageList.empty();
+        APPDATA.currentRoomMessages.forEach(i => {
+            if (!i.content.startsWith("!<")) {
+                let el = '';
+
+                el += '<div onclick="clickMessage(' + i.id + ')">';
+                el += i.content;
+                el += '</br>';
+                el += '<div class="ch-bold ch-flex-row ch-justify-end">';
+                el += '<div>';
+                el += getUserNameFromId(i.idsender) + " | " + i.dateSent;
+                el += '</div>';
+                el += '</div>';
+                el += '</div>';
+
+                apMessageList.append(el);
+            }
+        });
+    }
+
+    function filterOutFriends() {
+        APPDATA.users = [];
+        APPDATA.relationships.forEach(x => {
+            APPDATA.allUsers.forEach(y => {
+                if (relStatusStr(x.relationType) === 'FRIEND')
+                    APPDATA.users.push(y);
+            });
+        });
+    }
+
+    function filterOutNonFriends() {
+        APPDATA.nonFriends = [];
+        if (APPDATA.relationships.length === 0) {
+            APPDATA.allUsers.forEach(y => {
+                APPDATA.nonFriends.push(y);
+            });
+        } else {
+            APPDATA.relationships.forEach(x => {
+                APPDATA.allUsers.forEach(y => {
+                    if (relStatusStr(x.relationType) !== 'FRIEND')
+                        APPDATA.nonFriends.push(y);
+                });
+            });
+        }
+    }
+
+    function timedEvent() {
+        console.log('Timed event fired!');
+        if (bigUpdateCounter % 10 === 0)
+            bigUpdate();
+        else
+            smallUpdate();
+        bigUpdateCounter++;
+    }
+
+    function createUserFileDir() {
+        if (!fs.existsSync('./userFiles')) {
+            fs.mkdirSync('./userFiles');
+        }
+    }
+
+    function fetchRooms() {
+        return fetch(SERVER_URL + 'api/Room/GetRoomsWithUser', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                ID: APPDATA.currentUser.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
         })
-          .then(resp => {
-            if (resp.ok) {
-              eLoginModal.modal({
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching rooms that user is residing in!');
+                }
+            });
+    }
+
+    function fetchAllUsers() {
+        return fetch(SERVER_URL + 'api/User/GetUsers', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching users!');
+                }
+            });
+    }
+
+    function fetchRelFor() {
+        return fetch(SERVER_URL + 'api/Relationship/GetRelForUser', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                ID: APPDATA.currentUser.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching relationships that user is residing in!');
+                }
+            });
+    }
+
+    function fetchRelIn() {
+        return fetch(SERVER_URL + 'api/Relationship/GetRelAboutUser', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                ID: APPDATA.currentUser.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching relationships that user is residing in!');
+                }
+            });
+    }
+
+    function addUserToCurrentRoom(userId) {
+        if (APPDATA.selectedRoom != null) {
+            addUserToRoom(userId, APPDATA.selectedRoom.id);
+        }
+    }
+
+    function bigUpdate() {
+        fetchAllUsers()
+            .then((json) => {
+                APPDATA.allUsers = json;
+
+                Promise.all([fetchRelFor(), fetchRelIn(), fetchRooms()])
+                    .then(([relFor, relIn, rooms]) => {
+                        APPDATA.relationships.concat(relFor);
+                        APPDATA.relationships.concat(relIn);
+                        APPDATA.rooms = rooms;
+
+                        smallUpdate();
+
+                        printStuff();
+                    });
+            });
+    }
+
+    function smallUpdate() {
+        if (APPDATA.selectedRoom != null) {
+            fetch(SERVER_URL + 'api/Message/GetMessagesInRoom', {
+                method: 'POST',
+                body: JSON.stringify({
+                    Login: loginData.login,
+                    Password: loginData.password,
+                    Id: APPDATA.selectedRoom.id
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+            })
+                .then(resp => {
+                    if (resp.ok) {
+                        return resp.json();
+                    } else {
+                        throw new Error('Error has occurred while fetching messages!');
+                    }
+                })
+                .then(json => {
+                    APPDATA.currentRoomMessages = json;
+                    printCurrentRoomMessages();
+                })
+                .catch(e => {
+                    eInfoModal.text(e.message);
+                    eInfoModal.modal({
+                        closeExisting: false
+                    });
+                });
+        }
+    }
+
+    function printStuff() {
+        filterOutFriends();
+        filterOutNonFriends();
+
+        printUsers();
+        printRooms();
+        printNonFriends();
+
+        fillCurrentUserInfo();
+
+        filterNonFriend();
+        filterUser();
+        filterRoom();
+    }
+
+    function anihilateRoom(id) {
+        fetch(SERVER_URL + 'api/Room/Room', {
+            method: 'DELETE',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                id: id,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    if (APPDATA.selectedRoom.id == id)
+                        APPDATA.selectedRoom = null;
+
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching relationships that user is residing in!');
+                }
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    }
+
+    function makeNewRoom() {
+        if (!apMakeNewRoomInputText.val())
+            return;
+
+        fetch(SERVER_URL + 'api/Room/Room', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Room: {
+                    Name: apMakeNewRoomInputText.val(),
+                    idcreator: APPDATA.currentUser.id,
+                    oneOnOne: false
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while making 1on1 room!');
+                }
+            })
+            .then(json => {
+                addUserToRoom(APPDATA.currentUser.id, json);
+                apMakeNewRoomInputText.val('');
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    }
+
+    function make1on1Room(otherUserId) {
+        fetch(SERVER_URL + 'api/Room/Room', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Room: {
+                    Name: '1o1',
+                    idcreator: APPDATA.currentUser.id,
+                    oneOnOne: true
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while making 1on1 room!');
+                }
+            })
+            .then(json => {
+                addUserToRoom(APPDATA.currentUser.id, json);
+                addUserToRoom(otherUserId, json);
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    }
+
+    function clickGroup(id) {
+        APPDATA.selectedRoom = APPDATA.rooms.find(x => x.id === id);
+        printRoomUsers();
+    }
+
+    function clickNonFriend(id) {
+        APPDATA.selectedNonFriend = APPDATA.nonFriends.find(x => x.id === id);
+    }
+
+    function clickFriend(id) {
+        APPDATA.selectedUser = APPDATA.users.find(x => x.id === id);
+    }
+
+    function freshlyBlockUser(id) {
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    idsourceUser: APPDATA.currentUser.id,
+                    idtargetUser: id,
+                    relationType: 4,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function blockUser(id) {
+        fetch(SERVER_URL + 'api/Relationship/GetRelForUser', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                id: APPDATA.currentUser.id,
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+
+            }).then(json => {
+            if(!Array.isArray(json) || json.length === 0)
+                freshlyBlockUser(id);
+            else
+            {
+                let jRes = json.filter(x => x.idtargetUser == id);
+                if(!Array.isArray(jRes) || jRes.length === 0)
+                    freshlyBlockUser(id);
+                else
+                {
+                    fetch(SERVER_URL + 'api/Relationship/Rel', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            Login: loginData.login,
+                            Password: loginData.password,
+                            Relationship: {
+                                Id: jRes[0].id,
+                                relationType: 4
+                            }
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8'
+                        }
+                    })
+                        .then(resp => {
+                            if (resp.ok) {
+                                return resp.json();
+                            } else {
+                                throw new Error('Error has occurred while adding user to a room!');
+                            }
+                        }).catch(error => console.log(error.message));
+                }
+            }
+        }).catch(error => console.log(error.message));
+    }
+
+    function unblockUser(id) {
+        let res = APPDATA.relationships.find(x => x.idsourceUser == APPDATA.currentUser.id && x.idtargetUser == id);
+        if(res == null)
+            return;
+
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    Id: res.id,
+                    relationType: res.relationType - 4,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function requestFriendUser(id) {
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    idsourceUser: APPDATA.currentUser.id,
+                    idtargetUser: id,
+                    relationType: 1
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function denyUser(id) {
+        let res = APPDATA.relationships.find(x => x.idsourceUser == id && x.idtargetUser == APPDATA.currentUser.id);
+        if(res == null)
+            return;
+
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    Id: res.id,
+                    relationType: res.relationType - 1,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function stopPendingBy(id) {
+        let res = APPDATA.relationships.find(x => x.idsourceUser == APPDATA.currentUser.id && x.idtargetUser == id);
+        if(res == null)
+            return;
+
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    Id: res.id,
+                    relationType: res.relationType - 1,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function shatterFriendUser(id) {
+        let res = APPDATA.relationships.find(x => x.idsourceUser == APPDATA.currentUser.id && x.idtargetUser == id);
+        if(res == null)
+            res = APPDATA.relationships.find(x => x.idsourceUser == id && x.idtargetUser == APPDATA.currentUser.id);
+        if(res == null)
+            return;
+
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    Id: res.id,
+                    relationType: res.relationType - 2,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function acceptUser(id) {
+        let res = APPDATA.relationships.find(x => x.idsourceUser == id && x.idtargetUser == APPDATA.currentUser.id);
+        if(res == null)
+            return;
+
+        fetch(SERVER_URL + 'api/Relationship/Rel', {
+            method: 'POST',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                Relationship: {
+                    Id: res.id,
+                    relationType: res.relationType - 1 + 2,
+                }
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function addUserToRoom(idUser, idRoom) {
+        fetch(SERVER_URL + 'api/Room/AddUserToRoom', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                idUser: idUser,
+                idRoom: idRoom
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while adding user to a room!');
+                }
+            }).catch(error => console.log(error.message));
+    }
+
+    function addUserToCurrentRoom(id) {
+        fetch(SERVER_URL + 'api/Room/AddUserToRoom', {
+            method: 'PUT',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                idUser: id,
+                idRoom: APPDATA.selectedRoom.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching relationships that user is residing in!');
+                }
+            });
+    }
+
+    function removeUserFromCurrentRoom(id) {
+        fetch(SERVER_URL + 'api/Room/RemoveUserFromRoom', {
+            method: 'DELETE',
+            body: JSON.stringify({
+                Login: loginData.login,
+                Password: loginData.password,
+                idUser: id,
+                idRoom: APPDATA.selectedRoom.id
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
+            .then(resp => {
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    throw new Error('Error has occurred while fetching relationships that user is residing in!');
+                }
+            });
+    }
+
+    function initData() {
+        fetchAllUsers()
+            .then((json) => {
+                APPDATA.allUsers = json;
+                APPDATA.currentUser = APPDATA.allUsers.find(e => e.login === loginData.login);
+
+                Promise.all([fetchRelFor(), fetchRelIn(), fetchRooms()])
+                    .then(([relFor, relIn, rooms]) => {
+                        APPDATA.relationships.concat(relFor);
+                        APPDATA.relationships.concat(relIn);
+                        APPDATA.rooms = rooms;
+
+                        printStuff();
+                    });
+            });
+    }
+
+    function launchAfterLoginStuff() {
+        createUserFileDir();
+        initData();
+
+        window.setInterval(timedEvent, 1000);
+    }
+
+    function fillCurrentUserInfo() {
+        let imgsrc = '../images/profilePic_placeholder.png';
+
+        $('#currentUserImg')
+            .attr('src', imgsrc);
+        $('#currentUserName')
+            .text(APPDATA.currentUser.login);
+    }
+
+    function logout() {
+        window.clearInterval();
+        loginData.login = '';
+        loginData.password = '';
+        eLoginModal.modal({
+            escapeClose: false,
+            clickClose: false,
+            showClose: false
+        });
+    }
+
+    function filterUser() {
+        apUserList.children().each((i, e) => {
+            if ($(e).attr('data-name').includes(apUserListSearchBar.val())) {
+                $(e).show();
+            } else {
+                $(e).hide();
+            }
+        });
+    }
+
+    function filterNonFriend() {
+        apNonFriendList.children().each((i, e) => {
+            if ($(e).attr('data-name').includes(apNonFriendSearchBar.val())) {
+                $(e).show();
+            } else {
+                $(e).hide();
+            }
+        });
+    }
+
+    function filterRoom() {
+        apRoomList.children().each((i, e) => {
+            if ($(e).attr('data-name').includes(apRoomListSearchBar.val())) {
+                $(e).show();
+            } else {
+                $(e).hide();
+            }
+        });
+    }
+
+    $(document)
+        .ready(() => {
+            $('#logoutButton').click(() => {
+                logout();
+            });
+
+            apSendMessageButton.click(() => {
+                if (APPDATA.selectedRoom != null && apMessageInputText.val()) {
+                    fetch(SERVER_URL + 'api/Message/Message', {
+                        method: 'PUT',
+                        body: JSON.stringify({
+                            login: loginData.login,
+                            password: loginData.password,
+                            message: {
+                                idsender: APPDATA.currentUser.id,
+                                idroomReceiver: APPDATA.selectedRoom.id,
+                                content: apMessageInputText.val().toString()
+                            }
+                        }),
+                        headers: {
+                            'Content-type': 'application/json; charset=UTF-8'
+                        }
+                    })
+                        .then(resp => {
+                            if (resp.ok) {
+                                apMessageInputText.val('');
+                                return resp.json();
+                            }
+                            throw new Error('Error has occurred!');
+                        })
+                        .catch(error => {
+                            console.log(error.message);
+                        });
+                }
+            });
+
+            eLoginModal.modal({
                 escapeClose: false,
                 clickClose: false,
                 showClose: false
-              });
-              eInfoModal.text('Registration was successful!');
-              eInfoModal.modal({
-                closeExisting: false
-              });
-            }
-            throw new Error('Error has occurred!');
-          })
-          .catch(error => {
-            eInfoModal.text(error.message);
-            eInfoModal.modal({
-              closeExisting: false
             });
-          });
-        e.preventDefault();
-      });
-    });
+
+            $('#mainSwitchButton').click(() => {
+                if (activeList === 'USER') {
+                    return;
+                } else {
+                    if (activeList === 'ROOM')
+                        apRoomListCont.addClass('ch-hide');
+                    else if (activeList === 'NEW_FRIEND')
+                        apNonFriendCont.addClass('ch-hide');
+
+                    activeList = 'USER';
+                    apUserListCont.removeClass('ch-hide');
+                }
+            });
+            $('#addFriendButton').click(() => {
+                if (activeList === 'NEW_FRIEND') {
+                    return;
+                } else {
+                    if (activeList === 'ROOM')
+                        apRoomListCont.addClass('ch-hide');
+                    else if (activeList === 'USER')
+                        apUserListCont.addClass('ch-hide');
+
+                    activeList = 'NEW_FRIEND';
+                    apNonFriendCont.removeClass('ch-hide');
+                }
+            });
+            $('#groupSwitchButton').click(() => {
+                if (activeList === 'ROOM') {
+                    return;
+                } else {
+                    if (activeList === 'NEW_FRIEND')
+                        apNonFriendCont.addClass('ch-hide');
+                    else if (activeList === 'USER')
+                        apUserListCont.addClass('ch-hide');
+
+                    activeList = 'ROOM';
+                    apRoomListCont.removeClass('ch-hide');
+                }
+            });
+
+            apRoomListSearchBar.change(filterRoom);
+            apNonFriendSearchBar.change(filterNonFriend);
+            apUserListSearchBar.change(filterUser);
+
+            $('#loginFormRegisterButton').click(() => {
+                eRegisterModal.modal({
+                    escapeClose: false,
+                    clickClose: false,
+                    showClose: false
+                });
+            });
+            $('#registerFormBackToLoginButton').click(() => {
+                eLoginModal.modal({
+                    escapeClose: false,
+                    clickClose: false,
+                    showClose: false
+                });
+            });
+
+            apMakeNewRoomButton.click(makeNewRoom);
+
+            eLoginModal.submit((e) => {
+                fetch(SERVER_URL + 'api/User/ValidateLogin', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        Login: eLoginFormLogin.val(),
+                        Password: eLoginFormPassword.val()
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+                })
+                    .then(resp => {
+                        if (resp.ok) {
+                            return resp.json();
+                        }
+                        throw new Error('Error has occurred!');
+                    })
+                    .then(json => {
+                        if (json) {
+                            eInfoModal.text('Login was successful!');
+                            eInfoModal.modal();
+                            loginData.login = eLoginFormLogin.val();
+                            loginData.password = eLoginFormPassword.val();
+                            launchAfterLoginStuff();
+                        } else {
+                            eInfoModal.text('Invalid credentials!');
+                            eInfoModal.modal({
+                                closeExisting: false
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        eInfoModal.text(error.message);
+                        eInfoModal.modal({
+                            closeExisting: false
+                        });
+                    });
+                e.preventDefault();
+            });
+            eRegisterModal.submit((e) => {
+                fetch(SERVER_URL + 'api/User/RegisterUser', {
+                    method: 'PUT',
+                    body: JSON.stringify({
+                        User: {
+                            Firstname: eRegisterFormFirstName.val(),
+                            Secondname: eRegisterFormSecondName.val(),
+                            Login: eRegisterFormLogin.val(),
+                            Password: eRegisterFormPassword.val(),
+                            Email: eRegisterFormEmail.val()
+                        }
+                    }),
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8'
+                    }
+                })
+                    .then(resp => {
+                        if (resp.ok) {
+                            eLoginModal.modal({
+                                escapeClose: false,
+                                clickClose: false,
+                                showClose: false
+                            });
+                            eInfoModal.text('Registration was successful!');
+                            eInfoModal.modal({
+                                closeExisting: false
+                            });
+                        }
+                        throw new Error('Error has occurred!');
+                    })
+                    .catch(error => {
+                        console.log(error.message);
+                        eInfoModal.text(error.message);
+                        eInfoModal.modal({
+                            closeExisting: false
+                        });
+                    });
+                e.preventDefault();
+            });
+        });
 </script>
 </body>
 </html>

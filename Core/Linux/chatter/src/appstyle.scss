@@ -15,35 +15,36 @@ body {
   padding: 0;
   margin: 0;
   border: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
 }
 
 .ch-w80 {
   width: 80%;
 }
 
+.ch-w90 {
+  width: 90%;
+}
+
 #mainAppArea {
-  overflow-y: scroll;
-  width: auto;
-  height: auto;
+  display: grid;
+  grid-template-columns: 250px auto 250px;
+  grid-template-rows: calc(100vh - 120px - 1em);
+  height: 100%;
 }
 
 #roomUserArea {
-  float: left;
-  width: 200px;
-  height: auto;
   overflow-y: scroll;
-}
-
-#extraInfoArea {
-  float: right;
-  width: 200px;
+  background-color: #0000FF0C;
 }
 
 #messageArea {
-  margin: 0 200px;
+  overflow-y: scroll;
+  background-color: #FF00000C;
+}
+
+#extraInfoArea {
+  overflow-y: scroll;
+  background-color: #00FF000C;
 }
 
 .ch-p10px {
@@ -68,6 +69,10 @@ body {
 
 .ch-justify-between {
   justify-content: space-between;
+}
+
+.ch-justify-end {
+  justify-content: end;
 }
 
 .ch-flex-row {
@@ -119,7 +124,6 @@ body {
 .ch-light-bg {
   background-color: #eeeeee;
 }
-
 
 #headerArea {
   display: flex;
