@@ -9,31 +9,31 @@ namespace ChatterWpf.Models
     public class Message
     {
 
-        public int id;
+        public int id{get;set;}
 
         //FK to User's ID, ID of user who sent this message.
 
-        public int idsender;
+        public int idsender{get;set;}
 
-        public int idroomReceiver;
+        public int idroomReceiver{get;set;}
 
-        public string content;
+        public string content{get;set;}
 
-        public bool received;
+        public bool received{get;set;}
 
-        public bool seen;
+        public bool seen{get;set;}
 
-        public bool edited;
+        public bool edited{get;set;}
 
-        public bool writing;
+        public bool writing{get;set;}
 
-        public DateTime dateSent;
+        public DateTime? dateSent{get;set;}
 
-        public DateTime dateReceived;
+        public DateTime? dateReceived{get;set;}
 
-        public DateTime dateRead;
+        public DateTime? dateRead{get;set;}
 
-        public DateTime dateEdited;
+        public DateTime? dateEdited{get;set;}
 
         public Message()
         {

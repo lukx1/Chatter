@@ -19,9 +19,9 @@ public abstract class AbstractRepo
 
     public class IDObject
     {
-        private string Login;
-        private string Password;
-        private int ID;
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public int ID { get; set; }
 
         public IDObject(string Login, string Password, int ID)
         {

@@ -12,30 +12,30 @@ namespace ChatterWpf.Models
         {
         }
 
-        public int id;
+        public int id{get;set;}
 
-        public string firstName;
+        public string firstName{get;set;}
 
-        public string secondName;
+        public string secondName{get;set;}
 
-        public string login;
+        public string login{get;set;}
 
-        public string password;
+        public string password{get;set;}
 
         /// <summary>
         /// Picture. FK to CFile UUID
         /// </summary>
-        public byte[] picture;
+        public byte[] picture{get;set;}
 
-        public string email;
+        public string email{get;set;}
 
-        public DateTime dateRegistered;
+        public DateTime dateRegistered{get;set;}
 
-        public DateTime dateLastLogin;
+        public DateTime dateLastLogin{get;set;}
 
         /// <summary>
         /// EnumSet mapping to @link UserStatus
         /// </summary>
-        public UserStatus status;
+        public UserStatus status{get;set;}
     }
 }

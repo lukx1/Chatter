@@ -22,7 +22,6 @@
                     <Button x:Name="loginButtonLogin" Content="Login" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,10,0,0" Width="90" Height="38" Background="White" Click="LoginButtonLogin_Click"/>
                     <Button x:Name="loginButtonRegister" Content="Register" HorizontalAlignment="Right" Margin="35,10" Width="90" Height="38" Background="White" Click="LoginButtonRegister_Click" />
                 </StackPanel>
-                <TextBox x:Name="loginTestInput" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
             </StackPanel>
         </Border>
         <Border x:Name="registerBorder" BorderBrush="Black" BorderThickness="1" Margin="205,55,205,25" CornerRadius="10" Visibility="Hidden">
@@ -65,6 +64,82 @@
             </StackPanel>
 
         </Border>
+        <Grid x:Name="contentHolder" Visibility="Collapsed">
+
+
+
+            <StackPanel x:Name="rightStackPanel" HorizontalAlignment="Left" Height="345" Margin="607,75,0,0" VerticalAlignment="Top" Width="175">
+                <Ellipse x:Name="rightPanelElipse" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="150" Stroke="Black" VerticalAlignment="Top" Width="175"/>
+                <Label x:Name="rightPanelLabelName" Content="Name" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175"/>
+                <Label x:Name="rightPanelLabelEmail" Content="Email" HorizontalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175"/>
+                <Button x:Name="rightPanelButtonAddRemoveFriend" Content="Leave room" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Click="RightPanelButtonAddRemoveFriend_Click"/>
+                <Button x:Name="rightPanelButtonBlock" Content="Block" HorizontalAlignment="Left" VerticalAlignment="Top" Width="175" Margin="0,10,0,0" Click="RightPanelButtonBlock_Click"/>
+            </StackPanel>
+            <StackPanel x:Name="stackPanelCenter" HorizontalAlignment="Left" Height="345" Margin="225,75,0,0" VerticalAlignment="Top" Width="362">
+                <ScrollViewer x:Name="scrollViewerChat" Height="244">
+                    <ListView x:Name="messageListView" Height="244" Width="362">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
+                <Grid x:Name="gridSendMessage" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="362" Background="#FF151010">
+                    <TextBox x:Name="textBoxMessage" HorizontalAlignment="Left" Height="56" Margin="10,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="259" BorderBrush="Black"/>
+                    <Button x:Name="buttonSendMessage" Content="Send" HorizontalAlignment="Left" Margin="274,20,0,0" VerticalAlignment="Top" Width="75" Height="33" Click="ButtonSendMessage_Click"/>
+                 
+                </Grid>
+
+            </StackPanel>
+            <StackPanel x:Name="leftStackPanelGroups" HorizontalAlignment="Left" Height="340" Margin="10,70,0,0" VerticalAlignment="Top" Width="195">
+                <TextBox x:Name="textBoxSearch" HorizontalAlignment="Left"  Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="195" BorderBrush="Black" Margin="0,2,0,0"/>
+
+                <ScrollViewer x:Name="scrollViewerRooms" HorizontalAlignment="Left" Height="216" VerticalAlignment="Top" Width="195" Margin="0,10,0,0">
+                    <ListView x:Name="roomListView" Height="214" Width="194">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                </ScrollViewer>
+                <Grid x:Name="gridRoomsFriends" HorizontalAlignment="Left" Height="69" VerticalAlignment="Top" Width="195">
+                    <Button x:Name="buttonGroups" Content="Rooms" HorizontalAlignment="Left" Margin="101,19,0,0" VerticalAlignment="Top" Width="75" Height="31" Click="ButtonGroups_Click"/>
+                    <Button x:Name="buttonShowAddFriends" Content="Add friends" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,19,0,0" Click="ButtonShowAddFriends_Click" Height="31"/>
+                </Grid>
+            </StackPanel>
+            <Grid x:Name="gridTopBar" HorizontalAlignment="Left" Height="70" VerticalAlignment="Top" Width="792" Background="#FF130D0D">
+                <Label x:Name="topBarLabel" Content="Label" Foreground="White" HorizontalAlignment="Left" Margin="586,10,0,0" VerticalAlignment="Top" Width="100"/>
+                <Button x:Name="topBarButtonLogout" Content="Logout" HorizontalAlignment="Left" Margin="586,36,0,0" VerticalAlignment="Top" Width="100" Click="TopBarButtonLogout_Click"/>
+                <Ellipse x:Name="topBarElipse" HorizontalAlignment="Left" Height="70" Margin="702,0,0,0" Stroke="Black" VerticalAlignment="Top" Width="70">
+                    <Ellipse.Fill>
+                        <ImageBrush/>
+                    </Ellipse.Fill>
+                </Ellipse>
+            </Grid>
+            <StackPanel x:Name="stackPanelLeftAddFriends" HorizontalAlignment="Left" Height="340" Margin="10,70,0,0" VerticalAlignment="Top" Width="195" Visibility="Collapsed">
+                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Height="29" VerticalAlignment="Top" Width="195">
+                    <TextBox x:Name="textBoxSearchFriends" HorizontalAlignment="Left" Height="27" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="117" Margin="0,2,-35,0" BorderBrush="Black"/>
+                    <Button x:Name="buttonSearchFriends" Content="Search" Width="59" Margin="50,2,0,0" Click="ButtonSearchFriends_Click" MouseDoubleClick="ButtonSearchFriends_MouseDoubleClick"/>
+                </StackPanel>
+                <ScrollViewer x:Name="scrollViewerAddFriends" HorizontalAlignment="Left" Height="220" VerticalAlignment="Top" Width="195" Margin="0,2,0,0">
+                    <ListView x:Name="AddFriendsListView" HorizontalAlignment="Left" Height="220" Margin="0,0,0,0" VerticalAlignment="Top" Width="195" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </ScrollViewer>
+                <Grid x:Name="gridAddFriendsButtons" HorizontalAlignment="Left" Height="89" VerticalAlignment="Top" Width="195">
+                    <Button x:Name="buttonAddFriendsBack" Content="Back" HorizontalAlignment="Left" Margin="100,21,0,0" VerticalAlignment="Top" Width="75" Height="31" Click="ButtonAddFriendsBack_Click"/>
+                </Grid>
+            </StackPanel>
+
+        </Grid>
+
 
 
 

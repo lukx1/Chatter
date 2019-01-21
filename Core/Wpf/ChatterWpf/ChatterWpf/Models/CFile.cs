@@ -8,17 +8,17 @@ namespace ChatterWpf.Models
     public class CFile
     {
 
-        public byte[] uuid;
+        public byte[] uuid{get;set;}
 
-        public int iduploader;
+        public int iduploader{get;set;}
 
-        public int idroom;
+        public int idroom{get;set;}
 
-        public string fileName;
+        public string fileName{get;set;}
 
-        public DateTime dateUploaded;
+        public DateTime dateUploaded{get;set;}
 
-        public bool expired;
+        public bool expired{get;set;}
     }
 
 }
