@@ -27,6 +27,7 @@ public class ChatActivity extends AppCompatActivity {
     RecyclerView recyView;
     ImageButton sendButton;
     EditText chatText;
+    TextView chatName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,11 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
         chatText = (EditText)findViewById(R.id.editText_chat_chatbox);
+        chatName = (TextView)findViewById(R.id.textView_Chat_ChatName);
+        if(room.oneOnOne)
+            chatName.setText(room.getOtherUser(App.getInstance().LoggedUser).firstName);
+        else
+            chatName.setText(room.name);
     }
 
     public void onSendClick(View v)
@@ -88,7 +94,6 @@ public class ChatActivity extends AppCompatActivity {
     class RecyclerViewAdapter extends RecyclerView.Adapter<ChatActivity.RecyclerViewAdapter.ViewHolder>{
         private static final String TAG = "RecyclerViewAdapter";
 
-
         public Context context;
 
         public RecyclerViewAdapter( Context mContext)
@@ -100,9 +105,8 @@ public class ChatActivity extends AppCompatActivity {
         @Override
         public ChatActivity.RecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View view = null;
-            if(room.Messages[i].idsender == App.getInstance().LoggedUser.id)
-                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_chatitem_right,viewGroup,false);
-            else
+
+
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_chatitem_left,viewGroup,false);
             ChatActivity.RecyclerViewAdapter.ViewHolder holder = new ChatActivity.RecyclerViewAdapter.ViewHolder(view);
             return holder;
@@ -114,7 +118,10 @@ public class ChatActivity extends AppCompatActivity {
             User sender = App.getInstance().Connector.getUser(room.Messages[i].idsender);
             viewHolder.fullname.setText(sender.firstName + " " + sender.secondName);
             viewHolder.message.setText(room.Messages[i].content);
-
+            if(sender.id == logged.id)
+                viewHolder.bg.setImageResource(R.color.colorAccent);
+            else
+                viewHolder.bg.setImageResource(R.color.colorLightBlue);
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -135,12 +142,14 @@ public class ChatActivity extends AppCompatActivity {
             TextView fullname;
             TextView message;
             RelativeLayout layout;
+            ImageView bg;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 imagePic = itemView.findViewById(R.id.imageView_chatItemLeft_pic);
                 fullname = itemView.findViewById(R.id.textView_chatitemleft_name);
                 message = itemView.findViewById(R.id.textView_chatitemleft_message);
                 layout = itemView.findViewById(R.id.relativeLayout_chatitemleft);
+                bg = itemView.findViewById(R.id.imageView6);
             }
         }
     }

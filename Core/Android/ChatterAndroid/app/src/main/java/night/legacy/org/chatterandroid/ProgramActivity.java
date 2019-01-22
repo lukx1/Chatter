@@ -94,10 +94,13 @@ public class ProgramActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+            final Room currentroom = Rooms[i];
             User logged = App.getInstance().LoggedUser;
             User shown = Rooms[i].getOtherUser(logged);
-            final Room currentroom = Rooms[i];
-            viewHolder.fullname.setText(shown.firstName + " " + shown.secondName);
+            if(currentroom.oneOnOne)
+                viewHolder.fullname.setText(shown.firstName + " " + shown.secondName);
+            else
+                viewHolder.fullname.setText(currentroom.name);
             viewHolder.layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

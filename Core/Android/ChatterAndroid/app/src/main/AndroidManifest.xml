@@ -21,7 +21,8 @@
         <activity android:name=".RegisterUserActivity" />
         <activity android:name=".ProgramActivity" />
         <activity android:name=".ActivityShowUser" />
-        <activity android:name=".ChatActivity"></activity>
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".AddFriends_Activity"></activity>
     </application>
 
 </manifest>
